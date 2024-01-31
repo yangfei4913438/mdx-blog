@@ -5,8 +5,7 @@ WORKDIR /temp
 
 # Copying package files and installing dependencies
 COPY package.json yarn.lock .
-# When using overseas cloud servers, please use https://registry.yarnpkg.com/
-RUN yarn config set registry https://registry.npm.taobao.org/ && \
+RUN yarn config set registry https://registry.yarnpkg.com/ && \
     yarn install --frozen-lockfile && \
     yarn cache clean
 
@@ -29,8 +28,7 @@ COPY --from=build-stage /temp/yarn.lock ./yarn.lock
 COPY --from=build-stage /temp/project.config.js ./project.config.js
 
 # Installing only production dependencies
-# When using overseas cloud servers, please use https://registry.yarnpkg.com/
-RUN yarn config set registry https://registry.npm.taobao.org/  && \
+RUN yarn config set registry https://registry.yarnpkg.com/  && \
     yarn install --production --frozen-lockfile  && \
     yarn cache clean
 
