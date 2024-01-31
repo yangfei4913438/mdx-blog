@@ -1,0 +1,87 @@
+@use 'sass:math';
+
+@mixin aspect-ratio($width, $height) {
+  &:before {
+    display: block;
+    content: '';
+    width: 100%;
+    padding-top: math.div($height, $width) * 100%;
+  }
+  > .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+@mixin aspect-ratio-after($width, $height) {
+  &:after {
+    display: block;
+    content: '';
+    width: 100%;
+    padding-top: math.div($height, $width) * 100%;
+  }
+  > .content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+@tailwind base;
+@layer base {
+  /* 懒加载的前提，默认不能加载背景图片 */
+  .lazy {
+    background-image: none !important;
+  }
+
+  // markdown 渲染样式优化
+  .prose {
+    // 行内代码块的语法处理
+    code {
+      &::after, &::before {
+        content: none;
+      }
+    }
+    blockquote {
+      margin: 8px 0 0;
+      p {
+        margin: 0;
+        &::before, &::after {
+          content: none;
+        }
+      }
+    }
+    // task列表样式
+    .contains-task-list {
+      margin-top: 0;
+      padding-left: 1rem;
+      .task-list-item {
+        list-style-type: none;
+        padding: 0;
+        input {
+          margin: 0;
+        }
+      }
+    }
+  }
+  .markdown-area {
+    ul {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+
+  .x-aspect-ratio {
+    @include aspect-ratio-after(1, 1);
+  }
+  .x-aspect-ratio-3-4 {
+    @include aspect-ratio-after(3, 4);
+  }
+  .x-aspect-ratio-1440-900 {
+    @include aspect-ratio-after(1440, 900);
+  }
+}

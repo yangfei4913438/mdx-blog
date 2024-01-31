@@ -1,0 +1,57 @@
+---
+dir: 前端
+dirIndex: 1
+index: 7
+title: 如何在你的网站中使用自定义字体
+description: 在你的网站中使用自定义字体其实挺简单的，不到1分钟就可以搞定
+author: 杨飞
+tags: [前端, css, 自定义字体]
+date: 2021-03-08 10:34:53
+---
+
+> 在你的网站中使用自定义字体其实挺简单的，不到1分钟就可以搞定
+
+#### 首先在样式文件中，定义好你的字体
+
+```css
+@font-face {
+  font-family: 'lato';
+  src: url('http://10.3.0.106:8000/Lato-Regular.ttf') format('truetype'); // 字体路径也可以是本地的字体文件路径
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'lato';
+  src: url('http://10.3.0.106:8000/Lato-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Noto Sans S Chinese';
+  src: url('http://10.3.0.106:8000/NotoSansHans-Regular.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Noto Sans S Chinese';
+  src: url('http://10.3.0.106:8000/NotoSansHans-Bold.otf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+```
+
+#### 然后在页面中引入即可
+
+```css
+body {
+  font-family: Lato, Noto Sans S Chinese, sans-serif !important;
+  color: #252525;
+}
+```
+
+#### 一点补充
+
+- OTF, 也就是 opentype MAC 与 WINDOWS 都能很好应用的兼容字体。
+- TTF, 也就是 truetype WINDOWS 体验不错，MAC的兼容性比较差。
+
+如果没有特殊需要，不推荐使用 TTF 字体。

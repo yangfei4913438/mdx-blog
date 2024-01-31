@@ -1,40 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## 项目说明
 
-## Getting Started
+只需要按格式要求，在多语言目录下，放入 mdx 或 md 文件，就会自动生成页面。
 
-First, run the development server:
+### 运行项目
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn
+yarn run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 技术选型
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### ui框架
+next 支持服务端渲染、混合渲染、客户端渲染，react生态第一选项。
+- 官网地址: https://nextjs.org/
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### 图标库
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+heroicons 由 tailwind 发布的开源项目，常用图标都有，使用很方便。
+- 项目地址: https://github.com/tailwindlabs/heroicons
+- 官网地址: https://heroicons.com/
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+lucide 如果你使用 shadcn, 那使用这个库是最好的，因为安装 shadcn 的时候，会默认安装。
+- 图标库地址: https://lucide.dev/icons/
 
-## Learn More
+#### 补充
+`Bootstrap Icons` 这也是一个很不错的开源图标库，图标数量更多，
+- 网址: https://icons.getbootstrap.com/
+- 项目地址: https://github.com/twbs/icons
 
-To learn more about Next.js, take a look at the following resources:
+### 状态管理库
+redux 是 react 常用的状态管理库，尤其适合复杂项目，这里使用是为了使用而使用（没看错）。
+通常在生产项目中，我们会选择更适合业务的状态管理库。 redux 适合复杂的业务场景，比如：编辑器。
+一般的业务更推荐 jotai 这类原子化的状态管理库，性能会更好，维护更简单。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 官网地址: https://redux-toolkit.js.org/
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+#### jotai 
 
-## Deploy on Vercel
+原子化的状态管理库，适用于绝大多数的业务场景。
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 网址: https://jotai.org/
+- 项目地址: https://github.com/pmndrs/jotai
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

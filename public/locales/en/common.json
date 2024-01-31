@@ -1,0 +1,11 @@
+{
+  "copy": "Copy",
+  "copy-successfully": "Copy successfully",
+  "updateTime": "Last Updated:",
+
+  "welcome": "Welcome to my website",
+  "author": {
+    "name": "Author is：<i>{{t}}</i>",
+    "time": "Current time is "
+  }
+}

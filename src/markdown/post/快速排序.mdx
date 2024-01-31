@@ -1,0 +1,83 @@
+---
+dir: 算法
+dirIndex: 4
+index: 1
+title: 快速排序
+description: 快速排序的实现，一看就能明白
+author: 杨飞
+tags: [算法, 快速排序]
+date: 2021-04-17 23:05:28
+---
+
+> 快速排序的实现，一看就能明白
+
+## 大致原理
+
+就是从数组中取出一个中间的数，然后比这个中间数小的放左边数组，比中间数大的放右边数组。长度小于2的直接返回
+
+## 算法实现
+
+```javascript
+function quickSort(arr) {
+  if (arr.length <= 1) return arr
+  const mIdx = Math.floor(arr.length / 2);
+  const middle = arr[mIdx];
+  const left = [];
+  const right = []
+  arr.forEach((item, idx) => {
+    // 索引值不能相等
+    if (idx !== mIdx) {
+      if (item >= middle) {
+        right.push(item)
+      }
+      if (item < middle) {
+        left.push(item)
+      }
+    }
+  })
+  return quickSort(left).concat([middle], quickSort(right))
+}
+
+const a = [1, 22, 22, 13, 14, 14, 16, 19, 17, 18]
+
+const b = quickSort(a)
+
+console.log(b)
+```
+
+直接本地跑一下就看到顺序正常了，很简单吧。
+
+## 算法扩展
+
+有一个数组，数组中的元素都是对象，需要根据对象的key来排序。
+
+```javascript
+function sortArrayByKey(arr, key, desc = 'asc') {
+  if (arr.length < 2) return arr;
+  let mdx = Math.floor(arr.length / 2);
+  let left = [];
+  let right = [];
+  arr.forEach((row, idx) => {
+    if (idx !== mdx) {
+      if (desc === 'asc') {
+        if (row[key] >= arr[mdx][key]) {
+          right.push(row);
+        }
+        if (row[key] < arr[mdx][key]) {
+          left.push(row);
+        }
+      } else {
+        if (row[key] >= arr[mdx][key]) {
+          left.push(row);
+        }
+        if (row[key] < arr[mdx][key]) {
+          right.push(row);
+        }
+      }
+    }
+  });
+  return sortArrayByKey(left, key, desc).concat([arr[mdx]], sortArrayByKey(right, key, desc));
+}
+```
+
+一个简单的变化，就实现了你需要的功能。举一反三，其实很简单吧。

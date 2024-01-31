@@ -1,0 +1,81 @@
+---
+dir: docker
+dirIndex: 2
+index: 1
+title: docker快速创建并初始化mongodb数据库
+description: docker快速创建并初始化mongodb数据库
+author: 杨飞
+tags: [docker, mongodb]
+date: 2021-03-08 10:01:40
+---
+
+> 如何使用docker快速创建一个可以使用的mongodb数据库
+
+
+#### 说明
+> 我们的目的是如何快速使用，而不是部署一个生产项目。所以这里使用的都是默认配置。
+
+##### 拉取最新的数据库
+```shell
+docker pull mongo:latest
+```
+
+##### 查看拉取到的镜像
+```shell
+docker images
+```
+
+##### 在后台运行起来
+```shell
+docker run -d -p 27017:27017 --name graphql mongo:latest
+```
+
+##### 查看容器的起动情况
+```shell
+docker ps
+```
+
+##### 以 admin 用户身份进入mongo
+```shell
+docker exec -it graphql mongo admin
+```
+
+##### 创建一个 admin 管理员账号
+```sql
+db.createUser({user: 'admin', pwd: 'admin123', roles:[{role: "userAdminAnyDatabase", db: "admin"}]});
+```
+
+##### 对 admin 用户 进行身份认证
+```sql
+db.auth('admin','admin123');
+```
+
+##### 切换到一个你要创建的数据库
+```sql
+use graphql
+```
+
+##### 新增一条数据
+```sql
+db.graphql.save({name: "第一条记录"})
+```
+
+##### 查看数据
+```sql
+db.graphql.find()
+```
+
+##### 查看数据库
+```sql
+show dbs
+```
+
+##### 创建用户、密码
+```sql
+db.createUser({user: 'test', pwd:'test123', roles:[{role:"readWrite", db:"graphql"}]});
+```
+
+##### 身份认证
+```sql
+db.auth('test', 'test123')
+```

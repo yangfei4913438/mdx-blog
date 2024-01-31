@@ -1,0 +1,53 @@
+---
+dir: 前端
+dirIndex: 1
+index: 11
+title: react-beautiful-dnd的基础使用
+description: React Beautiful DnD 是一个来自 Atlassian 的可访问的拖放库。如果您不知道 Atlassian，他们就是 Jira 背后的团队。如果您不熟悉 Jira，它可能是目前互联网上最大的敏捷工具。
+author: 杨飞
+tags: [前端, react, react-beautiful-dnd, 拖拽]
+date: 2021-06-16 15:23:57
+---
+
+## 一、react-beautiful-dnd 是什么？
+
+React Beautiful DnD 是一个来自 Atlassian 的可访问的拖放库。如果您不知道 Atlassian，他们就是 Jira 背后的团队。如果您不熟悉 Jira，它可能是目前互联网上最大的敏捷工具。
+
+
+## 二、和 react-dnd 有什么区别？
+
+- react-dnd 
+  
+是一个非常强大的拖拽库 支持各种自定义的拖拽方式，只不过配置有点复杂。
+
+- react-beautiful-dnd 
+
+是一个局限于垂直列和横向列的拖拽库，实现起来比较简单易用，而且几乎满足了绝大部分的应用场景。
+
+## 三、基础概念
+
+- DragDropContext
+  
+拖拽上下文组件。可拖拽的对象和可放置的对象，都要被这个组件包裹。
+
+- Draggable
+  
+可拖拽对象组件。元素被这个组件包裹之后，才可以被拖动。
+  
+- Droppable
+  
+可放置对象组件。如果要实现元素放置到这里，那么放置的DOM外层，一定要使用这个组件包裹。
+  
+> Tips: 和 **react-dnd** 相比，**react-beautiful-dnd** 不需要内部的connect包裹，当然了，相对应的是自定义能力弱了。
+
+## 三、安装
+
+- react-beautiful-dnd 值需要安装一个基础组件即可，无需安装多个依赖。
+
+```shell
+yarn add react-beautiful-dnd
+```
+
+## 四、应用
+
+- 为了更直观的展示，我提供了一个 [实现demo](https://codesandbox.io/s/react-beautiful-dnd-demo-1yjnn), 打开就可以看到了。

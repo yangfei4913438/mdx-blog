@@ -1,0 +1,64 @@
+---
+dir: docker
+dirIndex: 2
+index: 2
+title: docker快速创建并初始化mysql数据库
+description: docker快速创建并初始化mysql数据库
+author: 杨飞
+tags: [docker, mysql]
+date: 2021-06-09 10:50:32
+---
+
+> 如何使用docker快速创建一个可以使用的mysql数据库
+
+
+#### 说明
+> 我们的目的是如何快速使用，而不是部署一个生产项目。所以这里使用的都是默认配置。
+
+###### 安装镜像
+```shell
+docker pull mysql:latest
+```
+
+###### 查看拉取到的镜像
+```shell
+docker images
+```
+
+###### 删除不需要的镜像，后面直接跟镜像ID即可
+```shell
+docker image rm xxxx
+```
+
+###### 在后台运行起来
+```shell
+docker run --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --restart=always -d mysql:latest
+```
+
+###### 登录服务器（密码：root）
+```shell
+docker exec -it mysql8 /bin/bash
+mysql -u root -p
+```
+
+###### 检查访问权限
+```sql
+use mysql
+select user,host from user;
+```
+> 若权限不存在则设置：update user set host='%' where user='root';
+
+###### 设置密码
+```sql
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'admin';
+alter user 'root'@'%' identified with mysql_native_password BY 'admin';
+flush privileges;
+```
+
+###### 创建数据库和普通用户
+```sql
+create database graphql;
+create user test identified by 'test123';
+grant all privileges on graphql.* to 'test'@'%';
+flush privileges;
+```

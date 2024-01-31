@@ -1,0 +1,11 @@
+{
+  "copy": "复制",
+  "copy-successfully": "复制成功",
+  "updateTime": "最近更新:",
+
+  "welcome": "欢迎来到我的网站",
+  "author": {
+    "name": "作者是：<i>{{t}}</i>",
+    "time": "当前时间是 "
+  }
+}

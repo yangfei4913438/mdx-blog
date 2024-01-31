@@ -1,0 +1,122 @@
+---
+dir: 前端
+dirIndex: 1
+index: 6
+title: json-server的基础使用
+description: json-server 是一个模拟 restful 服务的js库，后台只是一个普通的json文件。
+author: 杨飞
+tags: [前端, restful, json-server, mock]
+date: 2021-06-22 13:57:21
+---
+
+## 什么是 json-server
+
+json-server 是一个模拟 restful 服务的js库，后台只是一个普通的json文件。
+
+它可以让前端能够方便的模拟后端的处理逻辑。如果是简单的业务逻辑，可以说 json-server 就直接等同于真实后端。
+
+<!-- more -->
+
+## 配置 json-server
+
+- 创建一个mock文件夹 /src/mock
+
+- 创建数据文件 /src/mock/data.json
+
+  ```json
+  {
+    "list": []
+  }
+  ```
+
+  > 这个list 就是服务的接口了。里面想要做任何的增删改查都通过这个接口处理。
+
+- 创建路由文件 /src/mock/routes.json
+
+  ```json
+  {
+    "/api/v1/*": "/$1"
+  }
+  ```
+
+  > 这个就是将所有以 /api/v1/* 开始的请求都转发到 * 这个路由上。
+  >
+  > 比如 /api/v1/list 就会转发到 /list 上
+
+- 配置启动脚本 package.json
+
+  ```json
+  {
+    "scripts": {
+      "start": "concurrently \"react-scripts start\"  \"yarn mock\" ",
+      "mock": "json-server --watch src/mock/data.json --routes src/mock/routes.json --port 5000 -d 20"
+    },
+    "proxy": "http://localhost:5000/"
+  }
+  ```
+
+  > ### 说明:
+  > #### 1、proxy
+  >   本地的请求，都代理到指定的url上，避免跨域问题。
+  > 
+  > #### 2、mock
+  >  ```shell
+  >    json-server 表示启动命令
+  >    --watch src/mock/data.json 表示使用 哪个文件作为数据文件提供服务
+  >    --routes src/mock/routes.json 表使用哪个文件，作为路由配置文件
+  >    --port 5000 表示端口号是5000
+  >    -d 20 表示响应时间最慢为20毫秒
+  >  ```
+  >
+  >  #### 3、start（当然了，你可以不修改，这个改动不是必须的）
+  >  ```shell
+  >    concurrently 一个可以并行执行指令的JS库
+  >    \\" ... \\" 外部有双引号，里面的就需要转义一下
+  >  ```
+
+
+## 支持的 restful 类型
+
+- get 请求数据
+
+- post 新增数据
+
+- patch  修改某条记录中的某个属性
+
+- put 直接替换某条记录
+
+- delete 删除某条记录
+
+
+## http 请求 demo
+
+```typescript
+// 外部封装了axios
+import axios from '../http';
+
+// 定义一个请求对象
+const todo = {
+  /**
+   * 获取todo列表数据
+   * */
+  getTodoItems: () => {
+    return axios.get('/list');
+  },
+  /**
+   * 新增一个todo
+   * */
+  postTodoItem: (item: ITodoItem) => {
+    return axios.post('/list', item);
+  },
+  /**
+   * 更新todo
+   * */
+  patchTodoItem: (id: string, key: string, value: any) => {
+    return axios.patch(`/list/${id}`, {
+      [key]: value,
+    });
+  },
+};
+
+export default todo;
+```
