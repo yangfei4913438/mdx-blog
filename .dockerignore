@@ -1,0 +1,24 @@
+# not include readme.md
+!README.md
+
+# ides
+.vscode
+.idea
+
+# mac
+.DS_Store
+
+# project
+.git
+.next
+node_modules
+.dockerignore
+.eslintignore
+.eslintrc.js
+.eslintrc.json
+.prettierrc.js
+.prettierrc
+.prettierignore
+components.json
+LICENSE
+

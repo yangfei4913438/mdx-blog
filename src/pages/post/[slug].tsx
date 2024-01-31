@@ -25,7 +25,6 @@ export const getStaticPaths = async (props: { locales: string[] }) => {
       paths.push({ params: { slug: post.split('.')[0] }, locale });
     });
   });
-  console.log('paths:', paths);
   return {
     paths,
     fallback: false,
