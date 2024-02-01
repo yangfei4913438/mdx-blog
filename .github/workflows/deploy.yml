@@ -25,4 +25,5 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
           SCRIPT_AFTER: |
+            chmod +x ./deploy.sh
             sh ./deploy.sh
