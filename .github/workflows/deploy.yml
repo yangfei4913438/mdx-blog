@@ -25,8 +25,4 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
           SCRIPT_AFTER: |
-            docker stop next-web
-            docker rm next-web
-            docker rmi next:main
-            docker build -t next:first .
-            docker run --name next-web -p 3000:3000 -d next:main
+            sh ./deploy.sh
