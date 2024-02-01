@@ -1,0 +1,31 @@
+name: deploy to ali cloud
+on:
+  pull_request: # 提交 pr 的时候触发
+    branches:
+      - main # 触发分支为 main 分支
+    paths:
+      - '.github/workflows/**'
+      - 'src/**'
+
+jobs:
+  push-to-ali-cloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 部署到阿里云服务器
+      - name: deploy
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-avzr --delete"
+          SOURCE: "./"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.REMOTE_TARGET }}
+          SCRIPT_AFTER: |
+            docker stop next-web
+            docker rm next-web
+            docker rmi next:main
+            docker build -t next:first .
+            docker run --name next-web -p 3000:3000 -d next:main
