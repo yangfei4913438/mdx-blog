@@ -1,6 +1,6 @@
 name: deploy to ali cloud
 on:
-  pull_request: # 提交 pr 的时候触发
+  pull_request: # 提交 pr 的时候触发部署
     branches:
       - main # 触发分支为 main 分支
     paths:
