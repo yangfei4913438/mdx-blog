@@ -1,0 +1,49 @@
+---
+dir: 前端
+dirIndex: 1
+index: 12
+title: github actions 配置
+description: github actions 配置
+author: 杨飞
+tags: [github, actions]
+date: 2024-02-1 17:48:48
+---
+
+#### 一、使用规定的方式创建公私钥（否则部署的时候，格式校验不通过）
+
+```shell
+ssh-keygen -t rsa -b 4096 -C "your@email.com"
+```
+
+- 如果之前有，根据提示，覆盖原来的就行了。
+
+- 如果遇到权限问题可以把公钥添加到authorized_keys文件里面
+
+  ```shell
+    cd ~/.ssh && cat id_rsa.pub >> authorized_keys
+  ```
+
+#### 二、检测服务器是否有rsync软件，没有使用yum安装一下即可。
+> 一般新服务器都有，不过执行一下这条命令，也没问题。
+
+```shell
+yum install rsync
+```
+
+#### 三、配置项目的 Actions secrets（其实就是action的变量）
+> 每个项目单独设置，secrets 名称和部署脚本内的一致即可。
+
+- 例子
+  > 上面四个变量，都是在action中用到的，所以名字要对应上，如果要改名字，需要一起改掉。
+
+  - SERVER_SSH_KEY_ALI  值就是上面**私钥的内容**
+  - REMOTE_USER_ALI     服务器的用户名，例如: root
+  - REMOTE_TARGET_ALI   就是部署的目录，例如: /var/www/build
+  - REMOTE_HOST_ALI     就是服务器的IP地址, 例如: 8.8.8.8
+
+#### 四、添加action文件
+
+这个就是根据 GitHub 的要求创建目录和文件，我这个项目的路径就是 `.github/workflows/deploy.yml`
+
+具体可以查看我的这个博客项目，[传送门](https://github.com/yangfei4913438/mdx-blog)
+
