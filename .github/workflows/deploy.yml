@@ -1,6 +1,7 @@
 name: deploy to ali cloud
+
 on:
-  pull_request: # 提交 pr 的时候触发部署
+  push: # 提交 pr 的时候触发部署
     branches:
       - main # 触发分支为 main 分支
     paths:
@@ -8,7 +9,7 @@ on:
       - 'src/**'
 
 jobs:
-  push-to-ali-cloud:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
