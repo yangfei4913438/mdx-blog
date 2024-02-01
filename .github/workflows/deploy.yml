@@ -27,3 +27,8 @@ jobs:
           SCRIPT_AFTER: |
             chmod +x ./deploy.sh
             sh ./deploy.sh
+
+      - name: run shell script
+        run: |
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'chmod +x ${{ secrets.REMOTE_TARGET }}/deploy.sh'
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} 'sh ${{ secrets.REMOTE_TARGET }}/deploy.sh'
