@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent, useEffect, useMemo } from 'react';
 import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { loadTranslations } from 'ni18n';
@@ -21,9 +21,23 @@ const Home = () => {
   // 获取博客数据
   const { postInfos } = usePostData();
 
+  const {
+    query: { key },
+  } = useRouter();
+
+  const list = useMemo(() => {
+    return key
+      ? postInfos.filter((item) => {
+          return [String(item.dir).toLowerCase(), String(item.subDir).toLowerCase()].includes(
+            String(key).toLowerCase()
+          );
+        })
+      : postInfos;
+  }, [key, postInfos]);
+
   return (
     <Layout>
-      {postInfos?.map((val, idx) => {
+      {list?.map((val, idx) => {
         return (
           <Card key={idx}>
             <div className='flex flex-col items-center py-4'>
@@ -38,7 +52,7 @@ const Home = () => {
                 <SeoLink
                   href={val.url}
                   self
-                  className='rounded px-4 py-2 outline outline-1 hover:shadow-md hover:shadow-gray-5'
+                  className='rounded border border-gray-3 px-4 py-2 shadow shadow-gray-2 hover:shadow-md hover:shadow-gray-5'
                 >
                   查看更多
                 </SeoLink>

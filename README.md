@@ -31,7 +31,7 @@ yarn run dev
 
 ## 技术选型
 
-### ui框架
+### 前端框架
 next 支持服务端渲染、混合渲染、客户端渲染，react生态第一选项。
 - 官网地址: https://nextjs.org/
 
