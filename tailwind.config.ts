@@ -143,37 +143,15 @@ const config: Config = {
         xl: '4rem',
       },
       screens: {
-        '2xl': '1400px',
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px',
       },
     },
     extend: {
       typography: (theme: any) => ({
-        white: {
-          css: {
-            h1: {
-              color: 'var(--white)',
-            },
-            h2: {
-              color: 'var(--white)',
-            },
-            h3: {
-              color: 'var(--white)',
-            },
-            h4: {
-              color: 'var(--white)',
-            },
-            p: {
-              color: 'var(--white)',
-            },
-            ul: {
-              color: 'var(--white)',
-            },
-            a: {
-              color: 'var(--white)',
-              textDecoration: 'none',
-            },
-          },
-        },
         DEFAULT: {
           css: {
             // 定义markdown内部的渲染样式
@@ -294,52 +272,20 @@ const config: Config = {
                 },
               },
             },
-            h1: {
-              fontFamily: 'DIN-bold',
-              textTransform: 'uppercase',
-            },
-            h2: {
-              fontFamily: 'DIN-medium',
-            },
             a: {
-              //fontWeight: 'normal',
+              fontWeight: 'normal',
               textDecoration: 'none',
             },
           },
         },
-        sm: {
-          css: {
-            a: {
-              fontWeight: 'normal',
-            },
-          },
-        },
-        lg: {
-          css: {
-            h1: {
-              textTransform: 'uppercase',
-            },
-          },
-        },
-        xl: {
-          css: {
-            h1: {
-              textTransform: 'uppercase',
-            },
-          },
-        },
       }),
-      screens: {
-        sm: '640px',
-        md: '768px',
-        lg: '1024px',
-        xl: '1280px',
-        '2xl': '1536px',
-      },
       fontSize: {
-        small: '12px',
+        sm: '12px',
         normal: '14px',
-        large: '18px',
+        md: '18px',
+        lg: '22px',
+        xl: '26px',
+        '2xl': '30px',
       },
       width: distance,
       minWidth: distance,

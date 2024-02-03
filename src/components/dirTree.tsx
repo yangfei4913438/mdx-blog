@@ -26,18 +26,18 @@ const DirTree = () => {
       {Object.entries(dirs).map(([dir, subDirs], idx) => {
         return (
           <div className={''} key={idx}>
-            <div className={'bg-gray-3 py-1 pl-8 font-bold hover:cursor-pointer '}>
+            <div className={'bg-gray-3 py-2 pl-8 font-bold hover:cursor-pointer lg:py-1 '}>
               <SeoLink href={`/?key=${dir}`} self>
-                <div className='w-full truncate'>{dir}</div>
+                <div className='w-full truncate capitalize'>{dir}</div>
               </SeoLink>
             </div>
             {subDirs
               .filter((item) => item.length)
               .map((sub) => {
                 return (
-                  <div className='py-0.5 pl-16 hover:cursor-pointer hover:bg-gray-1' key={sub}>
+                  <div className='py-2 pl-16  hover:cursor-pointer hover:bg-gray-1 lg:py-0.5' key={sub}>
                     <SeoLink href={`/?key=${sub}`} self>
-                      <div className='w-full truncate'>{sub}</div>
+                      <div className='w-full truncate capitalize'>{sub}</div>
                     </SeoLink>
                   </div>
                 );
