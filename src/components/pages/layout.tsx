@@ -68,7 +68,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                 <SheetOverlay>
                   <div className='absolute -top-2 bottom-0 left-0 right-0 bg-black-opacity-7' />
                 </SheetOverlay>
-                <SheetContent side='left' className='border-none bg-white shadow shadow-gray-5'>
+                <SheetContent side='left' className='overflow-scroll border-none bg-white shadow shadow-gray-5'>
                   <SheetTitle>博客导航</SheetTitle>
                   <div className='my-4 shadow shadow-gray-5'>
                     <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
