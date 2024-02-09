@@ -22,7 +22,7 @@ export const getStaticPaths = async (props: { locales: string[] }) => {
   locales.forEach((locale) => {
     const posts = getPostSlugList();
     posts.forEach((post) => {
-      const filename = post.split('.')[0];
+      const filename = post.split('.md')[0];
       const first_dir = filename.split('/')[0];
       const second_dir = filename.split('/')[1];
       const slug = filename.split('/')[2];
