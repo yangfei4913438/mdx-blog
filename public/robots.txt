@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.yangfei.wiki
+
+# Sitemaps
+Sitemap: https://www.yangfei.wiki/sitemap.xml

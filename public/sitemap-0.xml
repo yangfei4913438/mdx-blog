@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url><loc>https://www.yangfei.wiki</loc><lastmod>2024-02-09T03:25:00.778Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/about</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/tags</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/tags</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/about</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/DOM变化，如何避免页面的闪烁</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/antd组件库中，下拉框不跟随页面滚动的问题</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/docker快速创建并初始化mongodb数据库</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/docker快速创建并初始化mysql数据库</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/github actions配置</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/jest如何mock网络请求的数据返回</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/json-server的基础使用</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/js中的宏任务、微任务与Event-Loop</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/react-beautiful-dnd的基础使用</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/react-dnd的基础使用</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/react-dnd祖传代码兼容方案</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/react-hooks-传入子组件的数据不生效</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/react组件设计总结</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/前端测试，断言传入参数中的部分属性</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/如何在你的网站中使用自定义字体</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/快速排序</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/post/阿里云OSS作为博客图床</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/DOM变化，如何避免页面的闪烁</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/antd组件库中，下拉框不跟随页面滚动的问题</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/docker快速创建并初始化mongodb数据库</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/docker快速创建并初始化mysql数据库</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/github actions配置</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/jest如何mock网络请求的数据返回</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/json-server的基础使用</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/js中的宏任务、微任务与Event-Loop</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/react-beautiful-dnd的基础使用</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/react-dnd的基础使用</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/react-dnd祖传代码兼容方案</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/react-hooks-传入子组件的数据不生效</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/react组件设计总结</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/前端测试，断言传入参数中的部分属性</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/如何在你的网站中使用自定义字体</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/快速排序</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.yangfei.wiki/en/post/阿里云OSS作为博客图床</loc><lastmod>2024-02-09T03:25:00.779Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+</urlset>
