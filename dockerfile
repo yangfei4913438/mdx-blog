@@ -1,9 +1,6 @@
 # build stage
 FROM node:lts-alpine as build-stage
 
-# Install git
-RUN apk add --no-cache git
-
 WORKDIR /temp
 
 # Copying package files and installing dependencies
