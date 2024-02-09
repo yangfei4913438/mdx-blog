@@ -21,7 +21,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
       {percent === 0 ? (
         <span className='bg-gray-800 sticky top-0 z-40 h-1 w-screen' />
       ) : (
-        <Progress value={percent} className='sticky top-0 z-40 h-1 w-screen bg-[#eee]' />
+        <Progress value={percent} className='sticky top-0 z-40 hidden h-1 w-screen bg-[#eee] lg:block' />
       )}
 
       <section className='top-0 z-0 w-full px-4 xl:px-[12%] 2xl:px-[16%]'>
@@ -59,7 +59,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
             </Tabs>
           </aside>
 
-          <header className='lg:hidden'>
+          <header className='sticky top-0 z-40 lg:hidden'>
             <div className='relative mb-2.5 flex items-center  justify-between space-y-2  bg-[#222] p-8 text-center text-white shadow shadow-gray-5'>
               <Sheet>
                 <SheetTrigger>
