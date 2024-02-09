@@ -19,17 +19,3 @@ interface IPost {
   postInfos: IPostInfo[];
   tags: { [key: string]: number };
 }
-
-interface ISideBar {
-  dirIndex: string;
-  dir: string;
-  children: {
-    subDirIndex: string;
-    subDir: string;
-    children: IPostInfo[];
-  }[];
-}
-
-interface GlobalStore {
-  alert: boolean;
-}

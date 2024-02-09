@@ -1,10 +1,10 @@
 import 'prism-themes/themes/prism-xonokai.min.css';
 import { MDXProvider } from '@mdx-js/react';
 import { MDXRemote } from 'next-mdx-remote';
-import { getSideBarInfos, getPostBySlug, getPostSlugList } from '@/core/api';
+import { getPostBySlug, getPostSlugList } from '@/core/api';
 import { GetStaticProps, NextPage } from 'next';
 import { loadTranslations } from 'ni18n';
-import { ni18nConfig } from '../../../ni18n.config';
+import { ni18nConfig } from '../../../../../ni18n.config';
 import PageHeader from '@/components/pages/header';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { components } from '@/components/markdown';
 import Layout from '@/components/pages/layout';
 
 interface Path {
-  params: { slug: string };
+  params: { first_dir: string; second_dir: string; slug: string };
   locale: string;
 }
 // 生成静态路由表
@@ -22,7 +22,11 @@ export const getStaticPaths = async (props: { locales: string[] }) => {
   locales.forEach((locale) => {
     const posts = getPostSlugList();
     posts.forEach((post) => {
-      paths.push({ params: { slug: post.split('.')[0] }, locale });
+      const filename = post.split('.')[0];
+      const first_dir = filename.split('/')[0];
+      const second_dir = filename.split('/')[1];
+      const slug = filename.split('/')[2];
+      paths.push({ params: { first_dir, second_dir, slug }, locale });
     });
   });
   return {
@@ -32,8 +36,6 @@ export const getStaticPaths = async (props: { locales: string[] }) => {
 };
 
 interface IPost {
-  dirIndex: number;
-  subDirIndex: number;
   index: number;
   dir: string;
   subDir: string;
@@ -47,30 +49,25 @@ interface IPost {
 
 interface IProps {
   post: IPost;
-  sideBarInfos: ISideBar[];
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
   // 文章数据
-  let post: any = undefined;
+  let post: any = null;
   if (params && params?.slug) {
-    post = await getPostBySlug(locale, params.slug);
+    post = await getPostBySlug(locale, params.first_dir, params.second_dir, params.slug);
   }
 
-  // 侧边栏数据
-  const sideBarInfos = getSideBarInfos(locale);
   return {
     props: {
       // 写上用到的翻译文件命名空间，否则翻译内容不会在服务端渲染。
       ...(await loadTranslations(ni18nConfig, locale, ['common'])),
       post,
-      // 整理数据，生成侧边栏需要的二维数组
-      sideBarInfos,
     },
   };
 };
 
-const PostItem: FC<NextPage & IProps> = ({ post, sideBarInfos }) => {
+const PostItem: FC<NextPage & IProps> = ({ post }) => {
   const { t: global } = useTranslation('common');
 
   return (

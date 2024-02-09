@@ -1,9 +1,5 @@
 ---
-dir: 前端
-dirIndex: 1
-subDir: js
-subDirIndex: 1
-index: 2
+index: 0
 title: js中的宏任务、微任务与Event-Loop
 description: js中的宏任务、微任务与Event-Loop
 author: 杨飞
