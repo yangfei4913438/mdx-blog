@@ -29,7 +29,6 @@ export function getPostSlugList() {
 // 返回给摘要的数据（一般用于目录类的场景）
 export function getPostSummaryBySlug(locale, slug) {
   const postPath = path.join(postDirectory, slug);
-  const postTime = fs.statSync(postPath);
   const fileContent = fs.readFileSync(postPath, 'utf-8');
   const { data, content } = matter(fileContent, {
     engines: {
@@ -48,7 +47,7 @@ export function getPostSummaryBySlug(locale, slug) {
     subDir: subDir ?? '', // 二级目录，不存在就是空字符串
     subDirIndex: dirOrderConfig[dir].children[subDir] ?? 0,
     title: data.title, // 标题
-    date: dayjs(postTime.mtime).format('YYYY-MM-DD HH:mm:ss'), // 最近更新时间
+    date: dayjs(data.date).format('YYYY-MM-DD HH:mm:ss'), // 最近更新时间
     description: data.description, // 描述
     tags: data.tags, // 关键字
     slug: filename, // 路径名称
@@ -81,7 +80,6 @@ export async function getPostBySlug(locale, first_dir, second_dir, slug) {
     postPath = path.join(postDirectory, first_dir, second_dir, slug + '.md');
   }
 
-  const postTime = fs.statSync(postPath);
   const fileContent = fs.readFileSync(postPath, 'utf-8');
   const { data, content } = matter(fileContent, {
     engines: {
@@ -93,7 +91,7 @@ export async function getPostBySlug(locale, first_dir, second_dir, slug) {
     dir: first_dir, // 目录
     subDir: second_dir, // 二级目录
     title: data.title, // 标题
-    date: dayjs(postTime.mtime).format('YYYY-MM-DD HH:mm:ss'), // 最近更新时间
+    date: dayjs(data.date).format('YYYY-MM-DD HH:mm:ss'), // 最近更新时间
     description: data.description, // 描述
     tags: data.tags, // 关键字
     // 正文
