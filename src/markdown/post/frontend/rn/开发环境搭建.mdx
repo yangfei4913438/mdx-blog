@@ -54,6 +54,22 @@ sudo gem install cocoapods
 -   安装node
 
 直接官网下载即可, 18版本以上。或者brew安装 `brew install watchman`
+
+> 注意：
+> node21版本在运行 Android 的时候会出现异常`punycode module is deprecated`，所以需要安装 20版本的 node.
+```shell
+ brew install node@20
+
+ # 安装完成后会提示你执行下面的 shell
+ echo 'export PATH="/opt/homebrew/opt/node@20/bin:$PATH"' >> ~/.zshrc
+
+ # 立刻生效
+ source  ~/.zshrc
+
+ # 查看版本
+ node -v
+```
+
 -   安装 watchman
 
 ```bash
