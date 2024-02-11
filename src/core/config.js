@@ -6,12 +6,13 @@ const dirOrderConfig = {
     index: 0,
     // 这里的 children 表示下级目录，需要根据这个属性查询下级目录，下同
     children: {
-      antd: 0, // 下级目录的名称和排序，下同
-      dom: 1,
-      test: 2,
-      js: 3,
-      css: 4,
-      react: 6,
+      react: 0, // 下级目录的名称和排序，下同
+      rn: 1,
+      js: 2,
+      css: 3,
+      dom: 4,
+      test: 5,
+      antd: 6,
     },
   },
   linux: {

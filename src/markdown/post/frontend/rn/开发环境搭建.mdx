@@ -1,0 +1,110 @@
+---
+index: 0
+title: 搭建 React Native 的开发环境
+description: 如何搭建一个 React Native 的开发环境
+author: 杨飞
+tags: [前端, react, react native]
+date: 2024-02-10 14:00:00
+---
+
+> 📌如果你发现模拟器中的app交互不正常，请直接卸载，重新安装即可。
+
+#### 一、安装软件管理包
+
+-   安装macports(inter芯片的机器需要安装这个)
+
+[https://www.macports.org/install.php](https://www.macports.org/install.php "https://www.macports.org/install.php") 直接下载操作系统对应的安装包。
+
+#### 二、安装 ios环境
+
+-   安装 xcode
+
+应用市场安装即可。
+-   安装 CocoaPods
+> 最新的rn已经修复了需要特定ruby版本的bug, 系统默认的版本也可以，直接gem安装就可以了。
+
+```python
+# 安装 GPG keys（如果你没有gpg2软件，不执行这一步也可以的。）
+gpg2 --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+
+# 安装rvm（官网 https://rvm.io/ ）
+curl -sSL https://get.rvm.io | bash -s stable
+
+# 重载生效
+source .zshrc
+
+# 安装ruby2.7.6, 当前版本的rn是需要这个这个版本的ruby, 后续看安装的时候报什么错误，一般会告诉你 gemfile 指定的版本，安装那个版本就行了。
+rvm install 2.7.6
+
+# 重新开一个窗口
+
+# 设置为默认版本
+rvm use 2.7.6 --default
+
+# 配置镜像
+echo "ruby_url=https://cache.ruby-china.com/pub/ruby" > ~/.rvm/user/db
+
+# 再安装 CocoaPods
+sudo gem install cocoapods
+
+```
+
+#### 三、JS运行环境
+
+-   安装node
+
+直接官网下载即可, 18版本以上。或者brew安装 `brew install watchman`
+-   安装 watchman
+
+```bash
+# watchman 用于监控react文件
+sudo port install watchman
+
+# arm芯片的直接用brew安装
+brew install watchman
+
+```
+
+#### 四、安卓运行环境
+
+-   安装jdk，官网下载。(如果是通过jetbrains工具箱安装的Android Studio，不需要安装这个)
+
+[https://www.oracle.com/java/technologies/downloads/#java11-mac](https://www.oracle.com/java/technologies/downloads/#java11-mac "https://www.oracle.com/java/technologies/downloads/#java11-mac")  &#x20;
+-   安装 Android Studio
+-   官网下载:
+-   [https://developer.android.com/studio](https://developer.android.com/studio "https://developer.android.com/studio")
+-   [https://developer.android.google.cn/studio](https://developer.android.google.cn/studio "https://developer.android.google.cn/studio")
+-   【推荐】通过jetbrains工具箱下载
+-   [https://www.jetbrains.com/toolbox-app/](https://www.jetbrains.com/toolbox-app/ "https://www.jetbrains.com/toolbox-app/")
+-   配置sdk和 tools
+
+sdk 选最新的2个版本即可。如果是m1的电脑，需要安装特定版本的sdk(一般来说选最新的).
+
+工具选：
+-   Android SDK Build-Tools（标准配置会选中）
+-   Android SDK Command-line Tools
+-   CMake
+-   Android Emulator（标准配置会选中）
+-   Android SDK Platform-Tools（标准配置会选中）
+-   配置环境变量
+
+vi .zshrc
+```bash
+# 如果你不是通过Android Studio安装的安卓sdk，则其路径可能不同，请自行确定清楚。
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+    ```
+-   重载生效
+```typescript
+source .zshrc
+    ```
+-   创建虚拟设备
+
+选择一个你喜欢的安卓系统下载就行了。入口是 虚拟设备管理，点创建虚拟设备就行了。
+
+选Phone > Pixel6 > next > s 或者 sv2都行
+
+**注意：m1芯片需要找一个新一点的系统，否则可能有兼容性问题。**
