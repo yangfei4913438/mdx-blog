@@ -254,6 +254,8 @@ const config: Config = {
                 },
               },
               code: {
+                maxWidth: '100%',
+                wordWrap: 'break-word',
                 display: 'inline-block',
                 backgroundColor: '#e0e0e0',
                 color: 'var(--primary)',
