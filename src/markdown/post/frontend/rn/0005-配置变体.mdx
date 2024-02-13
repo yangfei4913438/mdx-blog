@@ -7,9 +7,11 @@ tags: [前端, react, react native, android]
 date: 2024-02-13 21:00:00
 ---
 
-### 一、移除默认的 app 名称
+### 示例: 指定新的 app 名称
 
-- 1、`android/app/src/main/res/values/strings.xml`
+#### 一、移除默认的 app 名称
+
+- 编辑文件 `android/app/src/main/res/values/strings.xml`
 
 ```xml
 <resources>
@@ -17,7 +19,9 @@ date: 2024-02-13 21:00:00
 </resources>
 ```
 
-- 2、`android/app/build.gradle`
+#### 二、修改构建配置文件
+
+- 编辑文件 `android/app/build.gradle`
 
 ```gradle
 signingConfigs {
@@ -40,8 +44,6 @@ buildTypes {
         signingConfig signingConfigs.debug
     }
     release {
-        // Caution! In production, you need to generate your own keystore file.
-        // see https://reactnative.dev/docs/signed-apk-android.
         signingConfig signingConfigs.debug
         minifyEnabled enableProguardInReleaseBuilds
         proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -66,18 +68,21 @@ productFlavors {
 }
 ```
 
-### 二、添加构建指令
+#### 三、添加构建指令
 
-```
+- 编辑文件 `package.json`
+
+```gradle
 {
-  script: {
+  scripts: {
     "android": "react-native run-android", // 添加 productFlavors 配置后，当前脚本会无法执行，必须加上 --mode 参数。
     "android_dev_debug": "react-native run-android --mode=devDebug",  // 两个关键字搭配使用，使用驼峰的写法。
     "android_prd_debug": "react-native run-android --mode=prdDebug",
+    ...
   }
 }
 ```
 
-### 三、参考
+### 参考
 
 - 1、 [安卓官方链接](https://developer.android.com/build/build-variants?spm=wolai.workspace.0.0.33df49adTe3ySV&hl=zh-cn#product-flavors)
