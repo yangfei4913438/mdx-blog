@@ -10,6 +10,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { components } from '@/components/markdown';
 import Layout from '@/components/pages/layout';
+import SeoLink from '@/components/link';
+import { Home } from 'lucide-react';
 
 interface Path {
   params: { first_dir: string; second_dir: string; slug: string };
@@ -49,6 +51,8 @@ interface IPost {
 
 interface IProps {
   post: IPost;
+  first_dir: string;
+  second_dir: string;
 }
 
 export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
@@ -62,12 +66,14 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
     props: {
       // 写上用到的翻译文件命名空间，否则翻译内容不会在服务端渲染。
       ...(await loadTranslations(ni18nConfig, locale, ['common'])),
+      first_dir: params?.first_dir ?? '',
+      second_dir: params?.second_dir ?? '',
       post,
     },
   };
 };
 
-const PostItem: FC<NextPage & IProps> = ({ post }) => {
+const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
   const { t: global } = useTranslation('common');
 
   return (
@@ -79,15 +85,32 @@ const PostItem: FC<NextPage & IProps> = ({ post }) => {
         </PageHeader>
 
         <section className='prose max-w-none bg-white px-[5%] py-12 shadow shadow-gray-5'>
-          <div className='space-y-2'>
-            <h2 className='!my-0 text-3xl font-bold dark:text-white'>{post.title}</h2>
-            <p className='text-base text-gray-5 hover:border-gray-7'>
-              {global('updateTime')} {post.date}
-            </p>
+          <div className='space-y-0'>
+            <div className='flex items-center gap-2 text-base'>
+              <div className='flex items-baseline'>
+                <div className='mr-1'>
+                  <Home size='20px' className='-mb-[2px]' />
+                </div>
+                <SeoLink href={`/?key=${first_dir}`} className='text-base font-bold capitalize text-gray-8' self>
+                  {first_dir}
+                </SeoLink>
+                <div className='mx-1 text-gray-5'>/</div>
+                <SeoLink href={`/?key=${second_dir}`} className='text-base font-bold capitalize text-gray-8' self>
+                  {second_dir}
+                </SeoLink>
+              </div>
+            </div>
+            <h2 className='!my-0 !mt-2 border-t border-t-gray-3 pt-2 text-3xl font-bold dark:text-white'>
+              {post.title}
+            </h2>
           </div>
           <article className='markdown-area'>
             <MDXRemote {...post.content} components={components} />
           </article>
+          <hr className='mb-4 mt-8 text-gray-5' />
+          <p className='border-gray-7'>
+            {global('updateTime')} {post.date}
+          </p>
         </section>
       </MDXProvider>
     </Layout>

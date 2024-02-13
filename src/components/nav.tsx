@@ -10,28 +10,28 @@ const Nav = () => {
   return (
     <div className='shadow shadow-gray-5'>
       <div className='-mt-1 flex flex-col items-center justify-center space-y-2 bg-[#222] py-6 text-center'>
-        <div className='text-[22px] font-bold text-white'>杨飞的博客</div>
-        <div className='text-sm text-white'>全是干货的技术博客</div>
+        <div className='text-lg font-bold text-white'>杨飞的博客</div>
+        <div className='text-normal text-white'>全是干货的技术博客</div>
       </div>
       <div className='flex w-full flex-col items-start bg-white px-4 py-4'>
         <Button variant='ghost' className='w-full justify-start text-base text-gray-9 hover:bg-gray-1'>
-          <SeoLink className='mr-5 flex w-full items-center justify-start text-sm font-medium' href='/' self>
+          <SeoLink className='mr-5 flex w-full items-center justify-start font-medium' href='/' self>
             <Home className='mr-1 h-4 w-4' /> 首页
           </SeoLink>
         </Button>
         <Button variant='ghost' className='w-full justify-start text-base text-gray-9 hover:bg-gray-1'>
-          <SeoLink className='mr-5 flex w-full items-center justify-start text-sm font-medium' href='/tags' self>
+          <SeoLink className='mr-5 flex w-full items-center justify-start font-medium' href='/tags' self>
             <Tags className='mr-1 h-4 w-4' /> 标签
           </SeoLink>
           <div className='rounded-xl bg-gray-3 px-1 py-1 text-xs text-gray-8'>{tagKeys}</div>
         </Button>
         <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
-          <SeoLink className='mr-5 flex w-full items-center justify-start text-sm font-medium' href='/about' self>
+          <SeoLink className='mr-5 flex w-full items-center justify-start font-medium' href='/about' self>
             <User className='mr-1 h-4 w-4' /> 关于
           </SeoLink>
         </Button>
         <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
-          <div className='mr-5 flex w-full items-center justify-start text-sm font-medium'>
+          <div className='mr-5 flex w-full items-center justify-start font-medium'>
             <Search className='mr-1 h-4 w-4' />
             <span>搜索</span>
           </div>
