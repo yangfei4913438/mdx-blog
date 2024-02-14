@@ -8,11 +8,11 @@ date: 2021-03-14 17:08:56
 ---
 
 > react hooks 在编写的时候，偶尔会遇到外部传入的修改，在子组件中，怎么都不生效，但是，各种调试也没有发现什么有问题的地方，无比的抓狂。
-> 
+>
 > 难不成见鬼了?
-> 
+>
 > 这到底是怎么回事呢？
-> 
+>
 > 今天，我们来说说这个，传入数据不生效的问题。
 
 
@@ -23,16 +23,16 @@ date: 2021-03-14 17:08:56
 ```javascript
 const SayThat = (props) => {
   const {prefix, name, setSay} = props;
-  
+
   const changeSay = useCallBack((hi) => {
     setSay(`${prefix}: ${hi}`)
   }, [prefix])
-  
+
   const changeObj = useCallBack((obj) => {
     const hi = `My ${name} likes his ${obj} very much!`;
     changeSay(hi);
   }, [name])
-  
+
   return (
     <div>
       物品选项下拉框代码
@@ -42,37 +42,37 @@ const SayThat = (props) => {
 ```
 
 > 上面的代码有什么问题呢？
-> 
+>
 > 大家仔细想想看。
-> 
+>
 > 上面的代码，咋一看是没有什么问题的。
-> 
+>
 > 但是，当你运行代码后一定会发现，如果在外部修改了 prefix，你这里的设置，会一直重置这个 prefix。
-> 
+>
 > 无比的头痛。不知道哪里出了问题。调试也没有发现什么明细的 BUG。
-> 
+>
 > 其实这里的问题，原因是对 hooks 的理解有了一些偏差导致了。
-> 
+>
 > 代码中 changeObj 方法在调用 changeSay 方法的时候，没有监听 changeSay 方法的依赖 prefix 的变化。
-> 
+>
 > 所以，无论你怎么去调试代码，都找不到到底是哪里错了。
-> 
+>
 
 下面是正确的代码
 
 ```javascript
 const SayThat = (props) => {
   const {prefix, name, setSay} = props;
-  
+
   const changeSay = useCallBack((hi) => {
     setSay(`${prefix}: ${hi}`)
   }, [prefix])
-  
+
   const changeObj = useCallBack((obj) => {
     const hi = `My ${name} likes his ${obj} very much!`;
     changeSay(hi);
   }, [name, prefix])
-  
+
   return (
     <div>
       物品选项下拉框代码
