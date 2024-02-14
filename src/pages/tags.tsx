@@ -2,9 +2,11 @@ import Layout from '@/components/pages/layout';
 import type { GetStaticProps } from 'next';
 import { loadTranslations } from 'ni18n';
 import { ni18nConfig } from '../../ni18n.config';
-import usePostListData from '@/hooks/usePostListData';
-import { useState } from 'react';
 import { usePostData } from '@/store/hooks';
+
+import dynamic from 'next/dynamic';
+
+const WordCloud = dynamic(() => import('@/components/Echarts/wordcloud'), { ssr: false });
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
@@ -14,22 +16,13 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 
 const Tags = () => {
   // 获取博客数据
-  const { tags } = usePostData();
+  const { wordcloud } = usePostData();
 
   return (
     <Layout>
-      <div className='min-h-full w-full space-y-8 bg-white px-8 py-4 shadow shadow-gray-5'>
-        <div className='text-center text-2xl font-bold'>标签统计</div>
-        <div className='flex flex-wrap gap-4'>
-          {tags &&
-            Object.entries(tags).map(([k, v]) => {
-              return (
-                <div key={k} className='text-xl'>
-                  {k}({v as number})
-                </div>
-              );
-            })}
-        </div>
+      <div className='w-full bg-white py-4 shadow shadow-gray-5'>
+        <div className='text-center text-2xl font-bold'>标签词云</div>
+        <WordCloud data={wordcloud} className='h-[500px]' />
       </div>
     </Layout>
   );

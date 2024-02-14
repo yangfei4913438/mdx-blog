@@ -18,6 +18,7 @@ const usePostData = () => {
   return {
     postInfos,
     tags,
+    wordcloud: Object.entries(tags).map(([k, v]) => ({ name: String(k).toUpperCase(), value: v })),
     logs: postInfos.length,
     tagKeys: Object.keys(tags).length,
     setPostInfos,
