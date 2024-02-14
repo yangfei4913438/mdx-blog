@@ -1,0 +1,78 @@
+---
+index: 6
+title: 配置Tailwind支持
+description: 这篇文章介绍，如何让 React Native 项目，支持 tailwindcss.
+author: 杨飞
+tags: [前端, react, react native, android，tailwindcss]
+date: 2024-02-15 02:00:00
+---
+
+> 注意: 目前 tailwindcss 只能使用 3.3.2 版本，其他版本可能会引起打包异常。
+
+### 安装依赖
+
+```shell
+yarn add nativewind classnames
+yarn add --dev tailwindcss@3.3.2
+```
+
+### 配置 tailwind
+
+- 创建配置文件
+
+  ```shell
+  npx tailwindcss init
+  ```
+
+- 编辑配置文件`tailwind.config.js`
+
+  ```javascript
+  /** @type {import('tailwindcss').Config} */
+  module.exports = {
+    content: ['./App.{js,jsx,ts,tsx}', './src/**/*.@(js|jsx|ts|tsx|html)'],
+    theme: {
+      extend: {},
+    },
+    plugins: [],
+  };
+  ```
+
+- 添加 Babel 插件`babel.config.js`
+
+  ```javascript
+  module.exports = {
+    presets: ['module:@react-native/babel-preset'],
+    plugins: ['nativewind/babel'],
+  };
+  ```
+
+- 声明类型文件 `nativewind-env.d.ts`
+
+  ```typescript
+  /// <reference types="nativewind/types" />
+  ```
+
+### 查看效果
+
+- 编辑 app 文件 `App.tsx`
+
+  ```javascript
+  import React from 'react';
+  import { Text, View } from 'react-native';
+
+  function App(): React.JSX.Element {
+    return (
+      <View className='mt-8 bg-red-500 px-2'>
+        <Text className='text-2xl text-black dark:text-white'>Hello World</Text>
+      </View>
+    );
+  }
+
+  export default App;
+  ```
+
+- 运行构建命令
+
+  ```shell
+  yarn run android_dev_debug
+  ```
