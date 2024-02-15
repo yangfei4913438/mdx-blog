@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 // 滚动条不隐藏
 .x-scrollbar {
   &::-webkit-scrollbar {

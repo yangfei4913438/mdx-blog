@@ -33,6 +33,18 @@
 
 @tailwind base;
 @layer base {
+  #__next {
+    font-size: 1rem;
+    line-height: 1.75;
+    text-rendering: optimizeLegibility;
+  }
+  #__next:lang(zh) {
+    font-family: var(--font-zh-cn);
+  }
+  #__next:lang(en) {
+    font-family: var(--font-en-us);
+  }
+
   /* 懒加载的前提，默认不能加载背景图片 */
   .lazy {
     background-image: none !important;
@@ -45,6 +57,9 @@
       &::after, &::before {
         content: none;
       }
+    }
+    a {
+      @apply font-bold no-underline;
     }
     ul {
       list-style-type: decimal;
@@ -64,8 +79,14 @@
       margin-top: 0.5em;
       margin-bottom: 0.5em;
     }
+    pre {
+      @apply shadow shadow-gray-5;
+    }
     blockquote {
-      margin: 8px 0 0;
+      @apply my-2 mx-0 py-2 px-3 bg-gray-05;
+      @apply rounded rounded-l-none shadow shadow-gray-5;
+      @apply border-l-8 border-solid border-l-gray-8 ;
+      @apply font-normal not-italic;
       p {
         margin: 0;
         &::before, &::after {

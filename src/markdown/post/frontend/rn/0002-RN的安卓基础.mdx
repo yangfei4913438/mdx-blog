@@ -8,75 +8,73 @@ date: 2024-02-11 19:00:00
 ---
 
 ### 一、打开手机的usb调试模式。
+  > 示例: 小米手机开启开发者选项
+  1. 首先点击进入小米手机的“设置”程序。
+  2. 然后点击进入“我的设备”设置选项。
+  3. 再点击进入“全部参数”页面。
+  4. 这时连续点击MIUI版本号7次。
+  5. 直到手机屏幕提示已经处于开发者模式即可停止点击。
 
-- 小米手机开启开发者选项
-
-1. 首先点击进入小米手机的“设置”程序。
-2. 然后点击进入“我的设备”设置选项。
-3. 再点击进入“全部参数”页面。
-4. 这时连续点击MIUI版本号7次。
-5. 直到手机屏幕提示已经处于开发者模式即可停止点击。
-
-开启开发者选项之后，就可以在更多设置的二级菜单中，找到开发者选项入口。下拉找到usb调试开关。
+  开启开发者选项之后，就可以在更多设置的二级菜单中，找到开发者选项入口。下拉找到usb调试开关。
 
 ### 二、查看连接的安卓设备（USB调试）
 
-> 注意：真机调试，需要运行 yarn run start --reset-cache , 然后adb命令映射手机端口到电脑上。下同。
+  > 注意：真机调试，需要运行 yarn run start --reset-cache , 然后adb命令映射手机端口到电脑上。下同。
 
-- 有连接安卓设备的情况（打开usb调试模式）
+  - 有连接安卓设备的情况（打开usb调试模式）
 
-```shell
-$ adb devices
-List of devices attached # 这里有一个设备
-872e4a37  device
-```
+    ```shell
+    $ adb devices
+    List of devices attached # 这里有一个设备
+    872e4a37  device
+    ```
 
-- 没有连接安卓设备的情况（关闭usb调试模式）
+  - 没有连接安卓设备的情况（关闭usb调试模式）
 
-```shell
-$ adb devices
-List of devices attached # 什么都看不到
-```
+    ```shell
+    $ adb devices
+    List of devices attached # 什么都看不到
+    ```
 
 ### 三、查看连接的安卓设备（无线调试）
 
-- 连接安卓设备
+  - 连接安卓设备
 
-> 每个手机的无线调试都不一样，具体看手机上的提示。也是在开发者选项中看的。
+    > 每个手机的无线调试都不一样，具体看手机上的提示。也是在开发者选项中看的。
 
-```shell
-$ adb connect 192.168.50.67:38123 # 这个端口是随机生成的，具体看每个手机系统的配置(无线调试里面可以看到)
-connected to 192.168.50.67:38123
-```
+    ```shell
+    $ adb connect 192.168.50.67:38123 # 这个端口是随机生成的，具体看每个手机系统的配置(无线调试里面可以看到)
+    connected to 192.168.50.67:38123
+    ```
 
-- pc有连接安卓设备的情况（打开无线调试模式）
+  - pc有连接安卓设备的情况（打开无线调试模式）
 
-```shell
-$ adb devices
-List of devices attached # 这里有一个设备
-192.168.50.67:38123  device
-```
+    ```shell
+    $ adb devices
+    List of devices attached # 这里有一个设备
+    192.168.50.67:38123  device
+    ```
 
-- 没有连接安卓设备的情况（关闭无线调试模式）
+  - 没有连接安卓设备的情况（关闭无线调试模式）
 
-```shell
-$ adb devices
-List of devices attached # 提示离线
-192.168.50.67:38123  offline
-```
+    ```shell
+    $ adb devices
+    List of devices attached # 提示离线
+    192.168.50.67:38123  offline
+    ```
 
-- 断开无线连接的安卓设备
+  - 断开无线连接的安卓设备
 
-```shell
-$ adb disconnect 192.168.50.67:38123
-disconnected 192.168.50.67:38123
-```
+    ```shell
+    $ adb disconnect 192.168.50.67:38123
+    disconnected 192.168.50.67:38123
+    ```
 
-- 没有连接安卓设备的情况
+  - 没有连接安卓设备的情况
 
-> 离线一段时间后，自动就没了。如果是主动断开，那么立刻就会消失。
+    > 离线一段时间后，自动就没了。如果是主动断开，那么立刻就会消失。
 
-```shell
-$ adb devices
-List of devices attached # 什么都看不到
-```
+    ```shell
+    $ adb devices
+    List of devices attached # 什么都看不到
+    ```
