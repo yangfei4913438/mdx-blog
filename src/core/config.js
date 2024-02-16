@@ -32,6 +32,9 @@ const dirOrderConfig = {
   },
 };
 
+// 限制api访问来源
+export const allowedHosts = ['www.yangfei.wiki', process.env.NODE_ENV === 'development' && 'localhost:3000'];
+
 // 目前没有支持三级目录
 // 新增目录需要再这里增加配置
 export default dirOrderConfig;
