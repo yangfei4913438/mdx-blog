@@ -2,14 +2,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { getPostList } from '@/core/api';
-import { allowedHosts } from '@/core/config';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<IPostInfo[] | { error: string }>) {
   // 取出参数
   const { lang, key } = req.query;
-  const host = req.headers.host ?? '';
+  const check = req.headers['sec-fetch-site'] ?? '';
 
-  if (!allowedHosts.includes(host)) {
+  // 只允许同源访问
+  if (check !== 'same-origin') {
     res.status(403).json({ error: '拒绝访问' });
   }
 
