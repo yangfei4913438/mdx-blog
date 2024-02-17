@@ -32,8 +32,8 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 const About = ({ mdxData }: any) => {
   return (
     <Layout>
-      <div className='space-y-2 bg-white p-8 shadow shadow-gray-5'>
-        <article className='prose max-w-none'>
+      <div className='prose max-w-none space-y-2 bg-white p-8 shadow shadow-gray-5'>
+        <article className='markdown-area'>
           <MDXRemote {...mdxData} components={components} />
         </article>
       </div>
