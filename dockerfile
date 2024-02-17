@@ -4,14 +4,13 @@ FROM node:lts-alpine as build-stage
 WORKDIR /temp
 
 # Copying package files and installing dependencies
-COPY package.json yarn.lock .
-RUN yarn config set registry https://registry.npmmirror.com/ && \
-    yarn install --frozen-lockfile && \
-    yarn cache clean
+COPY package.json package-lock.json .
+RUN npm install --registry=https://registry.npmmirror.com/ --frozen-lockfile && \
+    npm cache clean --force
 
 # Copying source files and building the application
 COPY . .
-RUN yarn build
+RUN npm run build
 
 # production stage
 FROM node:lts-alpine as production-stage
@@ -24,16 +23,15 @@ COPY --from=build-stage /temp/public ./public
 COPY --from=build-stage /temp/.next ./.next
 COPY --from=build-stage /temp/src/markdown ./src/markdown
 COPY --from=build-stage /temp/package.json ./package.json
-COPY --from=build-stage /temp/yarn.lock ./yarn.lock
+COPY --from=build-stage /temp/package-lock.json ./package-lock.json
 COPY --from=build-stage /temp/project.config.js ./project.config.js
 
 # Installing only production dependencies
-RUN yarn config set registry https://registry.npmmirror.com/  && \
-    yarn install --production --frozen-lockfile  && \
-    yarn cache clean
+RUN npm install --registry=https://registry.npmmirror.com/ --only=production && \
+    npm cache clean --force
 
 # Exposing the right port
 EXPOSE 3000
 
 # Starting the application
-CMD [ "yarn", "start" ]
+CMD [ "npm", "run", "start" ]
