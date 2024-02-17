@@ -35,7 +35,7 @@ const PostList = () => {
           <TooltipProvider key={idx} delayDuration={1000}>
             <Tooltip>
               <TooltipTrigger>
-                <SeoLink href={val.url} self className='flex w-full items-center pl-2 pr-4'>
+                <SeoLink href={val.url} self className='flex w-full items-center py-1 pl-2 pr-4'>
                   {isCurrent(val.slug) ? <BookMarked className='mt-0.5 h-3.5 w-3.5' /> : <div className='min-w-3.5' />}
                   <span className={cls('ml-1 truncate', isCurrent(val.slug) && 'font-bold')}>
                     {idx + 1}. {val.title}
