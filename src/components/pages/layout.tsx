@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useState } from 'react';
+import { FC, PropsWithChildren, useEffect, useState } from 'react';
 import { Progress } from '@/components/ui/progress';
 import { ArrowUp, Search, AlignJustify } from 'lucide-react';
 import { scrollToTop } from '@/utils/pageScroll';
@@ -11,24 +11,35 @@ import DirTree from '@/components/dirTree';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetOverlay, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SeoLink from '@/components/link';
+import { useRouter } from 'next/router';
+import PostList from '@/components/postList';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   const percent = usePageScroll();
+  // 获取路由信息
+  const { query } = useRouter();
   const [tab, setTab] = useState('tree');
+
+  useEffect(() => {
+    if (query?.second_dir) {
+      setTab('list');
+    } else {
+      setTab('tree');
+    }
+  }, [query?.second_dir]);
 
   return (
     <div className='min-h-screen w-screen bg-[#eee]'>
       {percent === 0 ? (
-        <span className='bg-gray-800 sticky top-0 z-40 h-1 w-screen' />
+        <span className='sticky top-0 z-40 h-1 w-screen bg-gray-800' />
       ) : (
         <Progress value={percent} className='sticky top-0 z-40 hidden h-1 w-screen bg-[#eee] lg:block' />
       )}
 
-      <section className='top-0 z-0 w-full px-4 xl:px-[12%] 2xl:px-[16%]'>
+      <section className='top-0 z-0 w-full px-4 xl:px-[8%] 2xl:px-[12%]'>
         <article className='flex w-full flex-col md:space-x-3 lg:flex-row'>
-          <aside className='hidden grow-0 lg:block lg:w-[22%] lg:min-w-72'>
+          <aside className='hidden grow-0 lg:block lg:w-[22%] lg:min-w-80'>
             <Nav />
-
             <Tabs
               value={tab}
               onValueChange={setTab}
@@ -38,12 +49,20 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                 <TabsTrigger className='text-base' value='tree'>
                   目录
                 </TabsTrigger>
+                {query?.second_dir && (
+                  <TabsTrigger className='text-base' value='list'>
+                    文章列表
+                  </TabsTrigger>
+                )}
                 <TabsTrigger className='text-base' value='info'>
                   概览
                 </TabsTrigger>
               </TabsList>
-              <TabsContent className='' value='tree'>
+              <TabsContent value='tree'>
                 <DirTree />
+              </TabsContent>
+              <TabsContent value='list'>
+                <PostList />
               </TabsContent>
               <TabsContent value='info'>
                 <Overview percent={percent} />
@@ -66,7 +85,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                   <AlignJustify />
                 </SheetTrigger>
                 <SheetOverlay>
-                  <div className='absolute -top-2 bottom-0 left-0 right-0 bg-black-opacity-7' />
+                  <div className='bg-black-opacity-7 absolute -top-2 bottom-0 left-0 right-0' />
                 </SheetOverlay>
                 <SheetContent side='left' className='overflow-scroll border-none bg-white shadow shadow-gray-5'>
                   <SheetTitle>博客导航</SheetTitle>
