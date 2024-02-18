@@ -1,9 +1,10 @@
-import { ChangeEvent, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import { loadTranslations } from 'ni18n';
 import { useTranslation } from 'react-i18next';
 import { ni18nConfig } from '../../ni18n.config';
+import { Virtuoso } from 'react-virtuoso';
 
 import Layout from '@/components/pages/layout';
 import Card from '@/components/card';
@@ -38,26 +39,34 @@ const Home = () => {
 
   return (
     <Layout>
-      {list?.map((val, idx) => {
-        return (
-          <Card key={idx}>
-            <div className='flex flex-col py-4 text-center'>
-              <SeoLink className='inline-block w-full' href={val.url}>
-                <div className='underline-animation text-2xl'>{val.title}</div>
-              </SeoLink>
-              <div className='text-normal font-normal'>
-                发表时间: {val.date} | 标签:{' '}
-                {val.tags.map((v) => (
-                  <Badge variant='outline' className='mr-1 cursor-default' key={v}>
-                    {v}
-                  </Badge>
-                ))}
+      <Virtuoso
+        useWindowScroll
+        data={list}
+        totalCount={list.length}
+        itemContent={(idx, item) => {
+          return (
+            <Card key={idx}>
+              <div className='flex flex-col text-center'>
+                <SeoLink className='inline-block w-full' href={item.url}>
+                  <div className='underline-animation text-xl'>{item.title}</div>
+                </SeoLink>
+                <div className='text-normal font-normal'>
+                  发表时间: {item.date} | 标签:{' '}
+                  {item.tags.map((v) => (
+                    <Badge variant='outline' className='mr-1 cursor-default' key={v}>
+                      {v}
+                    </Badge>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className='text-base font-normal'>{val.description}</div>
-          </Card>
-        );
-      })}
+              <div className='text-base font-normal'>{item.description}</div>
+            </Card>
+          );
+        }}
+        components={{
+          Footer: () => <div className='h-8' />,
+        }}
+      />
     </Layout>
   );
 };
