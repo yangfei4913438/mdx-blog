@@ -25,11 +25,11 @@ const Info: FC<IInfo> = ({ percent }) => {
           <div className='text-gray-6'>记录一些前后端的开发技术</div>
         </div>
         <ul className='grid grid-cols-2 divide-x px-28 font-bold text-gray-6'>
-          <li>
+          <li className='min-w-20'>
             <strong className='font-semibold text-gray-9'>{logs}</strong>
             <p>日志</p>
           </li>
-          <li>
+          <li className='min-w-20'>
             <strong className='font-semibold text-gray-9'>{tagKeys}</strong>
             <p>标签</p>
           </li>
