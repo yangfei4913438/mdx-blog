@@ -1,7 +1,12 @@
 import { FC, PropsWithChildren } from 'react';
+import cls from 'classnames';
 
-const Card: FC<PropsWithChildren> = ({ children }) => {
-  return <article className='mb-3 space-y-2 bg-white p-8 shadow shadow-gray-5'>{children}</article>;
+interface ICard extends PropsWithChildren {
+  className?: string;
+}
+
+const Card: FC<ICard> = ({ children, className }) => {
+  return <article className={cls('mb-3 space-y-2 bg-white p-8 shadow shadow-gray-5', className)}>{children}</article>;
 };
 
 export default Card;

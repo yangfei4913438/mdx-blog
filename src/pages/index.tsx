@@ -11,6 +11,8 @@ import Card from '@/components/card';
 import SeoLink from '@/components/link';
 import { usePostData } from '@/store/hooks';
 import { Badge } from '@/components/ui/badge';
+import cls from 'classnames';
+import Footer from '@/components/pages/footer';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
@@ -41,6 +43,7 @@ const Home = () => {
     <Layout>
       <Virtuoso
         useWindowScroll
+        className='mb-10 lg:mb-20' // 给 footer 预留尾部空间
         data={list}
         totalCount={list.length}
         itemContent={(idx, item) => {

@@ -94,7 +94,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
               </Button>
             </div>
           </header>
-          <main className='relative grow space-y-12'>
+          <main className='relative grow'>
             {children}
             <Footer />
           </main>
