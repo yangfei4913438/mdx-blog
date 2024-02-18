@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetOverlay, SheetTitle, SheetTrigger } from '@/c
 import SeoLink from '@/components/link';
 import { usePostData } from '@/store';
 import TabbedContent from '@/components/tabbedContent';
+import SearchDialog from '@/components/searchDialog';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   // 页面滚动百分比
@@ -86,8 +87,10 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                 <div className='text-lg font-bold'>杨飞的博客</div>
                 <div className='text-normal'>全是干货的技术博客</div>
               </div>
-              <Button variant='ghost'>
-                <Search size='20px' />
+              <Button variant='ghost' className='hover:bg-transparent hover:text-gray-5'>
+                <SearchDialog>
+                  <Search className='h-5 w-5' />
+                </SearchDialog>
               </Button>
             </div>
           </header>

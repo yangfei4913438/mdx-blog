@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import SeoLink from '@/components/link';
 import { Home, Search, Tags, User } from 'lucide-react';
 import { usePostData } from '@/store/hooks';
+import SearchDialog from '@/components/searchDialog';
 
 const Nav = () => {
   // 获取博客数据
@@ -31,10 +32,12 @@ const Nav = () => {
           </SeoLink>
         </Button>
         <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
-          <div className='mr-5 flex w-full items-center justify-start font-medium'>
-            <Search className='mr-1 h-4 w-4' />
-            <span>搜索</span>
-          </div>
+          <SearchDialog>
+            <div className='mr-5 flex w-full items-center justify-start font-medium'>
+              <Search className='mr-1 h-4 w-4' />
+              <span>搜索</span>
+            </div>
+          </SearchDialog>
         </Button>
       </div>
     </div>
