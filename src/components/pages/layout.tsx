@@ -11,12 +11,17 @@ import SeoLink from '@/components/link';
 import { usePostData } from '@/store';
 import TabbedContent from '@/components/tabbedContent';
 import SearchDialog from '@/components/searchDialog';
+import { useRouter } from 'next/router';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   // 页面滚动百分比
   const percent = usePageScroll();
   // 获取博客数据
   const { tagKeys } = usePostData();
+  // 获取路由信息
+  const {
+    query: { second_dir },
+  } = useRouter();
 
   return (
     <div className='min-h-screen w-screen bg-secondary'>
@@ -96,7 +101,8 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
           </header>
           <main className='relative grow'>
             {children}
-            <Footer />
+            {/* 只有博客详情才会在这里显示页脚，其他情况都是在列表组件的页脚位置显示的 */}
+            {second_dir && <Footer />}
           </main>
         </article>
       </section>
