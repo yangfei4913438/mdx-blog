@@ -26,7 +26,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
         <Progress value={percent} className='sticky top-0 z-40 hidden h-1 w-screen bg-[#eee] lg:block' />
       )}
 
-      <section className='top-0 z-0 w-full px-4 xl:px-[8%] 2xl:px-[12%]'>
+      <section className='min-w-xs top-0 z-0 px-4 xl:px-[8%] 2xl:px-[12%]'>
         <article className='flex w-full flex-col md:space-x-3 lg:flex-row'>
           <aside className='hidden grow-0 lg:block lg:w-[22%] lg:min-w-80'>
             <Nav />

@@ -1,9 +1,30 @@
+const screens = {
+  xs: '430px',
+  sm: '640px',
+  md: '768px',
+  lg: '1024px',
+  xl: '1280px',
+  '2xl': '1536px',
+  '3xl': '1920px',
+};
+
+const base = {
+  p1: '1px',
+  p2: '2px',
+  p3: '3px',
+  p4: '4px',
+  p5: '5px',
+  p6: '6px',
+  p7: '7px',
+  p8: '8px',
+  p9: '9px',
+  p10: '10px',
+  18: '72px',
+};
+
 // 自定义距离
 const distance = {
   inherit: 'inherit',
-  d2: '2px',
-  d3: '3px',
-  d4: '4px',
   'screen-10': '10%',
   'screen-20': '20%',
   'screen-30': '30%',
@@ -13,6 +34,8 @@ const distance = {
   'screen-70': '70%',
   'screen-80': '80%',
   'screen-90': '90%',
+  ...screens,
+  ...base,
 };
 
 /** @type {import('tailwindcss').Config} */
@@ -27,13 +50,7 @@ const config = {
         lg: '3rem',
         xl: '4rem',
       },
-      screens: {
-        sm: '640px',
-        md: '768px',
-        lg: '1024px',
-        xl: '1280px',
-        '2xl': '1536px',
-      },
+      screens,
     },
     extend: {
       colors: {
@@ -243,6 +260,12 @@ const config = {
       height: distance,
       minHeight: distance,
       maxHeight: distance,
+      margin: {
+        ...base,
+      },
+      padding: {
+        ...base,
+      },
       cursor: {
         'zoom-in': 'zoom-in',
         'zoom-out': 'zoom-out',
