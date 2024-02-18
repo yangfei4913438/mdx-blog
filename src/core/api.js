@@ -14,15 +14,31 @@ import dirOrderConfig from '@/core/config';
 
 const postDirectory = path.join(process.cwd(), 'src', 'markdown', 'post');
 
+// 判断路径是不是一个目录
+const isDirectory = (dirname) => {
+  const pathname = path.join(postDirectory, dirname);
+  return fs.lstatSync(pathname).isDirectory();
+};
+
 // 文件路径数组
 export function getPostSlugList() {
-  const firstDirs = fs.readdirSync(postDirectory).filter((name) => !ignoreDirs.includes(name));
+  // 读取一级目录
+  const firstDirs = fs.readdirSync(postDirectory).filter((name) => isDirectory(name));
+  // 读取二级目录
   const dirs = firstDirs.map((dir) => {
-    return fs.readdirSync(path.join(postDirectory, dir)).map((p) => path.join(dir, p));
+    return fs
+      .readdirSync(path.join(postDirectory, dir))
+      .map((p) => path.join(dir, p))
+      .filter((name) => isDirectory(name));
   });
+  // 读取所有正常文件
   const files = dirs.flat().map((dir) => {
-    return fs.readdirSync(path.join(postDirectory, dir)).map((p) => path.join(dir, p));
+    return fs
+      .readdirSync(path.join(postDirectory, dir))
+      .map((p) => path.join(dir, p))
+      .filter((name) => !ignoreDirs.includes(name));
   });
+  // 将文件数组拉平
   return files.flat();
 }
 
