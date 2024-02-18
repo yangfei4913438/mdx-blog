@@ -6,6 +6,7 @@ import { BookMarked } from 'lucide-react';
 import { useMemo } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+// 二级目录下的标题列表，用于快速切换二级目录下的文章
 const PostList = () => {
   // 获取博客数据
   const { postInfos } = usePostData();
@@ -35,7 +36,7 @@ const PostList = () => {
           <TooltipProvider key={idx} delayDuration={1000}>
             <Tooltip>
               <TooltipTrigger>
-                <SeoLink href={val.url} self className='flex w-full items-center py-1 pl-2 pr-4'>
+                <SeoLink href={val.url} self className='flex w-full items-center py-2 pl-2 pr-4 lg:py-1'>
                   {isCurrent(val.slug) ? <BookMarked className='mt-0.5 h-3.5 w-3.5' /> : <div className='min-w-3.5' />}
                   <span className={cls('ml-1 truncate', isCurrent(val.slug) && 'font-bold')}>
                     {idx + 1}. {val.title}

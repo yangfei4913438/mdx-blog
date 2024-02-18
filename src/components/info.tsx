@@ -6,29 +6,31 @@ import cc from '@/assets/cc-by-nc-sa.svg';
 import type { FC } from 'react';
 import { usePostData } from '@/store/hooks';
 
-interface IOverview {
+interface IInfo {
   percent: number;
 }
 
-const Overview: FC<IOverview> = ({ percent }) => {
+const Info: FC<IInfo> = ({ percent }) => {
   // 获取博客数据
   const { tagKeys, logs } = usePostData();
 
   return (
-    <div className='flex flex-col text-center'>
-      <div className='flex flex-1 flex-col justify-start'>
-        <div className='flex w-full justify-center pb-4'>
-          <Image src={avator} alt={'头像'} className='-mb-16 -mt-16 scale-50 rounded-[50%]' />
+    <div className='flex select-none flex-col text-center text-normal'>
+      <div className='flex flex-1 flex-col justify-start space-y-2'>
+        <div>
+          <div className='flex w-full justify-center'>
+            <Image src={avator} alt={'头像'} className='-mb-16 -mt-16 scale-50 rounded-[50%]' />
+          </div>
+          <div className='text-md font-bold text-gray-8'>杨飞</div>
+          <div className='text-gray-6'>记录一些前后端的开发技术</div>
         </div>
-        <div className='font-bold text-gray-8'>杨飞</div>
-        <div className='text-sm text-gray-6'>记录一些前后端的开发技术</div>
-        <ul className='grid grid-cols-2 divide-x divide-black-opacity-3 px-24 py-2 text-sm font-bold text-gray-6'>
+        <ul className='grid grid-cols-2 divide-x px-28 font-bold text-gray-6'>
           <li>
-            <strong className='text-base font-semibold text-gray-9'>{logs}</strong>
+            <strong className='font-semibold text-gray-9'>{logs}</strong>
             <p>日志</p>
           </li>
           <li>
-            <strong className='text-base font-semibold text-gray-9'>{tagKeys}</strong>
+            <strong className='font-semibold text-gray-9'>{tagKeys}</strong>
             <p>标签</p>
           </li>
         </ul>
@@ -66,4 +68,4 @@ const Overview: FC<IOverview> = ({ percent }) => {
   );
 };
 
-export default Overview;
+export default Info;

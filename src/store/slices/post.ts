@@ -11,13 +11,13 @@ const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    setPostInfos: (state: typeof initialState, actions: PayloadAction<typeof initialState.postInfos>) => {
+    setPostInfos: (state: IPost, actions: PayloadAction<IPost['postInfos']>) => {
       return {
         ...state,
         postInfos: actions.payload,
       };
     },
-    setTags: (state: typeof initialState, actions: PayloadAction<typeof initialState.tags>) => {
+    setTags: (state: IPost, actions: PayloadAction<IPost['tags']>) => {
       return {
         ...state,
         tags: actions.payload,

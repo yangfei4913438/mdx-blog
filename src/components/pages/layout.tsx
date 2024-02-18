@@ -1,32 +1,21 @@
-import { FC, PropsWithChildren, useEffect, useState } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import { Progress } from '@/components/ui/progress';
 import { ArrowUp, Search, AlignJustify } from 'lucide-react';
 import { scrollToTop } from '@/utils/pageScroll';
 import usePageScroll from '@/hooks/usePageScroll';
-import Overview from '@/components/overview';
 import Nav from '@/components/nav';
 import Footer from '@/components/pages/footer';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DirTree from '@/components/dirTree';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetOverlay, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SeoLink from '@/components/link';
-import { useRouter } from 'next/router';
-import PostList from '@/components/postList';
+import { usePostData } from '@/store';
+import TabbedContent from '@/components/tabbedContent';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
+  // 页面滚动百分比
   const percent = usePageScroll();
-  // 获取路由信息
-  const { query } = useRouter();
-  const [tab, setTab] = useState('tree');
-
-  useEffect(() => {
-    if (query?.second_dir) {
-      setTab('list');
-    } else {
-      setTab('tree');
-    }
-  }, [query?.second_dir]);
+  // 获取博客数据
+  const { tagKeys } = usePostData();
 
   return (
     <div className='min-h-screen w-screen bg-[#eee]'>
@@ -40,34 +29,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
         <article className='flex w-full flex-col md:space-x-3 lg:flex-row'>
           <aside className='hidden grow-0 lg:block lg:w-[22%] lg:min-w-80'>
             <Nav />
-            <Tabs
-              value={tab}
-              onValueChange={setTab}
-              className='sticky top-3 mt-3 bg-white pt-4 text-center shadow shadow-gray-5'
-            >
-              <TabsList>
-                <TabsTrigger className='text-base' value='tree'>
-                  目录
-                </TabsTrigger>
-                {query?.second_dir && (
-                  <TabsTrigger className='text-base' value='list'>
-                    文章列表
-                  </TabsTrigger>
-                )}
-                <TabsTrigger className='text-base' value='info'>
-                  概览
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value='tree'>
-                <DirTree />
-              </TabsContent>
-              <TabsContent value='list'>
-                <PostList />
-              </TabsContent>
-              <TabsContent value='info'>
-                <Overview percent={percent} />
-              </TabsContent>
-
+            <TabbedContent>
               <div
                 className='flex flex-none cursor-pointer items-center justify-center bg-[#eee] py-1 text-gray-5'
                 onClick={scrollToTop}
@@ -75,7 +37,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                 <ArrowUp className='mr-0.5 h-4 w-4' />
                 <p className='text-sm font-bold'>{percent}%</p>
               </div>
-            </Tabs>
+            </TabbedContent>
           </aside>
 
           <header className='sticky top-0 z-40 lg:hidden'>
@@ -96,6 +58,18 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                       </SeoLink>
                     </Button>
                     <hr className='text-gray-5' />
+                    <Button
+                      variant='ghost'
+                      className='relative w-full justify-start text-base text-gray-9 hover:bg-gray-1'
+                    >
+                      <SeoLink className='w-full' href='/tags' self>
+                        标签
+                      </SeoLink>
+                      <div className='absolute right-8 rounded-xl bg-gray-3 px-1 py-1 text-xs text-gray-8'>
+                        {tagKeys}
+                      </div>
+                    </Button>
+                    <hr className='text-gray-5' />
                     <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
                       <SeoLink className='w-full' href='/about' self>
                         关于本站
@@ -104,13 +78,13 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                   </div>
 
                   <div className='shadow shadow-gray-5'>
-                    <DirTree />
+                    <TabbedContent />
                   </div>
                 </SheetContent>
               </Sheet>
               <div>
-                <div className='text-[22px] font-bold'>杨飞的博客</div>
-                <div className='text-sm'>全是干货的技术博客</div>
+                <div className='text-lg font-bold'>杨飞的博客</div>
+                <div className='text-normal'>全是干货的技术博客</div>
               </div>
               <Button variant='ghost'>
                 <Search size='20px' />
