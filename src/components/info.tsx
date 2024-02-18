@@ -24,19 +24,20 @@ const Info: FC<IInfo> = ({ percent }) => {
           <div className='text-md font-bold text-gray-8'>杨飞</div>
           <div className='text-gray-6'>记录一些前后端的开发技术</div>
         </div>
-        <ul className='grid grid-cols-2 divide-x px-16 font-bold text-gray-6 lg:px-28'>
-          <li className='min-w-16'>
+        <div className='flex w-full flex-1 justify-center space-x-3 font-bold text-gray-6'>
+          <div className='w-7 min-w-7'>
             <strong className='font-semibold text-gray-9'>{logs}</strong>
             <p>日志</p>
-          </li>
-          <li className='min-w-16'>
+          </div>
+          <div className='mx-auto my-2 min-h-full border-r border-r-gray-4' />
+          <div className='w-7 min-w-7'>
             <strong className='font-semibold text-gray-9'>{tagKeys}</strong>
             <p>标签</p>
-          </li>
-        </ul>
-        <div className='grid grid-cols-2 px-12 text-gray-7'>
+          </div>
+        </div>
+        <div className='flex w-full items-center justify-center space-x-8 px-12 text-gray-7'>
           <SeoLink
-            className='mr-5 flex items-center justify-center text-lg font-normal'
+            className='flex items-center justify-center text-lg font-normal'
             title='GitHub → https://github.com/yangfei4913438'
             href='https://github.com/yangfei4913438'
             self={false}

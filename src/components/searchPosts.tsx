@@ -2,6 +2,7 @@ import { usePostData } from '@/store';
 import React, { FC, useMemo, useState } from 'react';
 import SeoLink from '@/components/link';
 import { Home } from 'lucide-react';
+import cls from 'classnames';
 
 const SearchPosts: FC<{ userInput: string }> = ({ userInput }) => {
   // 获取博客数据
@@ -62,12 +63,8 @@ const SearchPosts: FC<{ userInput: string }> = ({ userInput }) => {
               <div className='text-normal font-bold capitalize text-gray-8'>{Highlight(item.subDir)}</div>
             </div>
           </div>
-          <SeoLink
-            href={item.url}
-            self
-            className='inline-block w-full space-y-0.5 px-0 py-0 hover:underline hover:decoration-2 hover:underline-offset-4'
-          >
-            <div className='text-md font-medium'>{Highlight(item.title)}</div>
+          <SeoLink href={item.url} self className={cls('inline-block w-full space-y-0.5 px-0 py-0')}>
+            <div className='underline-animation text-md font-medium'>{Highlight(item.title)}</div>
           </SeoLink>
           <div className='text-normal'>
             <span className='font-medium'>标签: </span>

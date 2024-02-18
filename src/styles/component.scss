@@ -19,3 +19,31 @@
 #sidebar {
   --animate-duration: 500ms;
 }
+
+// 鼠标悬停时从中心向两边展开下划线，鼠标离开时从两边向中心收起下划线
+@layer components {
+  .underline-animation {
+    display: inline-block;
+    position: relative;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    overflow: hidden; /* 确保下划线不会超出文本内容 */
+  }
+  .underline-animation::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%; /* 从中间开始 */
+    @apply bg-primary;
+    transition: all 0.5s ease-in-out;
+    transform: translateX(-50%); /* 确保动画从中心开始 */
+  }
+  .underline-animation:hover::after {
+    width: 100%; /* 宽度全满 */
+    left: 0; /* 从左侧开始扩展 */
+    transform: translateX(0%); /* 重置transform效果 */
+  }
+}

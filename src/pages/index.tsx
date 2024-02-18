@@ -9,6 +9,7 @@ import Layout from '@/components/pages/layout';
 import Card from '@/components/card';
 import SeoLink from '@/components/link';
 import { usePostData } from '@/store/hooks';
+import { Badge } from '@/components/ui/badge';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
@@ -40,24 +41,20 @@ const Home = () => {
       {list?.map((val, idx) => {
         return (
           <Card key={idx}>
-            <div className='flex flex-col items-center py-4'>
-              <div className='text-2xl'>{val.title}</div>
-              <div>
-                发表时间: {val.date} | 标签: {val.tags.join(', ')}
+            <div className='flex flex-col py-4 text-center'>
+              <SeoLink className='inline-block w-full' href={val.url}>
+                <div className='underline-animation text-2xl'>{val.title}</div>
+              </SeoLink>
+              <div className='text-normal font-normal'>
+                发表时间: {val.date} | 标签:{' '}
+                {val.tags.map((v) => (
+                  <Badge variant='outline' className='mr-1 cursor-default' key={v}>
+                    {v}
+                  </Badge>
+                ))}
               </div>
             </div>
-            <div className=' space-y-4 px-8'>
-              <div>{val.description}</div>
-              <div className='text-center'>
-                <SeoLink
-                  href={val.url}
-                  self
-                  className='rounded border border-gray-3 px-4 py-2 shadow shadow-gray-2 hover:shadow-md hover:shadow-gray-5'
-                >
-                  查看更多
-                </SeoLink>
-              </div>
-            </div>
+            <div className='text-base font-normal'>{val.description}</div>
           </Card>
         );
       })}
