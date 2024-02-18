@@ -19,7 +19,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
   const { tagKeys } = usePostData();
 
   return (
-    <div className='min-h-screen w-screen bg-[#eee]'>
+    <div className='min-h-screen w-screen bg-secondary'>
       {percent === 0 ? (
         <span className='sticky top-0 z-40 h-1 w-screen bg-gray-800' />
       ) : (
@@ -94,7 +94,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
               </Button>
             </div>
           </header>
-          <main className='relative grow space-y-3'>
+          <main className='relative grow space-y-12'>
             {children}
             <Footer />
           </main>

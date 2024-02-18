@@ -63,9 +63,6 @@ const Home = () => {
             </Card>
           );
         }}
-        components={{
-          Footer: () => <div className='h-8' />,
-        }}
       />
     </Layout>
   );
