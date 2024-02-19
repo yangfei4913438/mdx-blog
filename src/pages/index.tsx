@@ -21,6 +21,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
 
 // 首页文章列表
 const Home = () => {
+  const { t: global } = useTranslation('common');
   // 获取博客数据
   const { postInfos } = usePostData();
 
@@ -65,7 +66,7 @@ const Home = () => {
                   <div className='underline-animation text-xl'>{item.title}</div>
                 </SeoLink>
                 <div className='text-normal font-normal'>
-                  发表时间: {item.date} | 标签:{' '}
+                  {global('updateTime')} {item.date} | 标签:{' '}
                   {item.tags.map((v) => (
                     <Badge variant='outline' className='mr-1 cursor-default' key={v}>
                       {v}
