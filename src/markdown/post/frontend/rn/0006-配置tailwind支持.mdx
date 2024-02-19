@@ -27,13 +27,24 @@ yarn add --dev tailwindcss@3.3.2
 - 编辑配置文件`tailwind.config.js`
 
   ```javascript
+  const plugin = require('tailwindcss/plugin');
+
   /** @type {import('tailwindcss').Config} */
   module.exports = {
     content: ['./App.{js,jsx,ts,tsx}', './src/**/*.@(js|jsx|ts|tsx|html)'],
-    theme: {
-      extend: {},
-    },
-    plugins: [],
+    theme: {},
+    plugins: [
+      plugin(function ({ addComponents }) { // 配置扩展类名，tailwind 还没有的类，都可以通过这种方式扩展
+        addComponents({
+          '.align-vertical-top': {
+            textAlignVertical: 'top',
+          },
+          '.align-vertical-center': {
+            textAlignVertical: 'center',
+          },
+        });
+      }),
+    ],
   };
   ```
 

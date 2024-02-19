@@ -68,7 +68,7 @@ date: 2024-02-17 21:00:00
 
 ```javascript
 import React, { useRef } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 const TextInputDemo = () => {
   const inoutRef = useRef<TextInput>(null);
@@ -77,8 +77,7 @@ const TextInputDemo = () => {
     <View className={'size-full bg-gray-200 p-12'}>
       <TextInput
         ref={inoutRef}
-        style={styles.input}
-        className='h-52 border border-gray-500 bg-[#e0e0e0] text-xl text-blue-500'
+        className='h-52 border border-gray-500 bg-[#e0e0e0] text-xl text-blue-500 align-vertical-top'
         keyboardType='default' // 键盘类型
         returnKeyType='default' // 确定按钮的图标
         defaultValue='默认文字'
@@ -100,10 +99,25 @@ const TextInputDemo = () => {
 };
 
 export default TextInputDemo;
+```
 
-const styles = StyleSheet.create({
-  input: {
-    textAlignVertical: 'top', // 这个目前没有对应的tailwind样式，先用样式表的写法
-  },
-});
+> 上面的例子里，需要配置一个扩展类名
+
+```javascript
+const plugin = require('tailwindcss/plugin');
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./App.{js,jsx,ts,tsx}', './src/**/*.@(js|jsx|ts|tsx|html)'],
+  theme: {},
+  plugins: [
+    plugin(function ({ addComponents }) { // 配置扩展类名
+      addComponents({
+        '.align-vertical-top': {
+          textAlignVertical: 'top',
+        }
+      });
+    }),
+  ],
+};
 ```
