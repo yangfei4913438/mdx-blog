@@ -1,0 +1,58 @@
+---
+index: 16
+title: 常用系统组件 - Pressable
+description: 这篇文章介绍一下，Pressable 组件的使用方法
+author: 杨飞
+tags: [前端, react, react native, android, Pressable]
+date: 2024-02-19 19:30:00
+---
+
+> 📌 从 RN 0.63 版本开始才支持的。之前的版本中无法使用。
+
+#### 特点
+
+- 点击类事件和其他点击组件一致
+- 带状态样式与带状态子节点
+  > Pressable 的 style 属性可以提供一个回调，但是我们使用 tailwind 用不了它的这个回调，了解即可。例子见代码，下同。
+  >
+  > 状态子节点，就是Pressable会给子元素传递一个属性，里面包含了 pressed 属性，子元素可以根据这个属性编写动态样式。
+
+
+#### 例子
+
+```javascript
+import React from 'react';
+import { Text, View, Pressable } from 'react-native';
+import cls from 'classnames';
+
+const PressableDemo = () => {
+  return (
+    <View className='size-full bg-gray-200 p-12'>
+      <Pressable
+        // style={({ pressed }) => [pressed && { borderStyle: 'solid' }]}
+        // style 的值可以是一个正常的style样式，也可以是一个回调方法，返回一个样式对象或者样式对象的数组。
+        onPressIn={() => console.log('onPressIn')} // 先执行
+        onPress={() => console.log('onPress')} // 短按响应
+        onLongPress={() => console.log('onLongPress')} // 长按响应
+        delayLongPress={1000} // 多长时间才算长按
+        onPressOut={() => console.log('onPressOut')} // 在 onLongPress 和 onPress 之后执行，这点和其他的按钮组件不一样！
+      >
+        {({ pressed }) => (
+          <View
+            className={cls(
+              'w-80 h-16 rounded bg-green-500 flex items-center justify-center',
+              pressed && 'bg-white'
+            )}
+          >
+            <Text className={cls('text-lg text-white font-bold', pressed && 'text-green-400')}>
+              按钮
+            </Text>
+          </View>
+        )}
+      </Pressable>
+    </View>
+  );
+};
+
+export default PressableDemo;
+```
