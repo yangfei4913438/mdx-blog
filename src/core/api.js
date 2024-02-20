@@ -5,10 +5,7 @@ import yaml from 'js-yaml';
 import dayjs from 'dayjs';
 import { serialize } from 'next-mdx-remote/serialize';
 import remarkGfm from 'remark-gfm';
-import remarkMdxCodeMeta from 'remark-mdx-code-meta';
 import rehypePrism from 'rehype-prism-plus';
-import rehypeCodeTitles from 'rehype-code-titles';
-import externalLinks from 'remark-external-links';
 import { ignoreDirs } from '../../project.config';
 import dirOrderConfig from '@/core/config';
 
@@ -113,11 +110,10 @@ export async function getPostBySlug(locale, first_dir, second_dir, slug) {
     // 正文
     content: await serialize(content, {
       mdxOptions: {
-        remarkPlugins: [remarkGfm, remarkMdxCodeMeta, externalLinks],
-        rehypePlugins: [rehypePrism, rehypeCodeTitles],
+        remarkPlugins: [remarkGfm],
+        rehypePlugins: [rehypePrism],
         format: 'mdx',
       },
-      parseFrontmatter: false,
     }),
   };
 }

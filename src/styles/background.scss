@@ -1,36 +1,3 @@
-@use 'sass:math';
-
-@mixin aspect-ratio($width, $height) {
-  &:before {
-    display: block;
-    content: '';
-    width: 100%;
-    padding-top: math.div($height, $width) * 100%;
-  }
-  > .content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-}
-@mixin aspect-ratio-after($width, $height) {
-  &:after {
-    display: block;
-    content: '';
-    width: 100%;
-    padding-top: math.div($height, $width) * 100%;
-  }
-  > .content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-}
-
 @tailwind base;
 @layer base {
   #__next {
@@ -115,15 +82,5 @@
       margin-top: 0;
       margin-bottom: 0;
     }
-  }
-
-  .x-aspect-ratio {
-    @include aspect-ratio-after(1, 1);
-  }
-  .x-aspect-ratio-3-4 {
-    @include aspect-ratio-after(3, 4);
-  }
-  .x-aspect-ratio-1440-900 {
-    @include aspect-ratio-after(1440, 900);
   }
 }
