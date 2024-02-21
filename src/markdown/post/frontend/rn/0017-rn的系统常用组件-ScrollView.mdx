@@ -1,0 +1,186 @@
+---
+index: 17
+title: 常用系统组件 - ScrollView
+description: 这篇文章介绍一下，ScrollView 组件的使用方法
+author: 杨飞
+tags: [前端, react, react native, android, ScrollView]
+date: 2024-02-22 00:05:00
+---
+
+> ScrollView 是一个基础的滚动组件
+
+### 特点
+
+- 添加子节点：固定子元素、列表渲染、数组渲染
+
+- 内容的包裹样式：`contentContainerStyle` 属性
+  > 内容的外部容器样式定义，暂时无法支持 tailwind 实现
+
+- 滚动键盘消失: `keyboardDismissMode` 属性
+  - 需要有一个输入组件
+  - 常用的值:
+    - 'none' 滚动不会消失
+    - 'on-drag' 拖拽的时候，键盘会消失
+
+- 点击收起键盘： `keyboardShouldPersistTaps` 属性
+  > handled 只能响应，不需要点2次。
+  - 'never' 点击键盘先消失
+  - 'always' 键盘保持不会消失
+  - 'handled' 点按钮的时候，键盘不会消失。直接执行响应。一般这个用的多。
+
+- 滚动开始和结束: `onMomentumScrollBegin`、`onMomentumScrollEnd`
+
+- 页面的滚动距离：`onScroll`
+  > `scrollEventThrottle`（ios专属属性，每隔多少毫秒回掉一次。不指定就只会回掉一次。）
+
+- 超出滚动：`overScrollMode`，
+  - `never` 没有任何滚动效果
+  - `always` 轻微的拉动效果
+
+- 分页滚动：`pagingEnabled`
+  - 滚动方向：`horizontal`
+
+- 滚动开关：`scrollEnabled`
+
+- 初始滚动：`contentOffset` 值是xy坐标, 例如 `{{ y: 100, x: 0 }}`
+
+- 是否显示滚动条
+  - `showsHorizontalScrollIndicator` 横向滚动条
+  - `showsVerticalScrollIndicator` 纵向滚动条
+
+- 吸顶元素：`stickyHeaderIndices`
+  > 哪些元素可以自动的吸顶（数组的每个元素会自动吸顶，一直到下一个吸顶元素顶替掉这个）值是数组，数组元素是每隔子元素的索引。
+  >
+  > 注意：
+  >
+  > `ScrollView`的内部元素必须是多个，才能有第几个元素吸顶。如果加了一个外部容器（子元素变成 1 个），那么吸顶效果就没了。
+
+- api
+  - `scrollTo` 滚动到某个位置
+  - `scrollToEnd` 滚动到尾部
+
+
+### 例子
+
+#### 1、横向滚动
+> 比如幻灯片的应用场景
+
+```javascript
+import React from 'react';
+import { ScrollView, View, Dimensions, Text } from 'react-native';
+
+// 屏幕宽度
+const { width } = Dimensions.get('window');
+
+const ScrollViewDemo = () => {
+  const items = Array.from({ length: 10 }, (_, idx) => idx);
+
+  return (
+    <View>
+      <ScrollView
+        style={{ width: width, height: 200 }}
+        pagingEnabled={true} // 按整个页面滚动
+        horizontal={true} // 横向滚动
+        showsHorizontalScrollIndicator={false} // 是否显示滚动条
+      >
+        {items.map((_, idx) => {
+          // 随机生成一个颜色
+          const color = [
+            Math.round(Math.random() * 160),
+            Math.round(Math.random() * 160),
+            Math.round(Math.random() * 160),
+          ].join(',');
+
+          return (
+            <View
+              key={idx}
+              className='h-full items-center justify-center'
+              style={{
+                width: width,
+                backgroundColor: `rgb(${color})`,
+              }}
+            >
+              <Text className='text-white'>Page {idx + 1}</Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+};
+
+export default ScrollViewDemo;
+```
+
+#### 2、纵向滚动
+
+```javascript
+import React, { useEffect, useMemo, useRef } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import cls from 'classnames';
+
+const ScrollViewDemo = () => {
+  const ref = useRef<ScrollView>(null);
+
+  const scrollToTop = () => {
+    ref.current?.scrollTo({ y: 0, animated: true });
+  };
+
+  const scrollToEnd = () => {
+    ref.current?.scrollToEnd({ animated: true });
+  };
+
+  const list = useMemo(() => {
+    return Array.from({ length: 50 }, (_, idx) => idx + 1);
+  }, []);
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
+  const handleClick = (idx: number) => {
+    if (idx === 0) {
+      scrollToEnd();
+    }
+    if (idx === list.length - 1) {
+      scrollToTop();
+    }
+  };
+
+  return (
+    <View className='size-full bg-white'>
+      <ScrollView
+        ref={ref}
+        keyboardDismissMode={'on-drag'}
+        keyboardShouldPersistTaps={'handled'}
+        onMomentumScrollBegin={() => console.log('onMomentumScrollBegin')}
+        onMomentumScrollEnd={() => console.log('onMomentumScrollEnd')}
+        onScroll={(event) => console.log('onScroll:', event.nativeEvent.contentOffset.y)}
+        scrollEventThrottle={16}
+        overScrollMode={'always'}
+        scrollEnabled={true}
+        contentOffset={{ y: 100, x: 0 }}
+        showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[20]} // 序号为 20 的元素，自动吸顶
+      >
+        {list.map((val, idx) => {
+          return (
+            <Text
+              className={cls(
+                'border-b border-gray-400 bg-white px-4 py-2',
+                idx === 20 && 'bg-green-500'
+              )}
+              key={val}
+              onPress={() => handleClick(idx)}
+            >
+              {idx === 0 ? '滚动到尾部' : idx === list.length - 1 ? '滚动到顶部' : `item-${val}`}
+            </Text>
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
+};
+
+export default ScrollViewDemo;
+```
