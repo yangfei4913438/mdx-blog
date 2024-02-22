@@ -37,6 +37,11 @@
       li:not(:first-child) {
         @apply ml-0.5;
       }
+      li {
+        p:not(:first-child) {
+          @apply font-normal;
+        }
+      }
     }
     h2 {
       margin-top: 1em;
