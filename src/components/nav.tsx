@@ -9,7 +9,7 @@ const Nav = () => {
   const { tagKeys } = usePostData();
 
   return (
-    <div className='shadow shadow-gray-5'>
+    <div className='shadow shadow-gray-5' id='layout-nav'>
       <div className='-mt-1 flex flex-col items-center justify-center space-y-2 bg-[#222] py-6 text-center'>
         <div className='text-lg font-bold text-white'>杨飞的博客</div>
         <div className='text-normal text-white'>全是干货的技术博客</div>
