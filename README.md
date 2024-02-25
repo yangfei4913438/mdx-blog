@@ -24,8 +24,8 @@
 #### 运行项目
 
 ```bash
-yarn
-yarn run dev
+npm i
+npm run dev
 ```
 
 #### 如何写博客？
