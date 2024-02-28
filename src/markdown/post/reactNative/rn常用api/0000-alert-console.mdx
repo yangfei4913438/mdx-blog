@@ -1,0 +1,99 @@
+---
+index: 0
+title: alert 和 console
+description: 这篇文章介绍，如何在 React Native 项目中，使用 alert 和 console 这两个 api 进行调试。
+author: 杨飞
+tags: [reactNative, rn常用api, alert, console]
+date: 2024-02-29 06:43:00
+---
+
+### 一、alert 简单的弹窗提示
+> 官方文档: https://reactnative.dev/docs/next/alert
+
+#### 例子:
+
+```javascript
+  <View>
+    <Button
+      title={'测试'}
+      onPress={() => {
+        Alert.alert('这是标题', '这是提示内容', [
+          { text: '取消', style: 'cancel', onPress: () => console.log('Cancel Pressed') },
+          { text: '确认', onPress: () => console.log('OK Pressed') },
+        ]);
+      }}
+    />
+  </View>
+```
+
+### 二、console日志输出分级
+
+  - 日志分级
+    ```javascript
+      console.info('info');
+      console.debug('debug');
+      console.warn('warn'); // 页面会有提示
+      console.error('error'); // 页面会有提示
+    ```
+
+  - 占位符
+    ```javascript
+      // %s 字符串占位
+      // %d 数值占位
+      console.log('我的名字是 %s，我今年 %d 岁了', '张三', 18);
+      // ==> 我的名字是 张三，我今年 18 岁了
+
+      // %o 对象占位
+      const tom = { name: 'tom', age: 20 };
+      console.log('我是一个对象 %o', tom);
+      // ==> 我是一个对象 '{"age": 20, "name": "tom"}'
+    ```
+
+  - 指定样式
+    > 只能在浏览器端看，开发环境看不到效果
+    ```javascript
+      console.log('%c红色文字，字号大', 'color:red; font-size:x-large');
+      // 浏览器里面，字号中的字体大小是不生效的
+      console.log('%c蓝色文字，字号中', 'color:blue; font-size:x-medium');
+      console.log('%c绿色文字，字号小', 'color:green; font-size:x-small');
+    ```
+
+  - 打印组件的代码
+    ```javascript
+      // 模拟一个组件
+      const Component = (
+      <View style={{ width: '100%', height: '100%', padding: 12 }}>
+        <Text style={{ fontSize: 20, color: 'red' }}>测试文字</Text>
+      </View>
+      );
+      // 直接打印组件的代码
+      console.log(Component);
+
+      // 日志输出内容（正式项目，参数都是动态的，所以这种组件打印是有意义的）
+      // <View style={{"height": "100%", "padding": 12, "width": "100%"}}><Text style={{"color": "red", "fontSize": 20}}>测试文字</Text></View>
+    ```
+
+  - 打印表格
+    > 只能在浏览器端看，开发环境看不到效果
+    ```javascript
+      const boys = [
+        { name: 'tom', age: 20 },
+        { name: 'bill', age: 18 },
+      ];
+      console.table(boys);
+    ```
+
+  - 分组日志
+    > 开发环境查看，有效果只是不明显。浏览器查看，效果会很明显。
+    ```javascript
+      console.group();
+      console.log('line 1');
+      console.group();
+      console.log('level 2 line 1');
+      console.log('level 2 line 2');
+      console.log('level 2 line 3');
+      console.groupEnd();
+      console.log('line 2');
+      console.log('line 3');
+      console.groupEnd();
+    ```
