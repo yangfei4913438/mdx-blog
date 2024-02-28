@@ -1,0 +1,211 @@
+---
+index: 11
+title: FlatList 组件
+description: 这篇文章介绍一下，FlatList 组件的使用方法
+author: 杨飞
+tags: [reactNative, rn常用系统组件, FlatList]
+date: 2024-02-28 19:23:00
+---
+
+### 属性
+
+- keyExtractor 指定key
+- renderItem 每一行的渲染方法
+- data 数据列表
+- showsVerticalScrollIndicator 是否显示滚动条
+- ...其他基本和`scrollview`类似，具体看代码
+- api
+  - scrollToIndex
+
+### 例子
+
+#### 单列示例
+
+```javascript
+import { FlatList, StyleSheet, Text, type ListRenderItem, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+
+const data = Array.from({ length: 100 }, (_, idx) => idx + 1);
+const FlatListDemo = () => {
+  const renderItem: ListRenderItem<number> = ({ item }) => {
+    return <Text className='text-base py-2 text-center'>{`list item ${item}`}</Text>;
+  };
+
+  // 头部
+  const ListHeader = () => {
+    return (
+      <View className='bg-red-500 items-center justify-center'>
+        <Text className='text-xl text-white py-4'>列表头部</Text>
+      </View>
+    );
+  };
+
+  // 尾部
+  const ListFooter = () => {
+    return (
+      <View className='bg-blue-500 items-center justify-center'>
+        <Text className='text-xl text-white py-4'>列表尾部</Text>
+      </View>
+    );
+  };
+
+  // 空态
+  const ListEmpty = () => {
+    return (
+      <View className='w-full h-96 justify-center items-center'>
+        <Text className='text-xl align-vertical-center text-gray-500'>暂时没有数据</Text>
+      </View>
+    );
+  };
+
+  const ref = useRef<FlatList>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      setTimeout(() => {
+        ref.current?.scrollToIndex({
+          index: 10, // 元素的索引值
+          viewPosition: 0.5, // 元素滚动到屏幕中间，0 页面顶部 1 页面底部
+          animated: true, // 是否启用动画
+        });
+      }, 1000);
+
+      setTimeout(() => {
+        // 这个方法不推荐，因为需要遍历数据
+        ref.current?.scrollToItem({
+          item: 17,
+          viewPosition: 0,
+          animated: true,
+        });
+      }, 3000);
+
+      setTimeout(() => {
+        // 位置偏移，不一定精确
+        ref.current?.scrollToOffset({ offset: 200 });
+      }, 5000);
+
+      setTimeout(() => {
+        // 直接到底部
+        ref.current?.scrollToEnd({ animated: true });
+      }, 6000);
+    }
+  }, []);
+
+  return (
+    <FlatList
+      ref={ref}
+      className='bg-gray-100 w-full h-full'
+      contentContainerStyle={styles.containerStyle} // 容器样式，暂时无法使用 tailwind，先保持样式表的写法, 不过可以通过外部加 view 的反向写法，来规避这个配置，例子可以看下面双列的 demo
+      showsVerticalScrollIndicator={false} // 是否显示纵向滚动条
+      horizontal={false} // 是否横向列表
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={(_, index) => `item-${index}`} // 生成唯一的 key
+      onScroll={(event) => console.log(event.nativeEvent.contentOffset.y)} // 距离顶部的距离
+      ListHeaderComponent={ListHeader}
+      ListFooterComponent={ListFooter}
+      ListEmptyComponent={ListEmpty}
+      ItemSeparatorComponent={() => <View className='w-full h-px bg-gray-400' />} // 分割线渲染组件
+      initialNumToRender={20} // 初始化渲染的数量
+      inverted={false} // 是否反向渲染（倒序排列）
+      numColumns={1} // 一行渲染几列，注意每个元素的样式
+      onViewableItemsChanged={(info) => {
+        // 查看当前渲染的列表元素信息。
+        //  [{"index": 0, "isViewable": true, "item": 1, "key": "item-0"}]
+        console.log('可见元素：', info.viewableItems);
+      }}
+    />
+  );
+};
+
+export default FlatListDemo;
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    paddingHorizontal: 12,
+  },
+});
+```
+
+#### 双列示例
+
+```javascript
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { Dimensions, FlatList, Image, ListRenderItem, Text, View } from 'react-native';
+import { useHomeList, type ArticleSimple } from 'stores';
+import icon_heart_empty from 'assets/icon_heart_empty.png';
+
+const { width: screenWidth } = Dimensions.get('window');
+
+const Home = () => {
+  const { homeList, loading, requestHomeList, isLastPage } = useHomeList();
+
+  /** 初始化数据*/
+  useEffect(() => {
+    requestHomeList(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const renderItem: ListRenderItem<ArticleSimple> = useMemo(
+    () =>
+      ({ item }) => {
+        return (
+          <View className="ml-1.5 mb-1.5 rounded-md overflow-hidden" style={{ width: (screenWidth - 18) >> 1 }}>
+            <Image source={{ uri: item.image }} className="w-full h-64" />
+            <Text className="text-sm font-bold text-[#333] px-3 py-1">{item.title}</Text>
+            <View className="flex-row w-full items-center px-3 mb-3">
+              <Image
+                source={{ uri: item.avatarUrl }}
+                className="w-5 h-5 rounded-[10px]"
+                style={{ resizeMode: 'cover' }}
+              />
+              <Text className="text-[12px] text-[#999] ml-1.5 flex-1" numberOfLines={1} ellipsizeMode={'tail'}>
+                {item.userName}
+              </Text>
+              <Image source={icon_heart_empty} className="w-5 h-5 rounded-[10px]" />
+              <Text className="text-sm text-[#999] ml-1.5">{item.favoriteCount}</Text>
+            </View>
+          </View>
+        );
+      },
+    []
+  );
+
+  const resetData = useCallback(async () => {
+    await requestHomeList(true);
+  }, [requestHomeList]);
+
+  const loadMore = useCallback(async () => {
+    await requestHomeList(false);
+  }, [requestHomeList]);
+
+  const ListFooter = useMemo(() => {
+    return (
+      <Text className="w-full text-center my-4 text-[#999]">
+        {isLastPage ? '没有更多数据了' : '数据加载中, 请稍后。。。'}
+      </Text>
+    );
+  }, [isLastPage]);
+
+  return (
+    <View className="w-full h-full bg-[#f0f0f0] justify-center items-center">
+      <FlatList
+        className="w-full h-full mt-1.5"
+        data={homeList}
+        renderItem={renderItem}
+        keyExtractor={(_, index) => `item-${index}`}
+        showsVerticalScrollIndicator={false} // 是否显示纵向滚动条
+        inverted={false} // 是否反向渲染（倒序排列）
+        numColumns={2} // 一行渲染几列，注意样式
+        refreshing={loading} // 是否在请求数据
+        onRefresh={resetData} // 每次进来的时候，请求新数据，上拉刷新
+        onEndReachedThreshold={0.4} // 距离底部40%的时候，加载更多数据
+        onEndReached={loadMore} // 触发后，执行当前方法
+        ListFooterComponent={ListFooter} // 底部组件
+      />
+    </View>
+  );
+};
+
+export default Home;
+```
