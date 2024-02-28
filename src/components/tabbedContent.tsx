@@ -2,10 +2,13 @@ import { FC, PropsWithChildren, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import usePageScroll from '@/hooks/usePageScroll';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DirTree from '@/components/dirTree';
 import PostList from '@/components/postList';
 import Info from '@/components/info';
 import ScrollComponent from '@/components/ScrollComponent';
+import dynamic from 'next/dynamic';
+
+// 因为使用了 useLayoutEffect 所以需要禁止 ssr 渲染这个组件
+const DirTree = dynamic(() => import('@/components/dirTree'), { ssr: false });
 
 interface IProps extends PropsWithChildren {
   width: number;

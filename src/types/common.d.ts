@@ -19,3 +19,12 @@ interface IPost {
   postInfos: IPostInfo[];
   tags: { [key: string]: number };
 }
+
+interface IDirOrderConfig {
+  [key: string]: {
+    index: number;
+    children: {
+      [key: string]: number;
+    };
+  };
+}

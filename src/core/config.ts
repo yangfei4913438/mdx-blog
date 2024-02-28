@@ -1,5 +1,5 @@
 // 目录排序配置
-const dirOrderConfig = {
+const dirOrderConfig: IDirOrderConfig = {
   // 这里的 frontend 就是一级目录的名称，下同
   react: {
     // 这里的 index 就是这个一级目录的排序，下同
