@@ -1,0 +1,35 @@
+---
+index: 16
+title: Switch 开关组件
+description: 这篇文章介绍一下，Switch 开关组件的使用
+author: 杨飞
+tags: [reactNative, rn常用系统组件, Switch]
+date: 2024-02-28 23:08:00
+---
+
+> `Switch`开关组件, 很常用也很简单的一个组件
+
+### 例子
+
+```javascript
+import React, { useState } from 'react';
+import { View, Switch } from 'react-native';
+
+const SwitchDemo = () => {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <View className='w-full h-full bg-white items-center justify-center'>
+      <Switch
+        value={visible}
+        onValueChange={setVisible}
+        disabled={false}
+        trackColor={{ true: 'red', false: '#808080' }} // 背景色，背后长条的颜色
+        thumbColor={visible ? 'green' : '#303030'} // 前景色，小圆圈的颜色
+      />
+    </View>
+  );
+};
+
+export default SwitchDemo;
+```
