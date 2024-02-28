@@ -1,5 +1,5 @@
 import { usePostData } from '@/store/hooks';
-import { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 import SeoLink from '@/components/link';
 import { useRouter } from 'next/router';
 import cls from 'classnames';
@@ -37,13 +37,8 @@ const DirTree = () => {
     <div className='text-left'>
       {Object.entries(dirs).map(([dir, subDirs], idx) => {
         return (
-          <div className={''} key={idx}>
-            <div
-              className={cls(
-                'flex items-center py-2 pl-2 pr-8 font-bold hover:cursor-pointer lg:py-1 ',
-                isEqual(dir) ? 'bg-gray-1 font-bold' : 'bg-gray-3'
-              )}
-            >
+          <Fragment key={idx}>
+            <div className={cls('flex items-center bg-gray-3 py-2 pl-2 pr-8 font-bold hover:cursor-pointer lg:py-1')}>
               {isEqual(dir) ? <BookMarked className='mt-0.5 h-3.5 w-6 min-w-6' /> : <div className='min-w-6' />}
               <SeoLink href={`/?key=${dir}`} className='flex flex-1 items-center justify-between' self>
                 <div className='truncate capitalize'>{dir}</div>
@@ -55,10 +50,7 @@ const DirTree = () => {
               .map((sub) => {
                 return (
                   <div
-                    className={cls(
-                      'flex items-center py-2 pl-6 pr-8 hover:cursor-pointer hover:bg-gray-1 lg:py-0.5',
-                      isEqual(sub) ? 'bg-gray-1 font-bold' : ''
-                    )}
+                    className={cls('flex items-center py-2 pl-6 pr-8 hover:cursor-pointer hover:bg-gray-1 lg:py-0.5')}
                     key={sub}
                   >
                     {isEqual(sub) ? <BookMarked className='mt-0.5 h-3.5 w-6 min-w-6' /> : <div className='min-w-6' />}
@@ -69,7 +61,7 @@ const DirTree = () => {
                   </div>
                 );
               })}
-          </div>
+          </Fragment>
         );
       })}
     </div>
