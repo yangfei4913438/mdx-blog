@@ -1,5 +1,5 @@
 import { usePostData } from '@/store/hooks';
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { MouseEventHandler, useLayoutEffect, useMemo, useState } from 'react';
 import SeoLink from '@/components/link';
 import { useRouter } from 'next/router';
 import cls from 'classnames';
@@ -8,36 +8,54 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 
 const DirTree = () => {
   // 获取博客数据
-  const { postInfos, tags, valueKeyMap } = usePostData();
+  const { postInfos, tags, valueKeyMap, firstDirs } = usePostData();
   // 获取路由信息
   const {
     query: { key, first_dir, second_dir },
+    push,
   } = useRouter();
-  // 默认展开的一级目录
+  // 展开的一级目录key
   const [value, setValue] = useState<string>();
 
+  // 在页面渲染之前完成逻辑处理
   useLayoutEffect(() => {
     // 有值表示当前是切换渲染，不需要重新设置。
     if (value) return;
+    // 如果是文章列表的情况
+    if (key) {
+      const target = valueKeyMap[String(key).toLowerCase()];
+      if (target) {
+        setValue(target);
+        return;
+      }
+    }
+    // 如果是正文的情况
     if (first_dir) {
       setValue(first_dir as string);
-    } else if (key) {
-      const target = valueKeyMap[key as string];
-      target && setValue(target);
+      return;
     }
-  }, [key, first_dir, valueKeyMap, setValue, value]);
+  }, [first_dir, key, value, valueKeyMap]);
 
   const dirs = useMemo(() => {
+    // 声明空对象
     const obj: { [key: string]: string[] } = {};
+    // 遍历处理
     postInfos.forEach((item) => {
-      if (Object.keys(obj).includes(item.dir)) {
-        if (!obj[item.dir].includes(item.subDir)) {
-          obj[item.dir].push(item.subDir);
+      const firstDir = item.dir;
+      const secondDir = item.subDir;
+      // 判断是否已经添加
+      if (Object.keys(obj).includes(firstDir)) {
+        // 判断二级目录是否已经添加
+        if (!obj[firstDir].includes(secondDir)) {
+          // 没有的就直接增加
+          obj[firstDir].push(secondDir);
         }
       } else {
-        obj[item.dir] = [item.subDir];
+        // 没添加的，直接创建新属性
+        obj[firstDir] = [secondDir];
       }
     });
+    // 返回对象
     return obj;
   }, [postInfos]);
 
@@ -48,16 +66,24 @@ const DirTree = () => {
     return source === target;
   };
 
+  const handleLink: (key: string) => MouseEventHandler<HTMLAnchorElement> = (name: string) => (event) => {
+    event.preventDefault();
+    // 使用命令式路由编程，更好的交互体验
+    return push({
+      pathname: '/',
+      query: { key: name },
+    });
+  };
+
   return (
     <Accordion type={'single'} className='border-t' collapsible value={value}>
       {Object.entries(dirs).map(([dir, subDirs], idx) => {
         return (
           <AccordionItem value={dir} key={idx}>
             <AccordionTrigger
-              className={cls('flex items-center bg-gray-3 py-2 pl-2 pr-8 font-bold hover:cursor-pointer lg:py-1')}
+              className='flex items-center bg-gray-3 py-2 pl-8 pr-8 font-bold hover:cursor-pointer lg:py-1'
               onClick={() => setValue(dir)}
             >
-              {isEqual(dir) ? <BookMarked className='mt-0.5 h-3.5 w-6 min-w-6' /> : <div className='min-w-6' />}
               <div className='flex flex-1 items-center justify-between'>
                 <div className='truncate capitalize'>{dir}</div>
                 <div className='min-w-3.5'>({tags[dir]})</div>
@@ -75,7 +101,11 @@ const DirTree = () => {
                       key={sub}
                     >
                       {isEqual(sub) ? <BookMarked className='mt-0.5 h-3.5 w-6 min-w-6' /> : <div className='min-w-6' />}
-                      <SeoLink href={`/?key=${sub}`} className='flex flex-1 items-center justify-between' self>
+                      <SeoLink
+                        href={`/?key=${sub}`} // 这里是为了 seo 优化设置的，其实跳转不用这个
+                        className='flex flex-1 items-center justify-between'
+                        onClick={handleLink(sub)}
+                      >
                         <div className='truncate text-base capitalize'>{sub}</div>
                         <div className='min-w-3.5'>({tags[sub]})</div>
                       </SeoLink>

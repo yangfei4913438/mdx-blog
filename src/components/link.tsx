@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren, DetailedHTMLProps, AnchorHTMLAttributes } from 'react';
 
 interface IProps extends PropsWithChildren {
   // 超链接
@@ -11,8 +11,10 @@ interface IProps extends PropsWithChildren {
   title?: string;
 }
 
+interface LinkProps extends DetailedHTMLProps<AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {}
+
 // 封装 a 标签
-const SeoLink: FC<IProps> = ({ href, className, self = true, title = '', children }) => {
+const SeoLink: FC<IProps & LinkProps> = ({ href, className, self = true, title = '', children, ...rest }) => {
   return (
     <a
       className={className}
@@ -20,6 +22,7 @@ const SeoLink: FC<IProps> = ({ href, className, self = true, title = '', childre
       title={title}
       target={self ? '_self' : '_blank'}
       rel='noopener external nofollow noreferrer'
+      {...rest}
     >
       {children}
     </a>

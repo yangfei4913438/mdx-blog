@@ -24,20 +24,30 @@ const usePostData = () => {
     keys.forEach((k) => {
       const vals = Object.keys(dirOrderConfig[k].children);
       vals.forEach((val) => {
-        valMap[val] = k;
+        // 二级目录名称处理成小写
+        // 一级目录的名称不能处理
+        valMap[String(val).toLowerCase()] = k;
       });
     });
     return valMap;
   }, []);
 
+  // 一级目录的名称，用于匹配
+  const firstDirs = useMemo(() => Object.keys(dirOrderConfig).map((k) => String(k).toLowerCase()), []);
+
+  // 词云数据
+  const wordcloud = useMemo(() => {
+    return Object.entries(tags).map(([k, v]) => ({ name: String(k).toUpperCase(), value: v }));
+  }, [tags]);
+
   return {
     postInfos,
     tags,
-    wordcloud: Object.entries(tags).map(([k, v]) => ({ name: String(k).toUpperCase(), value: v })),
+    wordcloud,
     logs: postInfos.length,
     tagKeys: Object.keys(tags).length,
     valueKeyMap,
-    firstDirs: Object.keys(dirOrderConfig),
+    firstDirs,
     setPostInfos,
     setTags,
   };
