@@ -3,7 +3,7 @@ index: 0
 title: js中的宏任务、微任务与Event-Loop
 description: js中的宏任务、微任务与Event-Loop
 author: 杨飞
-tags: [前端, javascript, 宏任务, 微任务, event-loop]
+tags: [前端基础, js, 宏任务, 微任务, event-loop]
 date: 2021-05-18 10:46:59
 ---
 

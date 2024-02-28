@@ -1,7 +1,7 @@
 // 目录排序配置
 const dirOrderConfig = {
   // 这里的 frontend 就是一级目录的名称，下同
-  React: {
+  react: {
     // 这里的 index 就是这个一级目录的排序，下同
     index: 0,
     // 这里的 children 表示下级目录，需要根据这个属性查询下级目录，下同
@@ -15,10 +15,11 @@ const dirOrderConfig = {
       antd: 6,
     },
   },
-  ReactNative: {
+  reactNative: {
     index: 1,
     children: {
-      基础: 0,
+      rn基础: 0,
+      rn常用系统组件: 1,
     },
   },
   linux: {

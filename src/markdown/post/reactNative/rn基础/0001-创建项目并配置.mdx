@@ -1,0 +1,80 @@
+---
+index: 1
+title: 创建项目和简单配置
+description: 如何创建一个 RN 项目，并进行简单的配置
+author: 杨飞
+tags: [reactNative, rn基础]
+date: 2024-02-11 18:00:00
+---
+
+#### 创建示例项目
+
+```python
+# 如果安装遇到问题，可以先忽略安装，后面自己手动处理安装(ts是默认启用的，不用去指定启用)
+npx react-native@latest init github_rn --skip-install
+
+# 安装web依赖
+cd github_rn
+yarn
+
+# 先处理系统配置(之前执行过就不需要再次执行了)
+sudo xcode-select --switch /Applications/Xcode.app
+sudo xcodebuild -license accept
+
+# 安装ios依赖
+cd ios
+ # 如果你是inter芯片，执行下面的两行指令。
+bundle install
+bundle exec pod install
+ # 如果你是arm系列芯片(m1,m2,m3...)，执行下面的两行指令。
+arch -arm64 bundle install
+arch -arm64 bundle exec pod install
+
+```
+
+#### 修改安卓项目的maven源
+
+> 路径 .../github\_rn/android/build.gradle 具体参考阿里maven源官网 [https://developer.aliyun.com/mvn/guide](https://developer.aliyun.com/mvn/guide "https://developer.aliyun.com/mvn/guide")
+
+```python
+buildscript {
+    ext {
+        buildToolsVersion = "34.0.0"
+        minSdkVersion = 21
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        ndkVersion = "25.1.8937393"
+        kotlinVersion = "1.8.0"
+    }
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' } // central仓和jcenter仓的聚合仓
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/grails-core' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/apache-snapshots' }
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+```
+
+#### 安装安卓依赖
+
+- 用Android Studio打开Android文件夹。
+
+  这个需要一点时间，等就行了。。。
+
+
+#### 启动项目
+
+- 运行 npm run android 启动安卓项目。
+
+- 在Android Studio中，启动安卓虚拟机后，就可以看到，已经启动的安卓项目。

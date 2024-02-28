@@ -1,0 +1,76 @@
+---
+index: 2
+title: Text 组件
+description: Text组件应该是 RN 使用占比最高的组件了，这篇文章介绍一下，Text 组件的使用方法
+author: 杨飞
+tags: [reactNative, rn常用系统组件, text, font]
+date: 2024-02-16 16:25:00
+---
+
+#### 一、字体大小
+
+默认文字大小为14
+
+一般来说，设置的文字大小都是偶数。
+
+#### 二、字重
+
+在安卓中，字体的字重只有2种，`normal`和`bold`
+
+#### 三、截断
+
+- `numberOfLines` 默认值为 1，超出 1 行的部分会被截断，且在截断的位置显示省略号。如果设置2，就是第二行超出的才会被处理。
+
+- `ellipsizeMode` 默认值是 `tail` ，表示最后加省略号，`middle` 是中间加省略号，`head` 是前面加省略号。`clip` 是不显示省略号。
+
+#### 四、选中
+
+> 安卓是正常的，ios目前测试下来是异常的。
+
+- `selectable` 默认是 `false`，不可以被选中。
+
+- `selectionColor` 这个是选中文本的样式。也就是说，选中后显示什么颜色。
+
+#### 五、点击和长按
+
+- `onPress` 点击
+
+- `onLongPress` 长按
+
+#### 六、跟随系统设置
+
+`allowFontScaling` 字体跟着系统设置改变，默认是 ture.
+
+#### 七、嵌套文字
+
+当`text`包裹`text`的时候，内部的`text`无法设置`margin`和`padding`属性。
+
+#### 八、文字对齐
+
+- `textAlign` 主轴对齐
+
+- `textAlignVertical` 交叉轴对齐。这个属性`ios`环境测试下来，没有生效。
+
+#### 九、文本上线的样式
+
+- `textDecorationLine` 指定线的类型：
+  - `underline` 下划线
+  - `line-through` 删除线
+  - `underline line-through` 同时有下划线和删除线
+  - `none` 没有线
+
+- `textDecorationStyle` 线的样式
+  - `solid` 实线
+  - `dashed` 长虚线（ios生效）
+  - `dotted` 短虚线（ios生效）
+  - `double` 双下划线（ios生效）
+
+#### 十、文字阴影
+
+> 需要三个属性一起写
+
+```shell
+textShadowColor: '#808080', # 阴影颜色
+textShadowOffset: { width: 2, height: 4 }, # 宽高的偏移量
+textShadowRadius: 8 # 虚化程度，越小越清晰
+```

@@ -1,0 +1,57 @@
+---
+index: 6
+title: TouchableOpacity 组件
+description: 这篇文章介绍一下，TouchableOpacity 组件的使用方法
+author: 杨飞
+tags: [reactNative, rn常用系统组件, TouchableOpacity]
+date: 2024-02-19 18:48:00
+---
+
+> `TouchableOpacity`是`React Native`里面最好用的点击组件，下面我们通过一个例子来介绍这个组件的使用
+
+```javascript
+import React from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+
+const TouchableOpacityDemo = () => {
+  return (
+    <View className='size-full bg-white p-12'>
+      <TouchableOpacity
+        activeOpacity={0.5} // x~1 不透明度的变化，就是点击的时候，按钮的透明度。0 就是点击看不到按钮 1 就是点击透明度没变化
+        onPress={() => console.log('onPress')} // 点击响应
+        onLongPress={() => console.log('onLongPress')} // 长按响应
+        delayLongPress={1000} // 多长时间才算长按
+        onPressIn={() => console.log('onPressIn')} // 先执行
+        onPressOut={() => console.log('onPressOut')} // 长按在 onLongPress 之后执行，点击在 onPress 之前执行。
+      >
+        <Text className='align-vertical-center flex h-12 w-72 rounded bg-gray-500 text-center text-white'>
+          来点我呀
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default TouchableOpacityDemo;
+```
+
+> 上面的例子里，需要配置一个扩展类名
+
+```javascript
+const plugin = require('tailwindcss/plugin');
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ['./App.{js,jsx,ts,tsx}', './src/**/*.@(js|jsx|ts|tsx|html)'],
+  theme: {},
+  plugins: [
+    plugin(function ({ addComponents }) { // 配置扩展类名
+      addComponents({
+        '.align-vertical-center': {
+          textAlignVertical: 'center',
+        },
+      });
+    }),
+  ],
+};
+```

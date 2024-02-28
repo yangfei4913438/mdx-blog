@@ -1,0 +1,44 @@
+---
+index: 7
+title: 使用自定义字体
+description: 这篇文章介绍，如何在 React Native 项目中，使用自定义字体文件。
+author: 杨飞
+tags: [reactNative, rn基础, tailwindcss, font-family]
+date: 2024-02-16 15:00:00
+---
+
+### 添加配置字体文件
+
+- 在`android/app/src/main`目录下，创建静态资源目录`assets`，在这个目录下创建字体目录`fonts`, 最后在这个目录下，放置自己的字体文件。
+
+  例如:
+  - `android/app/src/main/assets/fonts/DIN-Medium.otf`;
+  - `android/app/src/main/assets/fonts/LinHai.ttf`
+
+- 在`tailwind`配置文件中增加字体配置`tailwind.config.js`
+
+  ```javascript
+  /** @type {import('tailwindcss').Config} */
+  module.exports = {
+    content: ['./App.{js,jsx,ts,tsx}', './src/**/*.@(js|jsx|ts|tsx|html)'],
+    theme: {
+      extend: {
+        // React Native不支持备用字体。如果提供了一个字体数组，NativeWind将只使用第一个字体
+        fontFamily: {
+          din: ['DIN-Medium'],
+          lin: ['LinHai'],
+        },
+      },
+    },
+    plugins: [],
+  };
+  ```
+
+### 使用自定义字体
+
+```javascript
+<View className='mt-8 bg-gray-100 px-2'>
+  <Text className='font-din text-2xl text-black dark:text-white'>Hello Din</Text>
+  <Text className='font-lin text-2xl text-black dark:text-white'>你好林海</Text>
+</View>
+```
