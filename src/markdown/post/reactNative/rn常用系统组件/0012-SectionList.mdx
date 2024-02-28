@@ -1,0 +1,151 @@
+---
+index: 12
+title: SectionList 组件
+description: 这篇文章介绍一下，SectionList 组件的使用方法
+author: 杨飞
+tags: [reactNative, rn常用系统组件, SectionList]
+date: 2024-02-28 20:05:00
+---
+
+<div className='h-2' />
+
+性能和`FlatList`一样，一般用于分组列表。
+
+用法看一下下面的例子，非常简单。
+
+### 例子
+
+```javascript
+import {
+  type SectionListRenderItem,
+  type SectionListData,
+  SectionList,
+  Text,
+  View,
+} from 'react-native';
+import React, { useEffect, useRef } from 'react';
+
+const data = [
+  {
+    type: '拼音',
+    data: [
+      'Jia',
+      'Yi',
+      'Bing',
+      'Ding',
+      'Tian',
+      'Di',
+      'Xuan',
+      'Huang',
+      'Yu',
+      'Zhou',
+      'Hong',
+      'Huang',
+      '...',
+    ],
+  },
+  {
+    type: '中文',
+    data: [
+      '甲',
+      '乙',
+      '丙',
+      '丁',
+      '戊',
+      '己',
+      '庚',
+      '辛',
+      '壬',
+      '癸',
+      '天',
+      '地',
+      '玄',
+      '黄',
+      '宇',
+      '宙',
+      '洪',
+      '荒',
+      '...',
+    ],
+  },
+];
+
+const SectionListDemo = () => {
+  const ref = useRef<SectionList>(null);
+
+  // 列表元素渲染
+  const renderItem: SectionListRenderItem<string> = ({ item }) => {
+    return <Text className='text-lg py-2 text-center'>{item}</Text>;
+  };
+
+  // 分组元素渲染
+  const SectionHeader = (info: { section: SectionListData<string> }) => {
+    return (
+      <Text className='text-xl bg-yellow-300 font-bold py-2 text-center'>{info.section.type}</Text>
+    );
+  };
+
+  // 列表头部
+  const ListHeader = () => {
+    return (
+      <View className='bg-red-500 items-center justify-center'>
+        <Text className='text-2xl text-white py-4'>列表头部</Text>
+      </View>
+    );
+  };
+
+  // 列表尾部
+  const ListFooter = () => {
+    return (
+      <View className='bg-blue-500 items-center justify-center'>
+        <Text className='text-2xl text-white py-4'>列表尾部</Text>
+      </View>
+    );
+  };
+
+  // 空态渲染
+  const ListEmpty = () => {
+    return (
+      <View className='w-full h-96 justify-center items-center'>
+        <Text className='text-xl align-vertical-center text-gray-500'>暂时没有数据</Text>
+      </View>
+    );
+  };
+
+  useEffect(() => {
+    // api 示例
+    if (ref.current) {
+      setTimeout(() => {
+        ref.current?.scrollToLocation({
+          sectionIndex: 1, // 第二个分组
+          itemIndex: 3, // 第三个元素
+          viewPosition: 0, // 0顶部，1是底部
+          animated: true, // 开启动画
+        });
+      }, 3000);
+    }
+  }, []);
+
+  return (
+    <SectionList
+      ref={ref}
+      sections={data}
+      className='bg-gray-100 w-full h-full'
+      renderItem={renderItem}
+      keyExtractor={(item, index) => `${item}-${index}`}
+      onScroll={(event) => console.log(event.nativeEvent.contentOffset.y)}
+      keyboardDismissMode={'on-drag'}
+      keyboardShouldPersistTaps={'handled'} // 有点击事件就响应
+      ListHeaderComponent={ListHeader}
+      ListFooterComponent={ListFooter}
+      ListEmptyComponent={ListEmpty}
+      ItemSeparatorComponent={() => <View className='w-full h-px bg-gray-400' />} // 分割线渲染组件
+      renderSectionHeader={SectionHeader} // 分组的头
+      stickySectionHeadersEnabled={true} // 分组头吸顶
+      inverted={false} // 是否反向渲染（倒序排列）
+    />
+  );
+};
+
+export default SectionListDemo;
+```
