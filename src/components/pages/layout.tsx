@@ -110,8 +110,13 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
         </header>
 
         <ResizablePanelGroup direction='horizontal'>
-          {/* 这里的size数值，是百分比的值 */}
-          <ResizablePanel defaultSize={25} minSize={23} onResize={handleResize} className='relative hidden lg:block'>
+          <ResizablePanel
+            tabIndex={0} // 这个属性，应该是ResizablePanel的索引值，不加上，控制台会有异常错误信息。
+            defaultSize={25} // 这里的size数值，是百分比的值
+            minSize={23} // 这里的size数值，是百分比的值
+            onResize={handleResize}
+            className='relative hidden lg:block'
+          >
             <Nav />
             <TabbedContent width={navWidth}>
               <div
@@ -126,7 +131,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
 
           <ResizableHandle className='mx-1.5 hidden bg-transparent lg:block' />
 
-          <ResizablePanel defaultSize={75} minSize={60} onResize={handleResize}>
+          <ResizablePanel tabIndex={1} defaultSize={75} minSize={60} onResize={handleResize}>
             {children}
             {showFooter && <Footer />}
           </ResizablePanel>
