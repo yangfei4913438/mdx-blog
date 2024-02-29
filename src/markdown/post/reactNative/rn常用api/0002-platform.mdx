@@ -1,0 +1,53 @@
+---
+index: 2
+title: Platform 获取平台属性
+description: 这篇文章介绍，如何在 React Native 项目中，使用 Platform 获取平台属性
+author: 杨飞
+tags: [reactNative, rn常用api, Platform]
+date: 2024-02-29 18:25:00
+---
+
+> 这个 api 非常简单，直接看例子
+
+#### 例子
+
+```javascript
+import React, { useEffect } from 'react';
+import { View, Platform, StyleSheet } from 'react-native';
+
+const TestApi = () => {
+  useEffect(() => {
+    console.log(Platform.OS); // 系统
+    console.log(Platform.Version); // 版本
+    console.log(Platform.constants); // 设备底层信息
+    console.log(Platform.isTV); // 是不是电视
+  }, []);
+
+  return (
+    <View style={styles.root}>
+      占位文本
+    </View>
+  );
+};
+
+export default TestApi;
+
+const styles = StyleSheet.create({
+  root: {
+    width: '100%',
+    height: '100%',
+    // 根据不同的平台返回不同的样式
+    ...Platform.select({
+      android: {
+        paddingTop: 5,
+      },
+      ios: {
+        paddingTop: 10,
+      },
+      default: {
+        paddingTop: 0,
+      },
+    }),
+  },
+});
+```
