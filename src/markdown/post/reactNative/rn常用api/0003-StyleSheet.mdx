@@ -1,0 +1,62 @@
+---
+index: 3
+title: StyleSheet 样式表的进阶用法
+description: 这篇文章详细的介绍一下，StyleSheet 样式表的一些进阶用法。
+author: 杨飞
+tags: [reactNative, rn常用api, StyleSheet]
+date: 2024-02-29 18:40:00
+---
+
+> 虽然我们可以用 tailwind 来实现更精简的样式编写，但是某些特殊情况下，还是需要继续使用样式表来处理样式，所以一些样式表的进阶用法，还是要了解一下的。
+
+### 创建多个样式表
+
+```javascript
+// 一个组件中可以同时存在，多个样式表。我们应该避免一个超级大的样式表出现。
+const styles1 = StyleSheet.create({})
+const styles2 = StyleSheet.create({})
+```
+
+### 样式合并（返回数组）
+  > 后面的样式会覆盖前面相同的定义
+
+  ```javascript
+    const styles1 = StyleSheet.create({ root: { width: '100%', height: '100%' } });
+    const styles2 = StyleSheet.create({ root: { borderRadius: 8, height: 200 } });
+
+    // 数组的用法【不推荐，每次渲染都会产生一个新的数组，导致不必要的重绘】
+    style={[styles1.root, styles2.root]}
+
+    // 合并用法【推荐，更高的性能】
+    const styles3 = StyleSheet.compose(styles1.root, styles2.root);
+    style={styles3}
+  ```
+
+### 样式平铺（返回对象）
+
+  > 就是把多个样式主动合并成一个对象。
+
+  ```javascript
+    const styles1 = StyleSheet.create({ root: { width: '100%', height: '100%' } });
+    const styles2 = StyleSheet.create({ root: { borderRadius: 8, height: 200 } });
+
+    // 将数组的样式，变成一个对象。
+    const styles3 = StyleSheet.flatten([styles1.root, styles2.root]);
+  ```
+
+### 绝对填充
+
+  > 就是一个绝对定位的全屏布局。
+
+  ```javascript
+    console.log(StyleSheet.absoluteFill);
+    // {"bottom": 0, "left": 0, "position": "absolute", "right": 0, "top": 0}
+  ```
+
+### 头发丝尺寸
+
+  > 也就是1个像素的值（正常写的宽度 1 是一个逻辑单位，并不是 1 个像素）
+
+  ```javascript
+    console.log(StyleSheet.hairlineWidth); // 0.36363636363636365
+  ```
