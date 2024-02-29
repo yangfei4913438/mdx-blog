@@ -1,0 +1,231 @@
+---
+index: 4
+title: Linking 跳转
+description: 这篇文章详细的介绍一下，Linking 跳转 api 的用法。
+author: 杨飞
+tags: [reactNative, rn常用api, Linking]
+date: 2024-02-29 20:33:00
+---
+
+> 非常实用的 api, 可以节省很多代码。
+
+### 一、打开网页链接
+
+  - openURL() 直接打开链接
+
+    ```javascript
+      <Button
+        title={'测试'}
+        onPress={async () => {
+          const url = 'https://www.baidu.com/';
+          await Linking.openURL(url);
+        }}
+      />
+    ```
+
+  - canOpenURL() 判断链接能不能打开
+
+    > ⚠️ canOpenURL 需要配置系统权限，没有权限的时候，返回结果都是 false.
+    >
+    > 具体的系统权限配置，请查阅官方文档。
+
+### 二、地图定位
+  > 应用类型的链接打开，还是推荐使用 canOpenURL 来检查权限（需要系统权限），因为不是所有用户设备上都有支持特定URL Scheme的应用。下同。
+
+  ```javascript
+    import { Linking, Platform } from 'react-native';
+
+    // 经度和纬度
+    const latitude = 37.484847;
+    const longitude = -122.148386;
+
+    // 地点的名称或描述
+    const label = 'Your Destination';
+
+    // 创建URL
+    const url = Platform.select({
+      ios: `maps:${latitude},${longitude}?q=${label}`,
+      android: `geo:${latitude},${longitude}?q=${label}`
+    });
+
+    // 打开链接
+    Linking.canOpenURL(url).then(async (supported) => {
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        console.log('无法处理该URL: ' + url);
+      }
+    }).catch(err => console.error('An error occurred', err));
+  ```
+
+### 三、拨打电话（显示拨号界面，并且准备好电话号码，等待用户拨打）
+  > 电话应用是手机必备的，所以一般不用检查权限。
+
+  ```javascript
+    <Button
+      title={'测试'}
+      onPress={async () => {
+        const url = 'tel:10086';
+        await Linking.openURL(url);
+      }}
+    />
+  ```
+
+### 四、发送短信
+
+  ```javascript
+    import { Linking, Platform } from 'react-native';
+
+    const sendSMS = (phoneNumber, message) => {
+      // 对电话号码进行编码，以确保URL的有效性
+      let separator = '?';
+      if (Platform.OS === 'android') {
+        // 在Android上，我们使用"&"来分隔URL的部分
+        separator = '&';
+      }
+      // 使用encodeURIComponent确保短信内容在URL中正确编码
+      const smsUrl = `sms:${phoneNumber}${separator}body=${encodeURIComponent(message)}`;
+
+      // 使用Linking API打开短信应用
+      return Linking.openURL(smsUrl);
+    };
+
+    // 调用函数发送短信
+    sendSMS('123456789', '这是测试短信内容');
+  ```
+
+### 五、发送邮件
+
+  ```javascript
+    import { Linking } from 'react-native';
+    import qs from 'qs'; // 引入 qs 库
+
+    const sendEmail = (email, subject, body) => {
+      let url = `mailto:${email}`;
+
+      // 创建查询字符串
+      const query = qs.stringify({
+        subject: subject,
+        body: body,
+      });
+
+      if (query.length) {
+        url += `?${query}`;
+      }
+
+      // 打开链接
+      return Linking.openURL(url);
+    };
+  ```
+
+### 六、跳转应用
+
+- 安卓
+
+  在安卓平台上，你可以使用`intent`系统来跳转到其他应用。例如，如果你要打开Twitter并定位到一个特定的页面，你可以使用下面的代码：
+
+  ```JavaScript
+  <Button
+    title={'测试'}
+    onPress={() => {
+      const url = 'twitter://user?screen_name=李四'; // 根据目标应用的信息来配置
+      Linking.canOpenURL(url)
+        .then(async (supported) => {
+          if (supported) {
+            await Linking.openURL(url);
+          } else {
+            console.log('无法处理该URL: ' + url);
+          }
+        .catch((err) => console.error('Error occurred', err));
+      });
+    }}
+  />
+
+  ```
+
+  如果应用没有安装，你可能想要跳转到应用商店，这通常可以通过以下方式实现：
+
+  ```JavaScript
+  <Button
+    title={'测试'}
+    onPress={() => {
+      const url = 'market://details?id=[appPackageName]';
+      Linking.canOpenURL(url)
+        .then(async (supported) => {
+          if (supported) {
+            await Linking.openURL(url);
+          } else {
+            console.log('无法处理该URL: ' + url);
+          }
+        .catch((err) => console.error('Error occurred', err));
+      });
+    }}
+  />
+
+  ```
+
+- IOS
+
+  在iOS上，你需要使用应用的自定义URL方案。例如，如果你想要打开Facebook应用到一个特定的页面，你可以这样做：
+
+  ```javascript
+  <Button
+    title={'测试'}
+    onPress={() => {
+      const url = 'fb://profile/[pageId]';
+      Linking.canOpenURL(url)
+        .then(async (supported) => {
+          if (supported) {
+            await Linking.openURL(url);
+          } else {
+            console.log('无法处理该URL: ' + url);
+          }
+        .catch((err) => console.error('Error occurred', err));
+      });
+    }}
+  />
+
+  ```
+
+  如果应用没有安装，你可能想要跳转到App Store，可以这样做：
+
+  ```javascript
+  <Button
+    title={'测试'}
+    onPress={async () => {
+      const url = 'https://itunes.apple.com/app/id[appId]';
+      await Linking.openURL(url);
+    }}
+  />
+  ```
+
+### 七、跳转应用设置（不是系统设置）
+
+```javascript
+<Button
+  title={'测试'}
+  onPress={async () => {
+    await Linking.openSettings();
+  }}
+/>
+```
+
+### 八、安卓隐式跳转应用页面（根据实际情况处理权限配置）
+
+```javascript
+<Button
+  title={'测试'}
+  onPress={async () => {
+    if (Platform.OS === 'android') {
+      await Linking.sendIntent('com.testScheme.testHost.test', [{ key: 'name', value: '张三' }]);
+    }
+  }}
+/>
+```
+
+### 九、获取到原始的url
+
+```javascript
+// 如果是通过url访问的，就可以在这里被打印出来。
+console.log(Linking.getInitialURL());
+```
