@@ -9,13 +9,19 @@ import {
 import { FC, PropsWithChildren, useState } from 'react';
 import SearchPosts from '@/components/searchPosts';
 import { Input } from '@/components/ui/input';
+import useDialogData from '@/store/hooks/useDialogData';
 
+// 注意：
+// 外部不要包裹打开对话框的按钮，打开的按钮应该放到这个组件的里面，作为子组件。
+// 否则对话框的点击事件，会冒泡到外层的打开按钮。代码逻辑就变成了：关了又打开。造成无法窗口无法关闭的情况。
 const SearchDialog: FC<PropsWithChildren> = ({ children }) => {
   // 用户输入
   const [key, setKey] = useState('');
+  // 控制开关
+  const { visible, customVisible } = useDialogData();
 
   return (
-    <Dialog>
+    <Dialog open={visible} onOpenChange={customVisible}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         className='max-h-[80%] w-screen-90 min-w-screen-90 lg:w-screen-60 lg:min-w-screen-60'

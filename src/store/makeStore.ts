@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { postReducer } from '@/store/slices';
+import { postReducer, dialogReducer } from '@/store/slices';
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       post: postReducer,
+      dialog: dialogReducer,
     },
   });
 };

@@ -20,6 +20,10 @@ interface IPost {
   tags: { [key: string]: number };
 }
 
+interface IDialog {
+  visible: boolean;
+}
+
 interface IDirOrderConfig {
   [key: string]: {
     index: number;

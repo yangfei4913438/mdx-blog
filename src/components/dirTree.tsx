@@ -66,7 +66,8 @@ const DirTree = () => {
     return source === target;
   };
 
-  const handleLink: (key: string) => MouseEventHandler<HTMLAnchorElement> = (name: string) => (event) => {
+  // 响应 link 点击
+  const handleLink: (name: string) => MouseEventHandler<HTMLAnchorElement> = (name: string) => (event) => {
     event.preventDefault();
     // 使用命令式路由编程，更好的交互体验
     return push({

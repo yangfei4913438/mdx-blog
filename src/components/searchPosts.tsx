@@ -1,13 +1,24 @@
-import { usePostData } from '@/store';
-import React, { FC, useMemo, useState } from 'react';
-import SeoLink from '@/components/link';
+import React, { type FC, type MouseEventHandler, useMemo } from 'react';
 import { Home } from 'lucide-react';
 import cls from 'classnames';
 import { Virtuoso } from 'react-virtuoso';
+import { useRouter } from 'next/router';
 
-const SearchPosts: FC<{ userInput: string }> = ({ userInput }) => {
+import { usePostData } from '@/store';
+import SeoLink from '@/components/link';
+import useDialogData from '@/store/hooks/useDialogData';
+
+interface IProps {
+  userInput: string;
+}
+
+const SearchPosts: FC<IProps> = ({ userInput }) => {
   // 获取博客数据
   const { postInfos } = usePostData();
+  // 控制开关
+  const { setClose } = useDialogData();
+  // 获取路由信息
+  const { push } = useRouter();
 
   const list = useMemo(() => {
     return userInput
@@ -50,6 +61,13 @@ const SearchPosts: FC<{ userInput: string }> = ({ userInput }) => {
     );
   };
 
+  // 响应 link 点击
+  const handleLink: (pathname: string) => MouseEventHandler<HTMLAnchorElement> = (pathname: string) => (event) => {
+    event.preventDefault();
+    // 使用命令式路由编程，更好的交互体验
+    return push({ pathname }).finally(setClose);
+  };
+
   return (
     <article className='bg-white py-0'>
       <Virtuoso
@@ -69,7 +87,11 @@ const SearchPosts: FC<{ userInput: string }> = ({ userInput }) => {
                   <div className='text-normal font-bold capitalize text-gray-8'>{Highlight(item.subDir)}</div>
                 </div>
               </div>
-              <SeoLink href={item.url} self className={cls('inline-block w-full space-y-0.5 px-0 py-0')}>
+              <SeoLink
+                href={item.url}
+                className={cls('inline-block w-full space-y-0.5 px-0 py-0')}
+                onClick={handleLink(item.url)}
+              >
                 <div className='underline-animation text-md font-medium'>
                   {idx + 1}. {Highlight(item.title)}
                 </div>

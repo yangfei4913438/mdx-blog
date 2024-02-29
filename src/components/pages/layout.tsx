@@ -17,12 +17,15 @@ import Footer from '@/components/pages/footer';
 import SeoLink from '@/components/link';
 import TabbedContent from '@/components/tabbedContent';
 import SearchDialog from '@/components/searchDialog';
+import useDialogData from '@/store/hooks/useDialogData';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   // 页面滚动百分比
   const percent = usePageScroll();
   // 获取博客数据
   const { tagKeys } = usePostData();
+  // 控制开关
+  const { setOpen } = useDialogData();
   // 获取路由信息
   const {
     query: { second_dir },
@@ -96,11 +99,11 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
               <div className='text-lg font-bold'>杨飞的博客</div>
               <div className='text-normal'>全是干货的技术博客</div>
             </div>
-            <Button variant='ghost' className='hover:bg-transparent hover:text-gray-5'>
-              <SearchDialog>
+            <SearchDialog>
+              <Button variant='ghost' className='hover:bg-transparent hover:text-gray-5' onClick={setOpen}>
                 <Search className='h-5 w-5' />
-              </SearchDialog>
-            </Button>
+              </Button>
+            </SearchDialog>
           </div>
         </header>
 
