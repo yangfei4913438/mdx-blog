@@ -12,6 +12,7 @@ import { components } from '@/components/markdown';
 import Layout from '@/components/pages/layout';
 import SeoLink from '@/components/link';
 import { Home } from 'lucide-react';
+import useNextLink from '@/hooks/useNextLink';
 
 interface Path {
   params: { first_dir: string; second_dir: string; slug: string };
@@ -75,6 +76,8 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
 
 const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
   const { t: global } = useTranslation('common');
+  // 响应链接
+  const { handleLinkWithQueryKey } = useNextLink();
 
   return (
     <Layout>
@@ -91,11 +94,19 @@ const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
                 <div className='mr-1'>
                   <Home size='20px' className='-mb-[2px]' />
                 </div>
-                <SeoLink href={`/?key=${first_dir}`} className='text-base font-bold capitalize text-gray-8' self>
+                <SeoLink
+                  href={`/?key=${first_dir}`}
+                  className='text-base font-bold capitalize text-gray-8'
+                  onClick={handleLinkWithQueryKey('/', first_dir)}
+                >
                   {first_dir}
                 </SeoLink>
                 <div className='mx-1 text-gray-5'>/</div>
-                <SeoLink href={`/?key=${second_dir}`} className='text-base font-bold capitalize text-gray-8' self>
+                <SeoLink
+                  href={`/?key=${second_dir}`}
+                  className='text-base font-bold capitalize text-gray-8'
+                  onClick={handleLinkWithQueryKey('/', second_dir)}
+                >
                   {second_dir}
                 </SeoLink>
               </div>

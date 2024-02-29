@@ -1,10 +1,12 @@
-import { usePostData } from '@/store/hooks';
-import { MouseEventHandler, useLayoutEffect, useMemo, useState } from 'react';
-import SeoLink from '@/components/link';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import cls from 'classnames';
 import { BookMarked } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
+import SeoLink from '@/components/link';
+import useNextLink from '@/hooks/useNextLink';
+import { usePostData } from '@/store/hooks';
 
 const DirTree = () => {
   // 获取博客数据
@@ -16,6 +18,8 @@ const DirTree = () => {
   } = useRouter();
   // 展开的一级目录key
   const [value, setValue] = useState<string>();
+  // 响应链接
+  const { handleLinkWithQueryKey } = useNextLink();
 
   // 在页面渲染之前完成逻辑处理
   useLayoutEffect(() => {
@@ -66,16 +70,6 @@ const DirTree = () => {
     return source === target;
   };
 
-  // 响应 link 点击
-  const handleLink: (name: string) => MouseEventHandler<HTMLAnchorElement> = (name: string) => (event) => {
-    event.preventDefault();
-    // 使用命令式路由编程，更好的交互体验
-    return push({
-      pathname: '/',
-      query: { key: name },
-    });
-  };
-
   return (
     <Accordion type={'single'} className='border-t' collapsible value={value}>
       {Object.entries(dirs).map(([dir, subDirs], idx) => {
@@ -105,7 +99,7 @@ const DirTree = () => {
                       <SeoLink
                         href={`/?key=${sub}`} // 这里是为了 seo 优化设置的，其实跳转不用这个
                         className='flex flex-1 items-center justify-between'
-                        onClick={handleLink(sub)}
+                        onClick={handleLinkWithQueryKey('/', sub)}
                       >
                         <div className='truncate text-base capitalize'>{sub}</div>
                         <div className='min-w-3.5'>({tags[sub]})</div>

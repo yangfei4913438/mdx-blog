@@ -12,6 +12,7 @@ import SeoLink from '@/components/link';
 import { usePostData } from '@/store/hooks';
 import { Badge } from '@/components/ui/badge';
 import Footer from '@/components/pages/footer';
+import useNextLink from '@/hooks/useNextLink';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
@@ -24,6 +25,8 @@ const Home = () => {
   const { t: global } = useTranslation('common');
   // 获取博客数据
   const { postInfos } = usePostData();
+  // 响应链接
+  const { handleLink } = useNextLink();
 
   const {
     query: { key },
@@ -62,7 +65,7 @@ const Home = () => {
           return (
             <Card key={idx}>
               <div className='flex flex-col text-center'>
-                <SeoLink className='inline-block w-full' href={item.url}>
+                <SeoLink className='inline-block w-full' href={item.url} onClick={handleLink(item.url)}>
                   <div className='underline-animation text-xl'>{item.title}</div>
                 </SeoLink>
                 <div className='text-normal font-normal'>

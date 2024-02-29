@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { usePostData } from '@/store/hooks';
+import { usePostData } from '@/store';
 
 const usePostListData = () => {
   const router = useRouter();

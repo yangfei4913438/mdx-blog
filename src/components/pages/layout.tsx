@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useEffect, useMemo, useRef, useState } from 'react';
+import { type FC, type PropsWithChildren, useMemo, useState } from 'react';
 import { ArrowUp, Search, AlignJustify } from 'lucide-react';
 import { useRouter } from 'next/router';
 import throttle from 'lodash-es/throttle';
@@ -9,7 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { scrollToTop } from '@/utils/pageScroll';
 
-import { usePostData } from '@/store';
+import { usePostData, useDialogData } from '@/store';
 import usePageScroll from '@/hooks/usePageScroll';
 
 import Nav from '@/components/nav';
@@ -17,13 +17,15 @@ import Footer from '@/components/pages/footer';
 import SeoLink from '@/components/link';
 import TabbedContent from '@/components/tabbedContent';
 import SearchDialog from '@/components/searchDialog';
-import useDialogData from '@/store/hooks/useDialogData';
+import useNextLink from '@/hooks/useNextLink';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   // 页面滚动百分比
   const percent = usePageScroll();
   // 获取博客数据
   const { tagKeys } = usePostData();
+  // 响应链接
+  const { handleLink } = useNextLink();
   // 控制开关
   const { setOpen } = useDialogData();
   // 获取路由信息
@@ -68,7 +70,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                 <SheetTitle>博客导航</SheetTitle>
                 <div className='my-4 shadow shadow-gray-5'>
                   <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
-                    <SeoLink className='w-full' href='/' self>
+                    <SeoLink className='w-full' href='/' onClick={handleLink('/')}>
                       首页
                     </SeoLink>
                   </Button>
@@ -77,14 +79,14 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                     variant='ghost'
                     className='relative w-full justify-start text-base text-gray-9 hover:bg-gray-1'
                   >
-                    <SeoLink className='w-full' href='/tags' self>
+                    <SeoLink className='w-full' href='/tags' onClick={handleLink('/tags')}>
                       标签
                     </SeoLink>
                     <div className='absolute right-8 rounded-xl bg-gray-3 px-1 py-1 text-xs text-gray-8'>{tagKeys}</div>
                   </Button>
                   <hr className='text-gray-5' />
                   <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
-                    <SeoLink className='w-full' href='/about' self>
+                    <SeoLink className='w-full' href='/about' onClick={handleLink('/about')}>
                       关于本站
                     </SeoLink>
                   </Button>

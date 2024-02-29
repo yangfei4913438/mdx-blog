@@ -9,7 +9,7 @@ import {
 import { FC, PropsWithChildren, useState } from 'react';
 import SearchPosts from '@/components/searchPosts';
 import { Input } from '@/components/ui/input';
-import useDialogData from '@/store/hooks/useDialogData';
+import { useDialogData } from '@/store';
 
 // 注意：
 // 外部不要包裹打开对话框的按钮，打开的按钮应该放到这个组件的里面，作为子组件。

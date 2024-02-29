@@ -1,27 +1,18 @@
-import type { MouseEventHandler } from 'react';
-import { useRouter } from 'next/router';
 import { Home, Search, Tags, User } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import SeoLink from '@/components/link';
 import SearchDialog from '@/components/searchDialog';
-import { usePostData } from '@/store/hooks';
-import useDialogData from '@/store/hooks/useDialogData';
+import { usePostData, useDialogData } from '@/store';
+import useNextLink from '@/hooks/useNextLink';
 
 const Nav = () => {
   // 获取博客数据
   const { tagKeys } = usePostData();
   // 控制开关
   const { setOpen } = useDialogData();
-  // 获取路由信息
-  const { push } = useRouter();
-
-  // 响应 link 点击
-  const handleLink: (pathname: string) => MouseEventHandler<HTMLAnchorElement> = (pathname: string) => (event) => {
-    event.preventDefault();
-    // 使用命令式路由编程，更好的交互体验
-    return push({ pathname });
-  };
+  // 响应链接
+  const { handleLink } = useNextLink();
 
   return (
     <div className='shadow shadow-gray-5' id='layout-nav'>
