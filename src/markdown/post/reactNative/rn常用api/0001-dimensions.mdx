@@ -1,0 +1,56 @@
+---
+index: 1
+title: Dimensions 和 useWindowDimensions
+description: 这篇文章介绍，如何在 React Native 项目中，使用  Dimensions 和 useWindowDimensions 这两个 api。
+author: 杨飞
+tags: [reactNative, rn常用api, Dimensions, useWindowDimensions]
+date: 2024-02-29 10:41:00
+---
+
+> 这两个`api`主要是用来获取`屏幕分辨率`的。
+
+### 参数介绍
+
+  - 这两个`api`, 都可以获取到4个参数：
+    - width：屏幕的宽度
+    - height：屏幕的高度
+    - scale：屏幕缩放比
+    - fontScale：文字缩放比
+
+  - Dimensions.get 的参数
+    - window 不包含状态栏的高度
+    - screen 包含了状态栏的高度
+
+
+### 例子
+  ```javascript
+    const TestApi = () => {
+      // 通过 hook 获取
+      const { width, height, scale, fontScale } = useWindowDimensions();
+      console.log('width1: %d, height1: %d, scale1: %d, fontScale1: %d', width, height, scale, fontScale);
+
+      useEffect(() => {
+        // 监听屏幕信息变化，一些特殊的手机会产生屏幕大小变化的问题
+        const subscription = Dimensions.addEventListener('change', ({ window, screen }) => {
+          console.log('window:', window);
+          console.log('screen:', screen);
+        });
+
+        // 释放监听
+        return () => subscription.remove();
+      }, []);
+
+      return (
+        <View>
+          <Button
+            title={'测试'}
+            onPress={() => {
+              // 直接获取
+              const { width, height, scale, fontScale } = Dimensions.get('window');
+              console.log('width2: %d, height2: %d, scale2: %d, fontScale2: %d', width, height, scale, fontScale);
+            }}
+          />
+        </View>
+      );
+    };
+  ```
