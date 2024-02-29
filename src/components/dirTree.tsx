@@ -14,7 +14,6 @@ const DirTree = () => {
   // 获取路由信息
   const {
     query: { key, first_dir, second_dir },
-    push,
   } = useRouter();
   // 展开的一级目录key
   const [value, setValue] = useState<string>();
@@ -99,7 +98,7 @@ const DirTree = () => {
                       <SeoLink
                         href={`/?key=${sub}`} // 这里是为了 seo 优化设置的，其实跳转不用这个
                         className='flex flex-1 items-center justify-between'
-                        onClick={handleLinkWithQueryKey('/', sub)}
+                        onClick={handleLinkWithQueryKey('/', sub, true)}
                       >
                         <div className='truncate text-base capitalize'>{sub}</div>
                         <div className='min-w-3.5'>({tags[sub]})</div>

@@ -1,12 +1,14 @@
 import type { MouseEventHandler } from 'react';
 import { useRouter } from 'next/router';
-import { useDialogData } from '@/store';
+import { useDialogData, useSheetData } from '@/store';
 
 const useNextLink = () => {
   // 获取路由信息
   const { push } = useRouter();
-  // 控制开关
+  // 控制开关，搜索的全屏弹窗
   const { setClose } = useDialogData();
+  // 控制开关, 窄屏的侧边弹窗
+  const { setClose: setSheetClose } = useSheetData();
 
   // 响应 link 点击
   const handleLink: (pathname: string, needClose?: boolean) => MouseEventHandler<HTMLAnchorElement> =
@@ -16,7 +18,11 @@ const useNextLink = () => {
       event.preventDefault();
 
       if (needClose) {
-        return push({ pathname }).finally(setClose);
+        return push({ pathname }).finally(() => {
+          // 多设置一个关闭没影响，但是可以减少很多判断逻辑
+          setClose();
+          setSheetClose();
+        });
       }
 
       return push({ pathname });
@@ -37,7 +43,10 @@ const useNextLink = () => {
         return push({
           pathname: pathname,
           query: { key: keyName },
-        }).finally(setClose);
+        }).finally(() => {
+          setClose();
+          setSheetClose();
+        });
       }
 
       return push({

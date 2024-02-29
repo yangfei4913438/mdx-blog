@@ -1,30 +1,30 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // 默认值
-const initialState: IDialog = {
+const initialState: ISheet = {
   visible: false,
 };
 
 // 切片
-const dialogSlice = createSlice({
-  name: 'dialog',
+const sheetSlice = createSlice({
+  name: 'sheet',
   initialState,
   reducers: {
-    setOpen: (state: IDialog) => {
+    setOpen: (state: ISheet) => {
       if (state.visible) return state;
       return {
         ...state,
         visible: true,
       };
     },
-    setClose: (state: IDialog) => {
+    setClose: (state: ISheet) => {
       if (!state.visible) return state;
       return {
         ...state,
         visible: false,
       };
     },
-    customVisible: (state: IDialog, actions: PayloadAction<IDialog>) => {
+    customVisible: (state: ISheet, actions: PayloadAction<ISheet>) => {
       return {
         ...state,
         visible: actions.payload.visible,
@@ -34,6 +34,6 @@ const dialogSlice = createSlice({
 });
 
 // 导出 actions
-export const dialogActions = dialogSlice.actions;
+export const sheetActions = sheetSlice.actions;
 // 导出 reducer
-export const dialogReducer = dialogSlice.reducer;
+export const sheetReducer = sheetSlice.reducer;

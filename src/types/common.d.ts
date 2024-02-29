@@ -23,6 +23,7 @@ interface IPost {
 interface IDialog {
   visible: boolean;
 }
+interface ISheet extends IDialog {}
 
 interface IDirOrderConfig {
   [key: string]: {
