@@ -1,0 +1,73 @@
+---
+index: 6
+title: PermissionsAndroid 轻松解决安卓权限问题
+description: 这篇文章详细的介绍一下，PermissionsAndroid的使用
+author: 杨飞
+tags: [reactNative, rn常用api, PermissionsAndroid]
+date: 2024-03-01 18:31:00
+---
+
+> 这个 api 只使用于`安卓系统`的权限处理。
+>
+> 申请的权限，需要先在原生代码中注册。
+
+### 注册权限
+  - 路径: `android/app/src/main/AndroidManifest.xml`
+  - 代码:
+    ```javascript
+    // 这里就表示需要2个权限
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    ```
+
+### 申请权限
+
+  ```javascript
+  // 单个权限申请
+  PermissionsAndroid.request('android.permission.CAMERA');
+
+  // 多个权限申请
+  PermissionsAndroid.requestMultiple([
+    'android.permission.INTERNET',
+    'android.permission.CAMERA',
+  ]);
+  ```
+
+### 实际使用
+
+> 通常都是先检查有没有，如果没有再进行申请。参考：https://reactnative.dev/docs/next/permissionsandroid
+
+```javascript
+const TestApi = () => {
+  const requestPermission = async () => {
+    const permission: Permission = 'android.permission.CAMERA';
+    const result = await PermissionsAndroid.check(permission);
+    if (!result) {
+      const status = await PermissionsAndroid.request(permission, {
+        title: '需要写入权限',
+        message: '请授权',
+        buttonNeutral: '一会提醒我',
+        buttonNegative: '取消',
+        buttonPositive: '确定',
+      });
+      if (status === 'granted') {
+        console.log('获得权限');
+      } else if (status === 'denied') {
+        console.log('拒绝权限');
+      } else if (status === 'never_ask_again') {
+        console.log('不再询问');
+      } else {
+        console.log('出现异常:', status);
+      }
+    } else {
+      console.log('已经获得了权限，无需重复请求。');
+    }
+  };
+
+  return (
+    <View style={styles.root}>
+      <Button title={'权限测试'} onPress={requestPermission} />
+    </View>
+  );
+};
+```
