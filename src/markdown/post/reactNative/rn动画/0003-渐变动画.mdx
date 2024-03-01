@@ -1,10 +1,10 @@
 ---
-index: 2
-title: 缩放动画
-description: 如何创建一个缩放动画?
+index: 3
+title: 渐变动画
+description: 如何创建一个渐变动画?
 author: 杨飞
-tags: [reactNative, rn动画, 缩放动画]
-date: 2024-03-02 01:37:00
+tags: [reactNative, rn动画, 渐变动画]
+date: 2024-03-02 01:45:00
 ---
 
 > 非常简单的动画，直接看例子就能明白。
@@ -18,18 +18,18 @@ import { Animated, Button, View } from 'react-native';
 const Demo = () => {
   // 值也必须通过Animated来声明
   // useRef 是为了避免数据被无辜刷新。
-  const scale = useRef(new Animated.Value(1)).current;
+  const opacity = useRef(new Animated.Value(0.3)).current;
 
   const handlePress = () => {
-    Animated.timing(scale, {
-      toValue: 2,
+    Animated.timing(opacity, {
+      toValue: 1,
       duration: 1000,
       useNativeDriver: false,
     }).start();
 
     setTimeout(() => {
-      Animated.timing(scale, {
-        toValue: 1,
+      Animated.timing(opacity, {
+        toValue: 0.3,
         duration: 1000,
         useNativeDriver: false,
       }).start();
@@ -40,10 +40,7 @@ const Demo = () => {
     <View className='w-full h-full bg-white pt-8 px-12'>
       <Button title={'执行动画'} onPress={handlePress} />
       {/* 专用动画的view */}
-      <Animated.View
-        style={{ transform: [{ scale }] }}
-        className='mt-12 w-24 h-24 rounded-xl bg-blue-300'
-      />
+      <Animated.View style={{ opacity }} className='mt-12 w-24 h-24 rounded-xl bg-blue-900' />
     </View>
   );
 };
