@@ -1,0 +1,50 @@
+---
+index: 8
+title: Transform 伪3D效果
+description: 这篇文章详细的介绍一下，Transform 的使用
+author: 杨飞
+tags: [reactNative, rn常用api, Transform]
+date: 2024-03-01 19:25:00
+---
+
+### 可用的属性
+
+- 平移
+  - `translateY` y轴坐标位置变化
+  - `translateX` x轴坐标位置变化
+
+- 缩放
+  - `scaleX` 宽度变化
+  - `scaleY` 高度变化
+  - `scale`  宽高等比例变化
+
+- 旋转
+  - `rotateX` x轴旋转
+  - `rotateY` y轴旋转
+  - `rotateZ` z轴旋转
+  - `rotate`  z轴旋转
+
+
+### 例子
+
+```javascript
+<View className='w-full h-full bg-white items-center justify-center'>
+  <View
+    style={{
+      width: 100,
+      height: 100,
+      backgroundColor: 'red',
+      transform: [
+        { scale: 2 }, // 宽高都放大 2 倍
+        // { scaleX: 1.5 }, // 宽度放大
+        // { scaleY: 2 }, // 高度放大
+        { rotateX: '0deg' }, // X轴旋转
+        { rotateY: '0deg' }, // Y轴旋转
+        { rotateZ: '45deg' }, // Z轴旋转, 和 rotate 效果一样
+        { translateX: 0 }, // X 轴平移，右正数，左负数
+        { translateY: 0 }, // Y 轴平移，下正数，上负数
+      ],
+    }}
+  />
+</View>
+```
