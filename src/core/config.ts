@@ -21,6 +21,7 @@ const dirOrderConfig: IDirOrderConfig = {
       rn基础: 0,
       rn常用系统组件: 1,
       rn常用api: 2,
+      rn动画: 3,
     },
   },
   linux: {

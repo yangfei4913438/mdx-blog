@@ -1,0 +1,51 @@
+---
+index: 0
+title: 平移动画
+description: 如何创建一个平移动画?
+author: 杨飞
+tags: [reactNative, rn动画, 平移动画]
+date: 2024-02-02 00:35:00
+---
+
+> 非常简单的动画，直接看例子就能明白。
+
+### 例子
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Button, View } from 'react-native';
+
+const Demo = () => {
+  // 值也必须通过Animated来声明
+  // useRef 是为了避免每渲染一次就被重新复制。
+  const marginLeft = useRef(new Animated.Value(0)).current;
+
+  const handlePress = () => {
+    // 增加左边距
+    Animated.timing(marginLeft, {
+      toValue: 300, // 新值
+      duration: 1000, // 持续1000毫秒
+      useNativeDriver: false, // 不使用原生渲染
+    }).start(); // 启动动画
+
+    // 1 秒后，再回来
+    setTimeout(() => {
+      Animated.timing(marginLeft, {
+        toValue: 0, // 新值
+        duration: 1000, // 持续1000毫秒
+        useNativeDriver: false, // 不使用原生渲染
+      }).start(); // 启动动画
+    }, 1000);
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      {/* 专用动画的view */}
+      <Animated.View style={{ marginLeft }} className='mt-4 w-24 h-24 rounded-xl bg-blue-300' />
+    </View>
+  );
+};
+
+export default Demo;
+```
