@@ -1,0 +1,58 @@
+---
+index: 1
+title: 旋转动画
+description: 如何创建一个旋转动画?
+author: 杨飞
+tags: [reactNative, rn动画, 旋转动画]
+date: 2024-03-02 01:32:00
+---
+
+> 非常简单的动画，直接看例子就能明白。
+
+### 例子
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Button, View } from 'react-native';
+
+const Demo = () => {
+  // 值也必须通过Animated来声明
+  // useRef 是为了避免数据被无辜刷新。
+  const rotate = useRef(new Animated.Value(0)).current;
+
+  // 值映射
+  const rotateValue = rotate.interpolate({
+    inputRange: [0, 45], // 这里的值和旋转角度，可以不是一一对应，也可以是0-1这个缩小的数字范围。
+    outputRange: ['0deg', '45deg'],
+  });
+
+  const handlePress = () => {
+    Animated.timing(rotate, {
+      toValue: 45,
+      duration: 1000,
+      useNativeDriver: false,
+    }).start();
+
+    setTimeout(() => {
+      Animated.timing(rotate, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+    }, 1000);
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8 px-12'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      {/* 专用动画的view */}
+      <Animated.View
+        style={{ transform: [{ rotate: rotateValue }] }}
+        className='mt-12 w-24 h-24 rounded-xl bg-blue-300'
+      />
+    </View>
+  );
+};
+
+export default Demo;
+```
