@@ -1,0 +1,52 @@
+---
+index: 9
+title: Keyboard 键盘操作
+description: 这篇文章详细的介绍一下，Keyboard 键盘操作
+author: 杨飞
+tags: [reactNative, rn常用api, Keyboard]
+date: 2024-03-01 19:50:00
+---
+
+<div className='h-2' />
+
+`Keyboard`可以用来监听，键盘是否被`唤起`或者`隐藏`。也可以用来主动关闭唤起的键盘。
+
+### 例子
+
+```javascript
+import React, { useEffect } from 'react';
+import { Button, Keyboard, TextInput, View } from 'react-native';
+
+const Demo = () => {
+  useEffect(() => {
+    const onKeyboardShow = () => {
+      console.log('onKeyboardShow');
+    };
+    const onKeyboardHide = () => {
+      console.log('onKeyboardHide');
+    };
+
+    // 注册键盘监听
+    const subscriptionShow = Keyboard.addListener('keyboardDidShow', onKeyboardShow);
+    const subscriptionHide = Keyboard.addListener('keyboardDidHide', onKeyboardHide);
+
+    return () => {
+      // 注销监听
+      subscriptionShow.remove();
+      subscriptionHide.remove();
+    };
+  }, []);
+
+  return (
+    <View className='w-full h-full bg-white pt-8 items-center'>
+      <TextInput
+        className='min-w-1/2 py-2 bg-gray-100 border border-gray-500 px-3 rounded-md mb-4'
+        placeholder='点击输入框，自动打开键盘'
+      />
+      <Button title='点击隐藏键盘' onPress={Keyboard.dismiss} />
+    </View>
+  );
+};
+
+export default Demo;
+```
