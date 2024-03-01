@@ -1,0 +1,58 @@
+---
+index: 5
+title: BackHandler 安卓返回键适配
+description: 这篇文章详细的介绍一下，BackHandler 的用法。
+author: 杨飞
+tags: [reactNative, rn常用api, BackHandler]
+date: 2024-03-01 12:58:00
+---
+
+### 直接使用
+
+- 添加监听事件，拦截
+
+  ```javascript
+    // 直接拦截安卓系统的返回按钮，让返回按钮失效。
+    useEffect(() => {
+      const backForAndroid = () => true; // false 就可以正常响应，系统的返回操作。
+
+      // 硬件返回监听
+      BackHandler.addEventListener('hardwareBackPress', backForAndroid);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', backForAndroid);
+      };
+    }, []);
+  ```
+
+- 直接退出 app
+  > 不用一层一层返回到最后才退出
+  ```javascript
+    BackHandler.exitApp()
+  ```
+
+### 使用第三方库替代
+
+- 安装
+
+  ```shell
+  npm i @react-native-community/hooks
+  ```
+
+- 使用
+
+  ```javascript
+    import {useBackHandler} from '@react-native-community/hooks'
+
+    // 返回true就拦截
+    useBackHandler(() => {
+      // 业务层面的拦截条件
+      if (shouldBeHandledHere) {
+        // handle it
+        return true
+      }
+      // 正常情况放行
+      // let the default thing happen
+      return false
+    })
+  ```
