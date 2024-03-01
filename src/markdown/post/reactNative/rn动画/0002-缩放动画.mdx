@@ -1,0 +1,52 @@
+---
+index: 2
+title: 缩放动画
+description: 如何创建一个缩放动画?
+author: 杨飞
+tags: [reactNative, rn动画, 缩放动画]
+date: 2024-03-02 01:32:00
+---
+
+> 非常简单的动画，直接看例子就能明白。
+
+### 例子
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Button, View } from 'react-native';
+
+const Demo = () => {
+  // 值也必须通过Animated来声明
+  // useRef 是为了避免数据被无辜刷新。
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePress = () => {
+    Animated.timing(scale, {
+      toValue: 2,
+      duration: 1000,
+      useNativeDriver: false,
+    }).start();
+
+    setTimeout(() => {
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start();
+    }, 1000);
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8 px-12'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      {/* 专用动画的view */}
+      <Animated.View
+        style={{ transform: [{ scale }] }}
+        className='mt-12 w-24 h-24 rounded-xl bg-blue-300'
+      />
+    </View>
+  );
+};
+
+export default Demo;
+```
