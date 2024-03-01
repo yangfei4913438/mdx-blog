@@ -1,0 +1,70 @@
+---
+index: 7
+title: Vibration 简单好用的震动交互
+description: 这篇文章详细的介绍一下，Vibration 的使用
+author: 杨飞
+tags: [reactNative, rn常用api, Vibration]
+date: 2024-03-01 18:55:00
+---
+
+### 声明权限
+
+> 路径： `android/app/src/main/AndroidManifest.xml`
+
+```javascript
+<uses-permission android:name="android.permission.VIBRATE"/>
+```
+
+#### 执行震动代码
+
+> 真机调试才有效果。。。
+
+```javascript
+const TestApi = () => {
+  const requestPermission = () => {
+    // 默认400毫秒
+    Vibration.vibrate();
+  };
+
+  return (
+    <View style={styles.root}>
+      <Button title={'权限测试'} onPress={requestPermission} />
+    </View>
+  );
+};
+```
+
+  - 安卓可以指定震动时间
+
+    ```javascript
+    Vibration.vibrate(1000); // 震动1秒
+    ```
+
+    多次震动
+    > 先`暂停`100毫秒，接着`震动`500毫秒，再`暂停`200毫秒，然后再`震动`500毫秒。
+
+    ```javascript
+    // 基数都是`暂停`毫秒时间，偶数都是`震动`毫秒时间
+    Vibration.vibrate([100, 500, 200, 500]);
+    ```
+
+  - IOS的多次震动
+
+    > ios一次只能震动400毫秒。
+
+    ```javascript
+    // 所有的值都是停顿时间，停顿之后，恒定震动400毫秒。
+    Vibration.vibrate([100, 200, 300, 400]);
+    // 先`暂停`100毫秒，接着`震动`400毫秒，再`暂停`200毫秒，然后再`震动`400毫秒。再`暂停`300毫秒，接着`震动`400毫秒，再`暂停`400毫秒，然后再`震动`400毫秒。
+    ```
+
+  - 循环震动
+
+    > 安卓和 iOS 都支持。
+
+    ```javascript
+    // 一直震动下去，一直到代码里面取消震动。默认第二个参数是false, 表示默认不开启循环。
+    Vibration.vibrate([100, 500, 200, 500], true);
+    // 取消震动
+    Vibration.cancel();
+    ```
