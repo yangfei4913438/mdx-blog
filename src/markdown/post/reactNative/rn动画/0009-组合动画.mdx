@@ -1,0 +1,140 @@
+---
+index: 9
+title: 组合动画
+description: 介绍一下 组合动画 的具体用法。
+author: 杨飞
+tags: [reactNative, rn动画, 组合动画]
+date: 2024-03-02 22:10:00
+---
+
+
+### 动画类型
+
+- 并发 Animated.parallel
+
+- 序列 Animated.sequence
+
+- 有序/交错 Animated.stagger
+
+- 延迟 Animated.delay
+
+### 例子
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Button, View } from 'react-native';
+
+const Demo = () => {
+  // 值也必须通过Animated来声明
+  // useRef 是为了避免数据被无辜刷新。
+  const scale = useRef(new Animated.Value(1)).current;
+  // 矢量动画是2个值, 所以是二维动画。
+  const vector = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+
+  const handlePress = () => {
+    const moveXY = Animated.timing(vector, {
+      toValue: { x: 100, y: 100 }, // 目标值
+      duration: 1000,
+      useNativeDriver: false, // 是否使用原生能力
+    });
+
+    const moveScale = Animated.timing(scale, {
+      toValue: 2, // 目标值
+      duration: 1000,
+      useNativeDriver: false, // 是否使用原生能力
+    });
+
+    // 同时执行
+    // Animated.parallel([moveXY, moveScale]).start();
+    // 按顺序执行
+    // Animated.sequence([moveXY, moveScale]).start();
+    // 间隔执行, 指定相同的间隔时间
+    // Animated.stagger(2000, [moveXY, moveScale]).start();
+    // 不同的间隔, 把延迟时间当成一个动画元素，可以任意排序指定执行顺序
+    Animated.sequence([moveXY, Animated.delay(1500), moveScale]).start();
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8 px-12'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      <View className='h-8' />
+      {/* 专用动画的view */}
+      <Animated.View
+        style={{ transform: [{ scale }, { translateX: vector.x }, { translateY: vector.y }] }}
+        className='w-12 h-12 rounded-xl bg-blue-900'
+      />
+    </View>
+  );
+};
+
+export default Demo;
+```
+
+### 模拟业务场景
+> 三个菜单按钮，只有一个是展开的，其他几个都是收起的，每个菜单按钮的展开动画和收起动画都不一样。
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Easing, TouchableOpacity, View } from 'react-native';
+
+const Demo = () => {
+  const tab1 = useRef(new Animated.Value(120)).current;
+  const tab2 = useRef(new Animated.Value(50)).current;
+  const tab3 = useRef(new Animated.Value(50)).current;
+
+  const startAnimated = (current: number) => {
+    const at1 = Animated.timing(tab1, {
+      toValue: current === 0 ? 120 : 50,
+      duration: 500,
+      easing: current === 0 ? Easing.bounce : Easing.ease,
+      useNativeDriver: false,
+    });
+    const at2 = Animated.timing(tab2, {
+      toValue: current === 1 ? 120 : 50,
+      duration: 500,
+      easing: current === 1 ? Easing.bounce : Easing.ease,
+      useNativeDriver: false,
+    });
+    const at3 = Animated.timing(tab3, {
+      toValue: current === 2 ? 120 : 50,
+      duration: 500,
+      easing: current === 2 ? Easing.bounce : Easing.ease,
+      useNativeDriver: false,
+    });
+    Animated.parallel([at1, at2, at3]).start();
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8 px-12 justify-center items-center'>
+      <View className='w-full h-24 gap-4'>
+        <Animated.View style={{ width: tab1 }} className='h-6 bg-red-500 rounded-r'>
+          <TouchableOpacity
+            className='w-full h-full'
+            onPress={() => {
+              startAnimated(0);
+            }}
+          />
+        </Animated.View>
+        <Animated.View style={{ width: tab2 }} className='h-6 bg-red-500 rounded-r'>
+          <TouchableOpacity
+            className='w-full h-full'
+            onPress={() => {
+              startAnimated(1);
+            }}
+          />
+        </Animated.View>
+        <Animated.View style={{ width: tab3 }} className='h-6 bg-red-500 rounded-r'>
+          <TouchableOpacity
+            className='w-full h-full'
+            onPress={() => {
+              startAnimated(2);
+            }}
+          />
+        </Animated.View>
+      </View>
+    </View>
+  );
+};
+
+export default Demo;
+```
