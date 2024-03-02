@@ -1,0 +1,86 @@
+---
+index: 10
+title: Animated.event 原生数据映射
+description: 一个组件在滚动的时候，另外一个组件同步滚动。同步滚动的对象，永远比目标滚动的对象慢一拍。Animated.event 原生数据映射，可以很方便的解决这个问题。
+author: 杨飞
+tags: [reactNative, rn动画, Animated.event]
+date: 2024-03-02 22:55:00
+---
+
+### 案例：
+
+一个组件在滚动的时候，另外一个组件同步滚动。你会发现，同步滚动的对象，永远比目标滚动的对象慢一拍。
+
+> 滚动产生滚动数据，滚动数据的变化，触发页面重新渲染。。。所以在js层处理，永远都不会0延迟。
+
+### 解决方案：
+
+通过原生层的方式去处理，也就是 `Animated.event` 原生数据映射的解决方案。
+
+### 例子
+
+```javascript
+import React, { useMemo, useRef } from 'react';
+import { Animated, View } from 'react-native';
+
+const colors = ['red', 'green', 'blue', 'yellow', 'orange'];
+const array = Array.from({ length: 20 }, (_, idx) => idx + 1);
+
+const Demo = () => {
+  // 绑定动画值
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const viewList = useMemo(() => {
+    return (
+      <>
+        {array.map((item, index) => (
+          <View
+            key={item}
+            style={{
+              width: 60,
+              height: 100,
+              backgroundColor: colors[index % 5],
+            }}
+          />
+        ))}
+      </>
+    );
+  }, []);
+
+  return (
+    <View className='w-full h-full bg-white flex-row justify-center items-center space-x-10'>
+      <View className='h-full'>
+        <Animated.View
+          style={{
+            transform: [
+              // Animated.multiply 用于计算动画值的负数
+              { translateY: Animated.multiply(-1, scrollY) },
+            ],
+          }}
+        >
+          {viewList}
+        </Animated.View>
+      </View>
+      <View className='h-full'>
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: { y: scrollY }, // 直接将原生层的数据映射到动画值
+                },
+              },
+            ],
+            { useNativeDriver: true } // 使用原生方式处理
+          )}
+        >
+          {viewList}
+        </Animated.ScrollView>
+      </View>
+    </View>
+  );
+};
+
+export default Demo;
+```
