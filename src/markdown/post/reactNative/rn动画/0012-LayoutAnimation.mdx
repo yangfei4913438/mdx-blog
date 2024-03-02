@@ -1,0 +1,75 @@
+---
+index: 12
+title: LayoutAnimation 布局动画
+description: 超级简单又强大的布局动画, 适用于各种布局相关的动画需求。
+author: 杨飞
+tags: [reactNative, rn动画, LayoutAnimation]
+date: 2024-03-03 01:56:00
+---
+
+<div className='h-2' />
+
+如果你的动画需求，只是和布局相关，那么使用布局动画，可以让你少写很多代码。
+
+### 安卓手动启用布局动画（IOS不需要配置，默认启用）
+> 修改入口文件 `index.js`
+
+```javascript
+import { AppRegistry, Platform, UIManager } from 'react-native';
+import App from './App';
+import { name as appName } from './app.json';
+
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    console.log('enable');
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
+
+AppRegistry.registerComponent(appName, () => App);
+```
+
+### 执行布局动画（系统自动计算动画）
+
+```javascript
+import React, { useState } from 'react';
+import { Button, LayoutAnimation, View } from 'react-native';
+
+const Demo = () => {
+  const [visible, setVisible] = useState(false);
+
+  const handlePress = () => {
+    // 线性动画, 简写 LayoutAnimation.linear();
+    // LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+
+    // 弹跳动画, 简写 LayoutAnimation.spring();
+    // LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+
+    // 平缓动画，简写的时候只有一个结束回掉 LayoutAnimation.easeInEaseOut(() => console.log('动画结束'));
+    // LayoutAnimation.configureNext(
+    //   LayoutAnimation.Presets.easeInEaseOut, // 预置动画
+    //   () => {
+    //     // 结束回调
+    //     console.log('动画结束');
+    //   },
+    //   () => console.log('动画异常') // 异常回调
+    // );
+    // 动画代码简写
+    LayoutAnimation.easeInEaseOut(() => {
+      console.log('动画结束');
+    });
+
+    // 开关
+    setVisible((status) => !status);
+  };
+
+  return (
+    <View className='w-full h-full bg-white items-center justify-center space-y-10'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      {visible && <View className='w-20 h-20 bg-green-500' />}
+    </View>
+  );
+};
+
+export default Demo;
+```
