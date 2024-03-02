@@ -4,7 +4,7 @@ title: Modal 弹窗组件
 description: 这篇文章介绍一下，如何使用Modal组件来实现一个弹出窗口
 author: 杨飞
 tags: [reactNative, rn常用系统组件, Modal]
-date: 2024-02-28 22:36:00
+date: 2024-03-03 01:07:00
 ---
 
 > `Modal`组件，用于承载一个弹窗内容.
@@ -23,15 +23,14 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 
-const data = [
-  {
-    type: '拼音',
-    data: ['Jia', 'Yi', 'Bing', 'Ding', 'Tian', 'Di', 'Xuan', 'Huang', 'Yu', 'Zhou', 'Hong', 'Huang', '...'],
-  },
-  {
-    type: '汉字',
-    data: ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸', '天', '地', '玄', '黄', '...'],
-  },
+const SectionData = [
+  { type: 'A', data: ['阿林', '阿强', '阿冬', '阿旺', '安可', '安庆', '艾青', 'Alex'] },
+  { type: 'B', data: ['柏树', '柏志', '伯父', '爸爸', '北星', '贝贝', '巴金', 'Blues'] },
+  { type: 'C', data: ['陈琳', '陈兵', '陈青青', '蔡小飞', '蔡小军', 'Candy', 'Clinla', 'CoCo'] },
+  { type: 'D', data: ['嗒嗒', '杜冰', '杜非', '豆瓣', '德德', 'Dity'] },
+  { type: 'F', data: ['冯小琴', '冯天强', '冯倩倩', 'Felix'] },
+  { type: 'G', data: ['哥哥', '姑姑', '嘎嘎', '鬼鬼', '隔壁老王', 'Groovy'] },
+  { type: 'H', data: ['哈哈', '呵呵', '黄强', '黄小超', '黄海', '胡彬', '胡丽丽'] },
 ];
 
 const ModalDemo = () => {
@@ -88,25 +87,22 @@ const ModalDemo = () => {
         onShow={() => console.log('onShow ...')} // 打开的回掉
         onDismiss={() => console.log('onDismiss ...')} // 关闭的回掉（目前有bug, 可以在关闭方法中实现）
       >
-        <View>
-          <View className='w-full h-[15%] bg-[#00000090]' />
-          <View className='w-full h-[85%] bg-[#ff990030]'>
-            {/* 直接从列表独立出来，放在上面，避免滚动的时候，Header也一起滚动了 */}
-            <ListHeader />
-            <SectionList
-              sections={data}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => `${item}-${index}`}
-              keyboardDismissMode={'on-drag'}
-              keyboardShouldPersistTaps={'handled'} // 有点击事件就响应
-              ListFooterComponent={ListFooter}
-              ListEmptyComponent={ListEmpty}
-              ItemSeparatorComponent={() => <View className='w-full h-px bg-gray-400' />} // 分割线渲染组件
-              renderSectionHeader={SectionHeader} // 分组的头
-              stickySectionHeadersEnabled={true} // 分组头吸顶
-              inverted={false} // 是否反向渲染（倒序排列）
-            />
-          </View>
+        <View className='w-full h-full pt-[30%] bg-[#00000060]'>
+          {/* 直接从列表独立出来，放在上面，避免滚动的时候，Header也一起滚动了 */}
+          <ListHeader />
+          <SectionList
+            sections={SectionData}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => `${item}-${index}`}
+            keyboardDismissMode={'on-drag'}
+            keyboardShouldPersistTaps={'handled'} // 有点击事件就响应
+            ListFooterComponent={ListFooter}
+            ListEmptyComponent={ListEmpty}
+            ItemSeparatorComponent={() => <View className='w-full h-px bg-gray-400' />} // 分割线渲染组件
+            renderSectionHeader={SectionHeader} // 分组的头
+            stickySectionHeadersEnabled={true} // 分组头吸顶
+            inverted={false} // 是否反向渲染（倒序排列）
+          />
         </View>
       </Modal>
     </View>
