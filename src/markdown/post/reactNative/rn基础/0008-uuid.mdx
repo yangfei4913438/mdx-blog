@@ -1,0 +1,44 @@
+---
+index: 8
+title: 使用唯一ID
+description: 这篇文章介绍，如何在 React Native 项目中，使用唯一ID
+author: 杨飞
+tags: [reactNative, rn基础, uuid, react-native-uuid]
+date: 2024-03-03 03:28:00
+---
+
+在`react native`中使用唯一ID，只需要安装一个第三方库`react-native-uuid`即可。
+
+### 安装
+> 测试环境，最好先卸载了 app, 安装完成后重新运行
+
+```shell
+npm i react-native-uuid
+
+npx pod-install
+```
+
+### 使用
+
+```javascript
+import React, { useState } from 'react';
+import { Button, Text, View } from 'react-native';
+import uuid from 'react-native-uuid';
+
+const Demo = () => {
+  const [id, setId] = useState(uuid.v4);
+
+  const handlePress = () => {
+    setId(() => uuid.v4());
+  };
+
+  return (
+    <View className='w-full h-full items-center justify-center'>
+      <Text className='text-black text-lg mb-4'>{id}</Text>
+      <Button title={'刷新 ID'} onPress={handlePress} />
+    </View>
+  );
+};
+
+export default Demo;
+```
