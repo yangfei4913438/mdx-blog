@@ -1,0 +1,148 @@
+---
+index: 11
+title: 优化 model 弹窗的背景
+description: 在没有学习动画的时候，我们的探出窗口背景，是很生硬的方式出现的，现在有了动画方面的知识之后，就可以优化一下显示效果。
+author: 杨飞
+tags: [reactNative, rn动画, model背景]
+date: 2024-03-02 22:55:00
+---
+
+<div className='h-2' />
+
+> 这个直接看例子就行了。
+
+### 例子
+
+```javascript
+import {
+  Animated,
+  Button,
+  Dimensions,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  SectionList,
+  SectionListData,
+  SectionListRenderItem,
+  Text,
+  View,
+} from 'react-native';
+import React, { useRef, useState } from 'react';
+
+const SectionData = [
+  { type: 'A', data: ['阿林', '阿强', '阿冬', '阿旺', '安可', '安庆', '艾青', 'Alex'] },
+  { type: 'B', data: ['柏树', '柏志', '伯父', '爸爸', '北星', '贝贝', '巴金', 'Blues'] },
+  { type: 'C', data: ['陈琳', '陈兵', '陈青青', '蔡小飞', '蔡小军', 'Candy', 'Clinla', 'CoCo'] },
+  { type: 'D', data: ['嗒嗒', '杜冰', '杜非', '豆瓣', '德德', 'Dity'] },
+  { type: 'F', data: ['冯小琴', '冯天强', '冯倩倩', 'Felix'] },
+  { type: 'G', data: ['哥哥', '姑姑', '嘎嘎', '鬼鬼', '隔壁老王', 'Groovy'] },
+  { type: 'H', data: ['哈哈', '呵呵', '黄强', '黄小超', '黄海', '胡彬', '胡丽丽'] },
+];
+
+const { height: WINDOW_HEIGHT } = Dimensions.get('window');
+
+const ModalDemo = () => {
+  const [visible, setVisible] = useState(false);
+
+  const marginTop = useRef(new Animated.Value(WINDOW_HEIGHT)).current;
+
+  const showModal = () => {
+    setVisible(true);
+    // 开启动画
+    Animated.timing(marginTop, {
+      toValue: 0, // 上升
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  // 先跑动画，再关闭弹窗
+  const hideModal = () => {
+    Animated.timing(marginTop, {
+      toValue: WINDOW_HEIGHT, // 下降
+      duration: 500,
+      useNativeDriver: false,
+    }).start(() => {
+      setVisible(false);
+    });
+  };
+
+  // 列表元素渲染
+  const renderItem: SectionListRenderItem<string> = ({ item }) => {
+    return <Text className='text-lg py-2 text-center'>{item}</Text>;
+  };
+
+  // 分组元素渲染
+  const SectionHeader = (info: { section: SectionListData<string> }) => {
+    return (
+      <Text className='text-xl bg-yellow-300 font-bold py-2 text-center'>{info.section.type}</Text>
+    );
+  };
+
+  // 列表头部
+  const ListHeader = () => {
+    return (
+      <View className='bg-gray-900 px-8 items-center flex-row justify-between'>
+        <Text className='text-2xl text-white py-4'>列表头部</Text>
+        <Button title={'Close'} onPress={() => setVisible(false)} />
+      </View>
+    );
+  };
+
+  // 列表尾部
+  const ListFooter = () => {
+    return (
+      <View className='bg-blue-500 items-center justify-center'>
+        <Text className='text-2xl text-white py-4'>列表尾部</Text>
+      </View>
+    );
+  };
+
+  // 空态渲染
+  const ListEmpty = () => {
+    return (
+      <View className='w-full h-96 justify-center items-center'>
+        <Text className='text-xl align-vertical-center text-gray-500'>暂时没有数据</Text>
+      </View>
+    );
+  };
+
+  return (
+    <View className='bg-gray-100 w-full h-full'>
+      <Button title={'Open'} onPress={showModal} />
+      <Modal
+        visible={visible}
+        onRequestClose={hideModal}
+        transparent={true} // 透明
+        statusBarTranslucent={true} // 状态栏也透明
+        animationType='fade' // 动画方式 none 没有 fade 淡化 slide 滑动
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          className='w-full h-full bg-[#00000060]'
+        >
+          <Animated.View style={{ marginTop }} className='w-full h-full pt-[30%]'>
+            <ListHeader />
+            <SectionList
+              sections={SectionData}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => `${item}-${index}`}
+              contentContainerStyle={{ backgroundColor: '#F5F5F5' }}
+              keyboardDismissMode={'on-drag'}
+              keyboardShouldPersistTaps={'handled'} // 有点击事件就响应
+              ListFooterComponent={ListFooter}
+              ListEmptyComponent={ListEmpty}
+              ItemSeparatorComponent={() => <View className='w-full h-px bg-gray-400' />} // 分割线渲染组件
+              renderSectionHeader={SectionHeader} // 分组的头
+              stickySectionHeadersEnabled={true} // 分组头吸顶
+              inverted={false} // 是否反向渲染（倒序排列）
+            />
+          </Animated.View>
+        </KeyboardAvoidingView>
+      </Modal>
+    </View>
+  );
+};
+
+export default ModalDemo;
+```
