@@ -1,0 +1,76 @@
+---
+index: 7
+title: Animated.timing中的时间动画函数
+description: 介绍一下 Animated.timing 中的时间动画函数，的具体用法。
+author: 杨飞
+tags: [reactNative, rn动画, Animated.timing]
+date: 2024-03-02 11:31:00
+---
+
+> `Animated.timing`中的时间动画函数，就是属性`easing`的值。
+
+### 值类型介绍
+  - 四种内置动画
+    - 回拉 `Easing.back(3)`
+    - 弹跳 `Easing.bounce`
+    - 平缓 `Easing.ease`
+    - 弹性 `Easing.elastic(3)`
+
+  - 三种标准函数
+    - 一次方函数`Easing.linear`
+    - 二次方函数 `Easing.quad`
+    - 三次方函数 `Easing.cubic`
+
+  - 四种补充函数
+    - 贝塞尔曲线速度 `Easing.bezier(0.03, 0.97, 0.97, 0.01)`
+      > 参考：[https://cubic-bezier.com/#.03,.97,.97,.01](https://cubic-bezier.com/#.03,.97,.97,.01)
+    - 圆形速度 `Easing.circle`
+    - 正弦速度 `Easing.sin`
+    - 指数速度 `Easing.exp`
+
+  - 自由组合
+    > 示例查看：[https://easings.net/](https://easings.net/)
+    - 加速和弹跳 `Easing.in(Easing.bounce)`
+    - 减速和弹跳 `Easing.out(Easing.bounce)`
+    - 先加速再减速和弹跳 ` Easing.inOut(Easing.bounce)`
+
+### 例子
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Button, Easing, View } from 'react-native';
+
+const Demo = () => {
+  // 值也必须通过Animated来声明
+  // useRef 是为了避免数据被无辜刷新。
+  const marginLeft = useRef(new Animated.Value(0)).current;
+
+  const handlePress = () => {
+    Animated.timing(marginLeft, {
+      toValue: 200, // 目标值
+      duration: 1000, // 持续时长
+      easing: Easing.inOut(Easing.bounce), // 使用动画函数
+      useNativeDriver: false, // 是否使用原生能力
+    }).start();
+
+    // 这里是让方块的位置重置，代码示例还是看上面的。
+    setTimeout(() => {
+      return Animated.timing(marginLeft, {
+        toValue: 0, // 目标值
+        duration: 1000,
+        useNativeDriver: false, // 是否使用原生能力
+      }).start();
+    }, 2000);
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8 px-12'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      {/* 专用动画的view */}
+      <Animated.View style={{ marginLeft }} className='mt-12 w-24 h-24 rounded-xl bg-blue-900' />
+    </View>
+  );
+};
+
+export default Demo;
+```
