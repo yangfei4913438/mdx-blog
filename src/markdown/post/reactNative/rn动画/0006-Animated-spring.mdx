@@ -1,0 +1,93 @@
+---
+index: 6
+title: Animated.spring 弹性动画函数
+description: 介绍一下 Animated.spring 弹性动画函数，具体的用法
+author: 杨飞
+tags: [reactNative, rn动画, Animated.spring]
+date: 2024-03-02 10:43:00
+---
+
+### 参数介绍
+
+- toValue 目标值
+- 弹性模型：三组配置（三选一, 对应不同的物理模型，不能混用）
+  - 第一组
+    - `bounciness` 弹性大小
+    - `speed` 弹性速度
+  - 第二组
+    - `tension` 张力，越大越快
+    - `friction`  摩擦力, 越小越弹
+  - 第三组
+    - `stiffness`  刚度，越大越弹
+    - `damping` 阻尼，越小越弹
+    - `mass` 质量，越大越难停下
+  - 其他弹性参数（配合上面三组数据）
+    - `velocity` 初始速度，默认0
+    - `overshootClamping` 过冲，是否应该夹紧而不是弹跳，默认false
+    - `restDisplacementThreshold` 恢复位移阈值，低于改阈值被视为静止状态，默认值0.001
+    - `restSpeedThreshold` 弹簧静止速度，单位为像素/秒，默认值0.001
+    - `delay` 延迟，延迟后启动画面，默认值为0
+
+### 例子
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Button, View } from 'react-native';
+
+const Demo = () => {
+  // 值也必须通过Animated来声明
+  // useRef 是为了避免数据被无辜刷新。
+  const marginLeft = useRef(new Animated.Value(0)).current;
+
+  // 弹性模型1
+  const config1 = {
+    bounciness: 15, // 弹性大小
+    speed: 12, // 弹性速度
+  };
+
+  // 弹性模型2
+  const config2 = {
+    tension: 40, // 张力，越大越快
+    friction: 2, // 摩擦力, 越小越弹
+  };
+
+  // 弹性模型3
+  const config3 = {
+    stiffness: 100, // 刚度，越大越弹
+    damping: 10, // 阻尼，越小越弹
+    mass: 10, // 质量，越大越难停下
+  };
+
+  // 随机取一个元素
+  const getRandom = (arr: any[]) => {
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
+
+  const handlePress = () => {
+    Animated.spring(marginLeft, {
+      toValue: 200, // 目标值
+      useNativeDriver: false, // 是否使用原生能力
+      ...getRandom([config1, config2, config3]), // 随机取一个配置
+    }).start();
+
+    // 这里是让方块的位置重置，代码示例还是看上面的。
+    setTimeout(() => {
+      return Animated.timing(marginLeft, {
+        toValue: 0, // 目标值
+        duration: 1000,
+        useNativeDriver: false, // 是否使用原生能力
+      }).start();
+    }, 1000);
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8 px-12'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      {/* 专用动画的view */}
+      <Animated.View style={{ marginLeft }} className='mt-12 w-24 h-24 rounded-xl bg-blue-900' />
+    </View>
+  );
+};
+
+export default Demo;
+```
