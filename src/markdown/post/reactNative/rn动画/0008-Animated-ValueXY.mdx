@@ -1,0 +1,55 @@
+---
+index: 8
+title: Animated.ValueXY 矢量动画
+description: 介绍一下 Animated.ValueXY 矢量动画，的具体用法。
+author: 杨飞
+tags: [reactNative, rn动画, Animated.ValueXY]
+date: 2024-03-02 11:50:00
+---
+
+> 其实就是把一个方向的线性动画，升级成了2个方向的二维动画。其他的没什么区别。
+
+### 例子
+
+```javascript
+import React, { useRef } from 'react';
+import { Animated, Button, View } from 'react-native';
+
+const Demo = () => {
+  // 值也必须通过Animated来声明
+  // useRef 是为了避免数据被无辜刷新。
+  // 矢量动画是2个值, 所以是二维动画。
+  const vector = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+
+  const handlePress = () => {
+    Animated.timing(vector, {
+      toValue: { x: 200, y: 100 }, // 目标值
+      duration: 1000,
+      useNativeDriver: false, // 是否使用原生能力
+    }).start();
+
+    // 这里是让方块的位置重置，代码示例还是看上面的。
+    setTimeout(() => {
+      return Animated.timing(vector, {
+        toValue: { x: 0, y: 0 }, // 目标值
+        duration: 1000,
+        useNativeDriver: false, // 是否使用原生能力
+      }).start();
+    }, 1000);
+  };
+
+  return (
+    <View className='w-full h-full bg-white pt-8 px-12'>
+      <Button title={'执行动画'} onPress={handlePress} />
+      <View className='h-8' />
+      {/* 专用动画的view */}
+      <Animated.View
+        style={{ marginLeft: vector.x, marginTop: vector.y }}
+        className='w-24 h-24 rounded-xl bg-blue-900'
+      />
+    </View>
+  );
+};
+
+export default Demo;
+```
