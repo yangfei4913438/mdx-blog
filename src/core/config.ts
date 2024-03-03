@@ -49,6 +49,15 @@ const dirOrderConfig: IDirOrderConfig = {
   },
 };
 
+export const siteInfo = {
+  name: '杨飞的笔记',
+  desc: '全是干货的技术笔记',
+  home: '首页',
+  tag: '标签',
+  about: '关于',
+  search: '搜索',
+};
+
 // 目前没有支持三级目录
 // 新增目录需要再这里增加配置
 export default dirOrderConfig;

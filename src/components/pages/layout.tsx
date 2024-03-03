@@ -18,6 +18,7 @@ import SeoLink from '@/components/link';
 import TabbedContent from '@/components/tabbedContent';
 import SearchDialog from '@/components/searchDialog';
 import useNextLink from '@/hooks/useNextLink';
+import { siteInfo } from '@/core/config';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   // 页面滚动百分比
@@ -73,7 +74,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                 <div className='my-4 shadow shadow-gray-5'>
                   <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
                     <SeoLink className='w-full' href='/' onClick={handleLink('/', true)}>
-                      首页
+                      {siteInfo.home}
                     </SeoLink>
                   </Button>
                   <hr className='text-gray-5' />
@@ -82,14 +83,14 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
                     className='relative w-full justify-start text-base text-gray-9 hover:bg-gray-1'
                   >
                     <SeoLink className='w-full' href='/tags' onClick={handleLink('/tags', true)}>
-                      标签
+                      {siteInfo.tag}
                     </SeoLink>
                     <div className='absolute right-8 rounded-xl bg-gray-3 px-1 py-1 text-xs text-gray-8'>{tagKeys}</div>
                   </Button>
                   <hr className='text-gray-5' />
                   <Button variant='ghost' className={'w-full justify-start text-base text-gray-9 hover:bg-gray-1'}>
                     <SeoLink className='w-full' href='/about' onClick={handleLink('/about', true)}>
-                      关于本站
+                      {siteInfo.about}
                     </SeoLink>
                   </Button>
                 </div>
@@ -100,8 +101,8 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
               </SheetContent>
             </Sheet>
             <div>
-              <div className='text-lg font-bold'>杨飞的博客</div>
-              <div className='text-normal'>全是干货的技术博客</div>
+              <div className='text-lg font-bold'>{siteInfo.name}</div>
+              <div className='text-normal'>{siteInfo.desc}</div>
             </div>
             <SearchDialog>
               <Button variant='ghost' className='hover:bg-transparent hover:text-gray-5' onClick={setOpen}>

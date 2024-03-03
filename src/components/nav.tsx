@@ -5,6 +5,7 @@ import SeoLink from '@/components/link';
 import SearchDialog from '@/components/searchDialog';
 import { usePostData, useDialogData } from '@/store';
 import useNextLink from '@/hooks/useNextLink';
+import { siteInfo } from '@/core/config';
 
 const Nav = () => {
   // 获取博客数据
@@ -17,8 +18,8 @@ const Nav = () => {
   return (
     <div className='shadow shadow-gray-5' id='layout-nav'>
       <div className='-mt-1 flex flex-col items-center justify-center space-y-2 bg-[#222] py-6 text-center'>
-        <div className='text-lg font-bold text-white'>杨飞的博客</div>
-        <div className='text-normal text-white'>全是干货的技术博客</div>
+        <div className='text-lg font-bold text-white'>{siteInfo.name}</div>
+        <div className='text-normal text-white'>{siteInfo.desc}</div>
       </div>
       <div className='flex w-full flex-col items-start bg-white px-4 py-4'>
         <Button variant='ghost' className='w-full justify-start text-base text-gray-9 hover:bg-gray-1'>
@@ -27,7 +28,7 @@ const Nav = () => {
             href='/'
             onClick={handleLink('/')}
           >
-            <Home className='mr-1 h-4 w-4' /> 首页
+            <Home className='mr-1 h-4 w-4' /> {siteInfo.home}
           </SeoLink>
         </Button>
         <Button variant='ghost' className='w-full justify-start text-base text-gray-9 hover:bg-gray-1'>
@@ -36,7 +37,7 @@ const Nav = () => {
             href='/tags'
             onClick={handleLink('/tags')}
           >
-            <Tags className='mr-1 h-4 w-4' /> 标签
+            <Tags className='mr-1 h-4 w-4' /> {siteInfo.tag}
           </SeoLink>
           <div className='rounded-xl bg-gray-3 px-1 py-1 text-xs text-gray-8'>{tagKeys}</div>
         </Button>
@@ -46,7 +47,7 @@ const Nav = () => {
             href='/about'
             onClick={handleLink('/about')}
           >
-            <User className='mr-1 h-4 w-4' /> 关于
+            <User className='mr-1 h-4 w-4' /> {siteInfo.about}
           </SeoLink>
         </Button>
         <SearchDialog>
@@ -57,7 +58,7 @@ const Nav = () => {
           >
             <div className='mr-5 flex w-full items-center justify-start font-medium'>
               <Search className='mr-1 h-4 w-4' />
-              <span>搜索</span>
+              <span>{siteInfo.search}</span>
             </div>
           </Button>
         </SearchDialog>
