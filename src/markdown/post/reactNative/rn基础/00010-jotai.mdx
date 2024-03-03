@@ -1,0 +1,260 @@
+---
+index: 10
+title: 状态管理库 Jotai
+description: 这篇文章介绍，如何在 React Native 项目中，使用Jotai
+author: 杨飞
+tags: [reactNative, rn基础, Jotai]
+date: 2024-03-03 08:28:00
+---
+
+
+### 一、特点
+
+- 采用分散管理原子状态的设计模式
+- 包体积非常小巧，大小仅 2.4 kB
+- `TypeScript` 支持很好
+- 不需要用`Provider`之类的组件包裹，使得结构可以更简洁
+- API 都是以 `Hooks` 方式提供，使用方式类似于 `useState`，`useReducer`
+- 使用了 `Atom` + `Hook` + `Context`，用于解决 React 全局数据流管理的问题。
+
+<br />
+
+### 二、什么是`Atom`？
+
+`Atom` 是 `Jotai` 中状态管理单位，它是可以更新和订阅的，当 `Atom` 被更新时，订阅了这个 `Atom` 的组件便会使用新值重新渲染。
+
+并且，在定义 `Atom` 时不用提供key。更新对应的 `Atom` 只会重新渲染订阅了这个 `Atom` 的组件，并不会像 `Context` 那样导致整个父组件重新渲染，所以可以做到精确渲染。
+
+还可以组合多个 `Atom` 来创建新的 `Atom`，并且支持异步。
+
+
+<br />
+
+### 三、安装
+
+```shell
+npm i jotai
+```
+
+<br />
+
+### 四、配置
+
+- 编辑 babel 配置文件 `babel.config.js`
+
+  ```javascript
+  module.exports = {
+    presets: ['module:@react-native/babel-preset'],
+    plugins: [
+      'nativewind/babel',
+      'jotai/babel/plugin-react-refresh', // Enables hot reload for atoms
+    ],
+  };
+  ```
+
+<br />
+
+### 五、封装atom
+
+> `src/core/atom.ts`
+
+```typescript
+import { atomWithStorage, createJSONStorage, RESET } from 'jotai/utils';
+// RN官方推荐我们在RN中用AsyncStorage进行数据存储。旨在代替LocalStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+/**
+ * 封装一个使用浏览器存储功能的 atom 实例。
+ * */
+export const atomStorage = <T>(key: string, initialValue: T, useStorage: boolean = true) => {
+  const storage = createJSONStorage<T>(() => AsyncStorage);
+  return atomWithStorage<T>(key, initialValue, useStorage ? storage : undefined);
+};
+
+/**
+ * 从浏览器 storage 中，移除某个键值对.
+ * 注意：当前的移除行为，并不会影响继续设置，更不会引发异常。只是清理了本地的 storage 中某个键值对。
+ * */
+export const atomStorageClear = <T>(setFunc: (val: T | typeof RESET) => void) => {
+  setFunc(RESET);
+};
+```
+
+<br />
+
+### 六、配置状态管理对象
+> 和其他状态管理库一样，需要先创建状态管理对象。这里以用户信息数据为例。
+
+- 用户信息数据 `src/stores/userInfo.ts`
+
+  ```typescript
+  import { atomStorage } from '@/core/atom';
+
+  /** 用户信息的数据类型定义 */
+  export interface UserInfoType {
+    /** 登陆名称 */
+    name: string;
+    /** 性别 */
+    sex: string;
+  }
+
+  /** 用户信息默认值 */
+  export const userInfoDefault: UserInfoType = {
+    name: '',
+    sex: '',
+  };
+
+  /** 用户信息数据，在浏览器存储中的存储key */
+  export const userInfoStorageKey: string = 'UserInfo';
+
+  /** 用户信息的数据原子对象 */
+  export const userInfoAtom = atomStorage<UserInfoType>(userInfoStorageKey, userInfoDefault, true);
+  ```
+
+- 封装最终的自定义使用hook `src/stores/useUserInfo.ts`
+  > 大型复杂工程适合这种统一数据管理方式，不要在大型项目中零散的使用jotai原生hook，以避免数据多处更新导致的数据混乱。
+  >
+  > 此种数据管理方式，完美的替代了react-query这类数据获取库。
+
+  ```typescript
+  import { useCallback, useEffect, useState } from 'react';
+  import { useAtom } from 'jotai';
+  import { ToastAndroid } from 'react-native';
+  import { useNavigation } from '@react-navigation/native';
+  import { StackNavigationProp } from '@react-navigation/stack';
+
+  import { userInfoAtom, userInfoDefault, UserInfoType } from 'stores/userInfo';
+  import { request } from 'core/request';
+  import { atomStorageClear } from 'core/atom';
+
+  interface UserInfoHookType {
+    /** 用户信息 */
+    userInfo: UserInfoType;
+    /** 网络请求状态 */
+    loading: boolean;
+    /** 用户登陆，从远程请求数据，并更新到本地存储及内存 */
+    userLogin: (name: string, pwd: string, callback?: (success: boolean) => void) => Promise<void>;
+    /** 重置为默认值 */
+    resetUserInfo: () => void;
+    /** 从浏览器存储中删除当前存储的键值对 */
+    clearUserInfoStorage: () => void;
+  }
+
+  /**
+   * 封装了所有和用户信息相关的数据，以及数据的处理方法。
+   * 注意: 这里不直接对外暴露更新 atom 的方法，所有的 atom 更新逻辑，都应该放在当前自定义hook中，外部调用相应的处理方法即可。
+   * */
+  const useUserInfo = (): UserInfoHookType => {
+    const [userInfo, setUserInfo] = useAtom(userInfoAtom);
+    // 发生网络请求时，当前的处理状态
+    const [loading, setLoading] = useState(false);
+    // 路由相关
+    const navigation = useNavigation<StackNavigationProp<any>>();
+
+    /** 如果是带初始化的数据，可以通过 useEffect 来处理*/
+    // useEffect(() => {
+    //  console.log('当前的数据：%o', userInfo);
+    // }, [userInfo]);
+
+    /** 重置为默认值 */
+    const resetUserInfo = useCallback(() => {
+      setUserInfo(userInfoDefault);
+    }, [setUserInfo]);
+
+    /** 从浏览器存储中删除当前存储的键值对 */
+    const clearUserInfoStorage = useCallback(() => {
+      atomStorageClear(setUserInfo);
+    }, [setUserInfo]);
+
+    /** 用户登陆，从远程请求数据，并更新到本地存储及内存 */
+    const userLogin = useCallback(async (name: string, pwd: string, callback?: (success: boolean) => void) => {
+      setLoading(() => true);
+      try {
+        const { data } = await request<UserInfoType>('login', { name, pwd });
+        if (data) {
+          setUserInfo(data);
+          callback?.(true);
+          // 登陆页面到首页，一定是替换，不能出现回退。
+          navigation.replace('Home');
+        } else {
+          callback?.(false);
+          resetUserInfo();
+          ToastAndroid.show('登陆失败，请检查用户名和密码', ToastAndroid.LONG);
+        }
+      } catch (e) {
+        console.error('登陆出现错误: %s', e);
+        resetUserInfo();
+        callback?.(false);
+      }
+      setLoading(() => false);
+    }, [navigation, resetUserInfo, setUserInfo]);
+
+    return {
+      userInfo,
+      loading,
+      userLogin,
+      resetUserInfo,
+      clearUserInfoStorage,
+    };
+  };
+
+  export default useUserInfo;
+  ```
+
+<br />
+
+### 七、使用数据
+
+> 例子: 欢迎页面读取数据`src/pages/welcome/index.tsx`
+
+```javascript
+import React, { useEffect } from 'react';
+import { Image, LayoutAnimation, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+import main_logo from '@/assets/icon_main_logo.png';
+import { useUserInfo } from '@/stores';
+
+const Welcome = () => {
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  // 获取用户数据
+  const { userInfo } = useUserInfo();
+
+  useEffect(() => {
+    // 执行页面跳转
+    const goPage = (name: 'Home' | 'Login') => {
+      LayoutAnimation.easeInEaseOut();
+      // 存在登陆信息，跳转首页
+      // 这个页面不能回来，所以这里是替换.
+      navigation.replace(name);
+    };
+
+    // 定时器对象
+    let timer: number;
+    // 几秒后执行
+    const delay: number = 1000 * 2;
+    // 判断是否存在用户信息
+    if (userInfo && userInfo.redBookId > 0) {
+      // 存在用户信息，跳转首页
+      timer = setTimeout(() => goPage('Home'), delay);
+    } else {
+      // 不存在用户信息，跳转登陆页
+      timer = setTimeout(() => goPage('Login'), delay);
+    }
+
+    return () => {
+      // 离开页面时，清理定时器
+      clearTimeout(timer);
+    };
+  }, [navigation, userInfo]);
+
+  return (
+    <View className="w-full h-full bg-white flex-col justify-center items-center">
+      <Image className="w-64 h-36" style={{ resizeMode: 'contain' }} source={main_logo} />
+    </View>
+  );
+};
+
+export default Welcome;
+```
