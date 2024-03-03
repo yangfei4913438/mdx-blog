@@ -1,0 +1,53 @@
+---
+index: 0
+title: 安卓应用签名的创建和使用
+description: 打包安装应用程序之前，需要先创建签名
+author: 杨飞
+tags: [reactNative, rn打包发布, 安卓app签名]
+date: 2024-03-03 23:57:00
+---
+
+### 一、创建签名
+
+- 打开Android studio，选择 build，创建签名。如下图
+
+  <Image src={'https://assets.yangfei.wiki/blog/react-native/build/001.png'} />
+
+- 选择 apk
+
+  <Image src={'https://assets.yangfei.wiki/blog/react-native/build/002.png'} />
+
+- 选择创建新的
+
+  <Image src={'https://assets.yangfei.wiki/blog/react-native/build/003.png'} />
+
+- 填入秘钥的资料
+
+  <Image src={'https://assets.yangfei.wiki/blog/react-native/build/004.png'} />
+
+  - 指定一个目录，最后自定义一个秘钥的名称，别忘了扩展名。也可以叫 .keystore 问题不大。
+  - 秘钥文件的密码
+  - 秘钥的别名
+  - 秘钥的密码，一般写和上面一样的。
+  - 其他的随意，看情况填。
+
+### 二、使用签名
+
+- 打开安卓的的项目设置
+
+  <Image src={'https://assets.yangfei.wiki/blog/react-native/build/005.png'} />
+
+- 添加签名
+
+  <Image src={'https://assets.yangfei.wiki/blog/react-native/build/006.png'} />
+
+  - 选择模块
+  - 添加一个签名，命名 release
+  - 选择刚才创建的签名（这里有一个 bug, 滚动到后面会看到一个文件夹图标，点击可以选择文件）
+  - key store的密码
+  - 秘钥的别名
+  - 秘钥的密码
+
+- 应用签名
+
+点击应用就可以了，点完后会重新构建一下。
