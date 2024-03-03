@@ -3,17 +3,17 @@ index: 6
 title: 配置Tailwind支持
 description: 这篇文章介绍，如何让 React Native 项目，支持 tailwindcss.
 author: 杨飞
-tags: [reactNative, rn基础, tailwindcss]
-date: 2024-02-15 02:00:00
+tags: [reactNative, rn基础, tailwindcss, twrnc]
+date: 2024-03-03 20:41:00
 ---
 
-> 注意: 目前 tailwindcss 只能使用 3.3.2 版本，其他版本可能会引起打包异常。
+> 注意: 目前 tailwindcss 只能使用 3.3.2 版本，其他版本可能会引起打包异常。如果新版本没有异常，希望您能联系我取消这个提示。
 
 ### 安装依赖
 
 ```shell
-yarn add nativewind classnames
-yarn add --dev tailwindcss@3.3.2
+npm i twrnc
+npm i tailwindcss@3.3.2 -D
 ```
 
 ### 配置 tailwind
@@ -34,8 +34,10 @@ yarn add --dev tailwindcss@3.3.2
     content: ['./App.{js,jsx,ts,tsx}', './src/**/*.@(js|jsx|ts|tsx|html)'],
     theme: {},
     plugins: [
-      plugin(function ({ addComponents }) { // 配置扩展类名，tailwind 还没有的类，都可以通过这种方式扩展
-        addComponents({
+      // 配置扩展实用程序类（Utility classes），tailwind 还没有的类，都可以通过这种方式扩展
+      // 注意：目前不支持 addComponents 添加自定义组件类，否则 RN 运行会有异常。
+      plugin(({ addUtilities }) => {
+        addUtilities({
           '.align-vertical-top': {
             textAlignVertical: 'top',
           },
@@ -48,33 +50,64 @@ yarn add --dev tailwindcss@3.3.2
   };
   ```
 
-- 添加 Babel 插件`babel.config.js`
+- `twrnc`使用`tailwind`配置文件
+
+  > 创建配置文件 `src/core/tailwind.ts`
 
   ```javascript
-  module.exports = {
-    presets: ['module:@react-native/babel-preset'],
-    plugins: ['nativewind/babel'],
-  };
+  import { create } from 'twrnc';
+
+  // create the customized version...
+  const tw = create(require('../../tailwind.config.js'));
+
+  export default tw;
   ```
 
-- 声明类型文件 `nativewind-env.d.ts`
+### 配置编辑器的自动提示
 
-  ```typescript
-  /// <reference types="nativewind/types" />
+- vscode
+
+  Add the following to the settings of the official Tailwind plugin for VS Code.
+
+  ```javascript
+  // ...
+  "tailwindCSS.classAttributes": [
+      // ...
+      "style"
+  ],
+  "tailwindCSS.experimental.classRegex": [
+      "tw`([^`]*)",
+      ["tw.style\\(([^)]*)\\)", "'([^']*)'"]
+  ]
   ```
+  More detailed instructions, including how to add snippets, are available [here](https://github.com/jaredh159/tailwind-react-native-classnames/discussions/124).
 
-### 查看效果
+- webstorm
+  - Check the version. Available for WebStorm 2023.1(opens in a new tab) and later
+  - Open the settings. Go to Languages and Frameworks | Style Sheets | Tailwind CSS
+  - Add the following to your tailwind configuration
+    ```javascript
+    "experimental": {
+      "configFile": null,
+      "classRegex": [
+        "tw\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"
+      ]
+    }
+    ```
+
+### 正式使用`twrnc`
 
 - 编辑 app 文件 `App.tsx`
 
   ```javascript
   import React from 'react';
   import { Text, View } from 'react-native';
+  import tw from '@/core/tailwind.ts';
 
   function App(): React.JSX.Element {
     return (
-      <View className='mt-8 bg-red-500 px-2'>
-        <Text className='text-2xl text-black dark:text-white'>Hello World</Text>
+      <View style={tw`h-full ios:mx-1.5 android:mx-2 bg-green-500 justify-center items-center`}>
+        <Text style={tw.style('text-gray-900', 3 > 2 && 'font-bold text-xl')}>Hello World</Text>
       </View>
     );
   }
@@ -87,3 +120,12 @@ yarn add --dev tailwindcss@3.3.2
   ```shell
   yarn run android_dev_debug
   ```
+
+### 参考
+
+- `twrnc`官方项目仓库: <a href='https://github.com/jaredh159/tailwind-react-native-classnames' target="_blank" >点击跳转</a>
+
+
+### 特别感谢
+
+- 感谢 cva 项目组提供的正则表达式作为参考，让这个`twrnc`可以在 webstorm 下实现tailwind的语法提示。
