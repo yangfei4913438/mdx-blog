@@ -1,0 +1,67 @@
+---
+index: 9
+title: 配置项目别名
+description: 这篇文章介绍，如何在 React Native 项目中，配置别名
+author: 杨飞
+tags: [reactNative, rn基础, 配置别名]
+date: 2024-03-03 08:01:00
+---
+
+### 一、安装包
+
+```shell
+yarn add babel-plugin-module-resolver -D
+# 或
+npm i babel-plugin-module-resolver -D
+```
+
+### 二、配置
+
+- `babel.config.js`
+
+  ```javascript
+  module.exports = {
+    presets: ['module:@react-native/babel-preset'],
+    plugins: [
+      'nativewind/babel',
+      [
+        'module-resolver',
+        {
+          root: ['./'],
+          alias: {
+            '@': ['./src'],
+          },
+        },
+      ],
+    ],
+  };
+  ```
+
+- 配置`tsconfig.json`
+
+  ```json5
+  {
+    "extends": "@react-native/typescript-config/tsconfig.json",
+    "compilerOptions": {
+      /* Visit https://aka.ms/tsconfig.json to read more about this file */
+
+      /* Completeness */
+      "skipLibCheck": true,   /* Skip type checking all .d.ts files. */
+
+      /* 配置基础地址 */
+      "baseUrl": ".",
+      /* 配置路径别名 */
+      "paths": {
+        "@/*": ["src/*"],
+      }
+    }
+  }
+  ```
+
+### 三、重启服务
+
+正常来说，按上面的配置完成之后，你的项目就可以使用别名了。
+
+如果你有什么异常错误，可以重新创建一个项目，然后用我这个配置试试，应该不会有问题的。
+
+最后记得重新启动一下服务，基础设施的修改，是需要重启生效的。
