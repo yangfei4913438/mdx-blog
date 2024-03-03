@@ -1,5 +1,5 @@
 ---
-index: 10
+index: 11
 title: 状态管理库 Jotai
 description: 这篇文章介绍，如何在 React Native 项目中，使用Jotai
 author: 杨飞
@@ -123,9 +123,9 @@ export const atomStorageClear = <T>(setFunc: (val: T | typeof RESET) => void) =>
   import { useNavigation } from '@react-navigation/native';
   import { StackNavigationProp } from '@react-navigation/stack';
 
-  import { userInfoAtom, userInfoDefault, UserInfoType } from 'stores/userInfo';
-  import { request } from 'core/request';
-  import { atomStorageClear } from 'core/atom';
+  import { userInfoAtom, userInfoDefault, UserInfoType } from '@/stores/userInfo';
+  import { request } from '@/core/request';
+  import { atomStorageClear } from '@/core/atom';
 
   interface UserInfoHookType {
     /** 用户信息 */
