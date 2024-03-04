@@ -1,0 +1,22 @@
+---
+index: 1
+title: 安卓打包
+description: 打包安卓应用
+author: 杨飞
+tags: [reactNative, rn打包发布, 安卓打包]
+date: 2024-03-05 00:27:00
+---
+
+### 在安卓目录下执行打包命令
+
+```shell
+# 进入安卓目录
+cd app_name/android/
+
+# 执行编译
+./gradlew assembleRelease
+```
+
+### 找到打包后的安装包
+
+`android/app/build/outputs/apk`这个目录下可以找到你打包好的安装包。
