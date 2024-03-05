@@ -1,0 +1,129 @@
+---
+index: 0
+title: ReactNative调用原生方法
+description: 本文介绍一下，如何在 react native 中调用原生层的方法。
+author: 杨飞
+tags: [reactNative, rn桥接原生, rn调用原生方法]
+date: 2024-03-05 23:20:00
+---
+
+### 一、编写并注册原生层方法
+
+- 找到项目的 Java 根目录
+
+  我这里的目录是`android/app/src/main/java/com/github_test`，最后的`github_test`是我的项目名称。
+
+- 创建一个目录，用于存放原生功能模块
+  > 一般来说，要实现一个正常的企业级业务功能，不可能就是一个文件的，肯定是多个文件配合，创建目录归类就很有必要性。
+
+  比如我创建了一个`NativeModules`目录，因为就是做测试使用的，所以叫啥也无所谓。正式项目一般命名要贴近实际功能。
+
+- 创建`kotlin`功能模块
+  > 因为新版本的 RN 模块代码都是 kotlin 了，所以我们最好也使用 kotlin 来开发。
+
+  我这里创建了一个`kotlin`模块`ExampleModule.kt`
+
+  ```kotlin
+  package com.github_test.NativeModules
+
+  import com.facebook.react.bridge.ReactApplicationContext
+  import com.facebook.react.bridge.ReactContextBaseJavaModule
+  import com.facebook.react.bridge.ReactMethod
+  import com.facebook.react.bridge.Promise
+
+  // reactContext 是约定俗成需要传递的参数
+  class ExampleModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+      // 定义模块的名称
+      override fun getName(): String {
+          return "ExampleModule"
+      }
+
+      @ReactMethod
+      fun CustomMethod(toEcho: String, promise: Promise) {
+          // 具体的业务逻辑
+          // 这里是 promise 返回一个字符串
+          promise.resolve("Echo from Kotlin: $toEcho")
+      }
+  }
+  ```
+
+- 注册我们刚创建好的模块
+  > 注册文件`android/app/src/main/java/com/github_test/MainApplication.kt`
+
+  ```kotlin
+  import com.facebook.react.uimanager.ViewManager
+  import com.facebook.react.bridge.ReactApplicationContext
+  import com.facebook.react.bridge.NativeModule
+
+  // 导入刚的创建的模块
+  import com.github_test.NativeModules.ExampleModule
+
+  // 创建一个react包类，使用我们创建好的功能模块
+  class CustomPackage : ReactPackage {
+      override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
+          // reactContext 是必须传递的参数
+          return listOf(ExampleModule(reactContext))
+      }
+
+      // 如果没有自定义视图，返回空列表
+      override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
+          return emptyList()
+      }
+  }
+
+  // 系统默认的主应用类
+  class MainApplication : Application(), ReactApplication {
+
+      override val reactNativeHost: ReactNativeHost = object : DefaultReactNativeHost(this) {
+          override fun getPackages(): List<ReactPackage> = PackageList(this).packages.apply {
+              // 在这里添加模块
+              add(CustomPackage())
+          }
+
+          override fun getJSMainModuleName(): String = "index"
+
+          override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
+
+          override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+          override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+      }
+
+      override val reactHost: ReactHost
+        get() = getDefaultReactHost(this.applicationContext, reactNativeHost)
+
+      override fun onCreate() {
+        super.onCreate()
+        SoLoader.init(this, false)
+        if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+          // If you opted-in for the New Architecture, we load the native entry point for this app.
+          load()
+        }
+        ReactNativeFlipper.initializeFlipper(this, reactNativeHost.reactInstanceManager)
+      }
+  }
+  ```
+
+### 二、调用编写好的原生方法
+> 注意: 原生方法需要重新构建才能调用。
+
+```javascript
+import React, {useState} from 'react';
+import {Button, NativeModules, Text, View} from 'react-native';
+
+function App(): React.JSX.Element {
+  const [str, setStr] = useState('');
+
+  const handlePress = () => {
+    NativeModules.ExampleModule.CustomMethod('hello World!').then(setStr);
+  };
+
+  return (
+    <View>
+      <Button title={'获取数据'} onPress={handlePress} />
+      <Text>{str}</Text>
+    </View>
+  );
+}
+
+export default App;
+```
