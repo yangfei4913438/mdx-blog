@@ -4,7 +4,7 @@ title: ReactNative调用原生方法
 description: 本文介绍一下，如何在 react native 中调用原生层的方法。
 author: 杨飞
 tags: [reactNative, rn桥接原生, rn调用原生方法]
-date: 2024-03-05 23:20:00
+date: 2024-03-06 11:31:00
 ---
 
 ### 一、编写并注册原生层方法
@@ -21,6 +21,28 @@ date: 2024-03-05 23:20:00
 - 创建`kotlin`功能模块
   > 因为新版本的 RN 模块代码都是 kotlin 了，所以我们最好也使用 kotlin 来开发。
 
+  先创建一个打开相册的原生模块 `android/app/src/main/java/com/github_test/utils/DeviceUtil.kt`
+
+  ```kotlin
+  package com.github_test.utils
+
+  import android.app.Activity
+  import android.content.Intent
+
+  object DeviceUtil {
+    // 打开相册
+    fun openGallery(activity: Activity) {
+      /* 开启Pictures画面Type设定为image */
+      val intent = Intent()
+      intent.setType("image/*")
+      /* 使用Intent.ACTION_GET_CONTENT这个Action */
+      intent.setAction(Intent.ACTION_GET_CONTENT)
+      /* 取得相片后返回本画面 */
+      activity.startActivityForResult(intent, 1)
+    }
+  }
+  ```
+
   我这里创建了一个`kotlin`模块`ExampleModule.kt`
 
   ```kotlin
@@ -31,18 +53,39 @@ date: 2024-03-05 23:20:00
   import com.facebook.react.bridge.ReactMethod
   import com.facebook.react.bridge.Promise
 
-  // reactContext 是约定俗成需要传递的参数
+  import com.github_test.utils.DeviceUtil
+
+  // 定义 ExampleModule 类，继承自 ReactContextBaseJavaModule
   class ExampleModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-      // 定义模块的名称
+      // getName 方法返回此模块在 JavaScript 端的名字
       override fun getName(): String {
           return "ExampleModule"
       }
 
+      // 注解 @ReactMethod 使得此方法可从 JavaScript 调用
       @ReactMethod
       fun CustomMethod(toEcho: String, promise: Promise) {
-          // 具体的业务逻辑
           // 这里是 promise 返回一个字符串
           promise.resolve("Echo from Kotlin: $toEcho")
+      }
+
+      // 另一个 @ReactMethod 注解的方法，用于打开图库
+      @ReactMethod
+      fun OpenGallery(promise: Promise) {
+          // 首先检查当前活动是否存在
+          if (currentActivity == null) {
+              // 如果不存在，用 promise.reject 返回错误
+              promise.reject("ACTIVITY_NOT_FOUND", "Activity doesn't exist")
+              return;
+          }
+
+          try {
+              // 尝试使用 DeviceUtil 类的 openGallery 方法打开图库
+              DeviceUtil.openGallery(currentActivity!!)
+          } catch (e: Exception) {
+              // 如果打开图库失败，用 promise.reject 返回错误
+              promise.reject("OPEN_GALLERY_ERROR", "Failed to open gallery", e)
+          }
       }
   }
   ```
@@ -106,24 +149,56 @@ date: 2024-03-05 23:20:00
 ### 二、调用编写好的原生方法
 > 注意: 原生方法需要重新构建才能调用。
 
-```javascript
-import React, {useState} from 'react';
-import {Button, NativeModules, Text, View} from 'react-native';
+- 调用普通方法
+  ```javascript
+  import React, {useState} from 'react';
+  import {Button, NativeModules, Text, View} from 'react-native';
 
-function App(): React.JSX.Element {
-  const [str, setStr] = useState('');
+  function App(): React.JSX.Element {
+    const [str, setStr] = useState('');
 
-  const handlePress = () => {
-    NativeModules.ExampleModule.CustomMethod('hello World!').then(setStr);
-  };
+    const handlePress = () => {
+      NativeModules.ExampleModule.CustomMethod('hello World!').then(setStr);
+    };
 
-  return (
-    <View>
-      <Button title={'获取数据'} onPress={handlePress} />
-      <Text>{str}</Text>
-    </View>
-  );
-}
+    return (
+      <View>
+        <Button title={'获取数据'} onPress={handlePress} />
+        <Text>{str}</Text>
+      </View>
+    );
+  }
 
-export default App;
-```
+  export default App;
+  ```
+
+- 调用打开相册
+
+  ```javascript
+  import React, {useState} from 'react';
+  import {Button, Image, View, NativeModules} from 'react-native';
+
+  function App(): React.JSX.Element {
+    const [imageUri, setImageUri] = useState<string>('');
+
+    const handlePickImage = () => {
+      NativeModules.ExampleModule.OpenGallery()
+        .then((res: string) => {
+          setImageUri(res);
+        })
+        .catch((err: Error) => {
+          console.log('error:', err.message);
+        });
+    };
+
+    return (
+      <View>
+        {imageUri && (
+          <Image source={{uri: imageUri}} style={{width: 200, height: 200}} />
+        )}
+        <Button title="选择图片" onPress={handlePickImage} />
+      </View>
+    );
+  }
+  export default App;
+  ```
