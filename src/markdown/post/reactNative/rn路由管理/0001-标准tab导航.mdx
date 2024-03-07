@@ -1,0 +1,89 @@
+---
+index: 1
+title: 标准tab导航
+description: 在 react native 项目中, 实现标准的tab导航
+author: 杨飞
+tags: [reactNative, rn路由管理, 标准tab导航]
+date: 2024-03-07 12:15:00
+---
+
+直接看代码就行了
+
+```javascript
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+
+import Home from 'pages/home';
+import Shop from 'pages/shop';
+import Message from 'pages/message';
+import Mine from 'pages/mine';
+
+import icon_tab_home_normal from 'assets/icon_tab_home_normal.png';
+import icon_tab_home_selected from 'assets/icon_tab_home_selected.png';
+
+import icon_tab_shop_normal from 'assets/icon_tab_shop_normal.png';
+import icon_tab_shop_selected from 'assets/icon_tab_shop_selected.png';
+
+import icon_tab_message_normal from 'assets/icon_tab_message_normal.png';
+import icon_tab_message_selected from 'assets/icon_tab_message_selected.png';
+
+import icon_tab_mine_normal from 'assets/icon_tab_mine_normal.png';
+import icon_tab_mine_selected from 'assets/icon_tab_mine_selected.png';
+import { Image } from 'react-native';
+
+const BottomTab = createBottomTabNavigator();
+
+const BottomTabs = () => {
+  return (
+    <NavigationContainer>
+      <BottomTab.Navigator
+        screenOptions={({ route }) => {
+          return {
+            tabBarIcon: ({ focused, color, size }) => {
+              switch (route.name) {
+                case 'Home':
+                  return (
+                    <Image
+                      source={focused ? icon_tab_home_selected : icon_tab_home_normal}
+                      style={{ width: size, height: size, tintColor: color }}
+                    />
+                  );
+                case 'Shop':
+                  return (
+                    <Image
+                      source={focused ? icon_tab_shop_selected : icon_tab_shop_normal}
+                      style={{ width: size, height: size, tintColor: color }}
+                    />
+                  );
+                case 'Message':
+                  return (
+                    <Image
+                      source={focused ? icon_tab_message_selected : icon_tab_message_normal}
+                      style={{ width: size, height: size, tintColor: color }}
+                    />
+                  );
+                default:
+                  return (
+                    <Image
+                      source={focused ? icon_tab_mine_selected : icon_tab_mine_normal}
+                      style={{ width: size, height: size, tintColor: color }}
+                    />
+                  );
+              }
+            },
+          };
+        }}
+      >
+        <BottomTab.Screen name={'Home'} component={Home} options={{ title: '首页' }} />
+        <BottomTab.Screen name={'Shop'} component={Shop} options={{ title: '购物' }} />
+        <BottomTab.Screen name={'Message'} component={Message} options={{ title: '消息' }} />
+        <BottomTab.Screen name={'Mine'} component={Mine} options={{ title: '我' }} />
+      </BottomTab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default BottomTabs;
+```
+

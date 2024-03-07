@@ -1,0 +1,122 @@
+---
+index: 0
+title: react-navigation
+description: 在 react native 项目中, 我们使用 react-navigation 来实现路由管理
+author: 杨飞
+tags: [reactNative, rn路由管理, react-navigation]
+date: 2024-03-07 12:12:00
+---
+
+我们通过 `react-navigation` 来实现 RN项目的路由管理。
+
+### 一、安装
+
+```shell
+# 基础包
+yarn add @react-navigation/bottom-tabs @react-navigation/native @react-navigation/stack
+
+# 依赖包
+yarn add react-native-gesture-handler react-native-safe-area-context react-native-screens
+```
+
+### 二、定义路由
+> NavigationContainer 全局只会有一个，超过一个会引起异常。只要在app的地方引入即可。其他地方不要用，也不需要用。
+
+```javascript
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+
+import Home from 'pages/home';
+import About from 'pages/about';
+
+const Stack = createStackNavigator();
+
+function App(): JSX.Element {
+  return (
+    <SafeAreaProvider>
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Home" // 默认路由名称
+          screenOptions={{
+            cardStyle: { elevation: 1 }, // 避免渲染异常，保持导航栈渲染在第一层级
+          }}
+        >
+          <Stack.Screen
+            name="Home" // 路由名称
+            component={Home}
+            options={{
+              headerShown: false, // 不显示默认标题栏
+            }}
+          />
+          <Stack.Screen
+            name="About" // 路由名称
+            component={About}
+            options={{
+              headerShown: false,
+              ...TransitionPresets.SlideFromRightIOS, // IOS风格的动画
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
+  );
+}
+
+export default App;
+```
+
+### 三、页面跳转规则
+
+```javascript
+import React from 'react';
+import { Button, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+const About = () => {
+  // StackNavigationProp 提供方法
+  // StackNavigationProp 的泛型可以指定跳转哪些页面。
+  const navigation = useNavigation<StackNavigationProp<any>>();
+
+  // 三种不同的路由跳转方式
+  const handlePress = () => {
+    // 增加堆栈
+    // navigation.push('Home');
+
+    // 判断是否存在
+    // navigation.navigate('Home');
+
+    // 直接替换当前页面
+    // navigation.replace('Home');
+
+    // 返回上个页面
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+
+    // 移除路由堆栈，返回上个页面。（⚠️如果进入当前页面，是通过替换页面实现的，就是说当路由堆栈中没有其他路由的时候，执行这个操作系统会报错！）
+    navigation.pop();
+  };
+
+  return (
+    <View
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Text style={{ fontSize: 40, fontWeight: 'bold', color: '#333' }}>This is About Page.</Text>
+      <Button title={'切换页面'} onPress={handlePress} />
+    </View>
+  );
+};
+
+export default About;
+```

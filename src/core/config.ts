@@ -22,8 +22,9 @@ const dirOrderConfig: IDirOrderConfig = {
       rn常用系统组件: 1,
       rn常用api: 2,
       rn动画: 3,
-      rn桥接原生: 4,
-      rn打包发布: 5,
+      rn路由管理: 4,
+      rn桥接原生: 5,
+      rn打包发布: 6,
     },
   },
   linux: {
