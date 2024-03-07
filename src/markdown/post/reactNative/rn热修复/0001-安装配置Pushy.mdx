@@ -1,0 +1,147 @@
+---
+index: 1
+title: 安装配置 Pushy
+description: 本文介绍一下，如何安装配置 Pushy
+author: 杨飞
+tags: [reactNative, rn桥接原生, Pushy]
+date: 2024-03-07 23:29:00
+---
+
+### 一、安装
+
+```shell
+# 安装全局命令
+npm i -g react-native-update-cli
+
+# 安装项目依赖
+npm i react-native-update
+
+# ios平台,特殊处理
+cd ios
+pod install
+```
+
+#### 1、IOS配置
+  > 最新版本没有测试，不过应该差不多
+
+  > `ios/redbook/AppDelegate.mm` 2处改动
+    ```swift
+    #import "AppDelegate.h"
+    #import "RCTPushy.h"  // 改动1: import头文件，注意要放到if条件外面
+
+    #import <React/RCTBundleURLProvider.h>
+
+    @implementation AppDelegate
+
+    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+    {
+      self.moduleName = @"redbook";
+      // You can add your custom initial props in the dictionary below.
+      // They will be passed down to the ViewController used by React Native.
+      self.initialProps = @{};
+
+      return [super application:application didFinishLaunchingWithOptions:launchOptions];
+    }
+
+    - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+    {
+    #if DEBUG
+      return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+    #else
+      // 改动2: 把这里非DEBUG的情况替换为热更新bundle的写法
+      // return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+      return [RCTPushy bundleURL];
+    #endif
+    }
+
+    /// This method controls whether the `concurrentRoot`feature of React18 is turned on or off.
+    ///
+    /// @see: https://reactjs.org/blog/2022/03/29/react-v18.html
+    /// @note: This requires to be rendering on Fabric (i.e. on the New Architecture).
+    /// @return: `true` if the `concurrentRoot` feature is enabled. Otherwise, it returns `false`.
+    - (BOOL)concurrentRootEnabled
+    {
+      return true;
+    }
+
+    @end
+    ```
+
+#### 2、安卓配置
+  > 修改完成之后，需要打开Android Studio，然后点击大象重新同步依赖包。
+
+  - `android/app/src/main/java/com/redbook/MainApplication.java` 有2处改动
+    ```java
+    // ↓↓↓请注意不要少了这句import
+    import cn.reactnative.modules.update.UpdateContext;
+
+    // ↓↓↓将下面这一段添加到 DefaultReactNativeHost 内部！
+    @Override
+    protected String getJSBundleFile() {
+      return UpdateContext.getBundleUrl(MainApplication.this);
+    }
+    ```
+
+  - `android/app/build.gradle` 有1处改动
+
+    ```gradle
+    ...
+    android {
+      ...
+      signingConfigs { ... }
+      buildTypes {
+        release {
+          ...
+          // 添加下面这行以禁用crunch
+          crunchPngs false
+        }
+      }
+    }
+    ...
+    ```
+
+### 二、登录与创建应用
+
+  - 先去官网注册账号 https://pushy-admin.reactnative.cn/#/register
+
+  - 添加文件忽略 .gitignore
+    ```ignore
+    # pushy
+    .update
+    ```
+
+  - 登录pushy
+    > ⚠️需要在项目根目录下执行
+
+    ```shell
+    $ pushy login
+    email: <输入你的注册邮箱>
+    password: <输入你的密码>
+    ```
+
+  - 分别创建IOS和安卓的应用包
+    > 也可以在官网通过UI创建 https://pushy-admin.reactnative.cn
+    >
+    > 两次输入的名字可以相同，这没有关系。
+
+    ```shell
+    $ pushy createApp --platform ios
+    App Name: <输入应用名字>
+    $ pushy createApp --platform android
+    App Name: <输入应用名字>
+    ```
+
+  - 选择创建好的平台和应用
+    > 执行完成后，会生成一个 update.json 文件，需要将这个文件上传到代码仓库中，不能忽略。
+    ```shell
+    $ pushy selectApp --platform android
+    ┌─────────┬───────────────┬─────────┐
+    │ 应用 id │   应用名称      │  平台    │
+    ├─────────┼───────────────┼─────────┤
+    │  27054  │ Android例子   │ android │
+    └─────────┴───────────────┴─────────┘
+    共 1 android 个应用
+    输入应用 id: 27054
+
+    $
+    ```
