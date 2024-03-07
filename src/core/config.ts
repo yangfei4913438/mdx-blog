@@ -25,6 +25,7 @@ const dirOrderConfig: IDirOrderConfig = {
       rn路由管理: 4,
       rn桥接原生: 5,
       rn打包发布: 6,
+      rn热修复: 7,
     },
   },
   linux: {

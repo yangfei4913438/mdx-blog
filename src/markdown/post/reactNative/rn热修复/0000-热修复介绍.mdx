@@ -1,0 +1,38 @@
+---
+index: 0
+title: ReactNative热修复介绍
+description: 本文介绍一下，热修复相关的概念。
+author: 杨飞
+tags: [reactNative, rn桥接原生, rn热修复]
+date: 2024-03-07 21:11:00
+---
+
+
+### 一、什么是热修复技术？
+
+- 不需要下载应用包，不需要重新发起安装
+- 小体积差分（新旧包之间的差异）包下载、免安装重启生效。
+
+<br />
+
+### 二、为什么会存在热修复技术？
+
+- 移动端的特有属性：离线安装包
+- 互联网竞争的短平快新：最小成本、最快速度、降低干扰
+
+<br />
+
+### 三、常见的热修复技术
+
+- 【国外推荐】CodePush 项目地址: [https://github.com/microsoft/react-native-code-push](https://github.com/microsoft/react-native-code-push)
+  - 功能强，支持生产测试（补丁测试）
+  - 大厂信用背书（微软出品）
+  - 支持数据统计
+  - 服务器不稳定
+  - 初次补丁包较大
+- 【国内推荐】Pushy 官网地址: [https://pushy.reactnative.cn/](https://pushy.reactnative.cn/)
+  - 功能一般，不支持生产测试
+  - RN中文网推荐
+  - 不支持数据统计
+  - 服务器稳定
+  - 补丁包体积较小
