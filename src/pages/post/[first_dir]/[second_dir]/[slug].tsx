@@ -127,7 +127,9 @@ const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
             )}
           >
             <div className={cls('flex items-center justify-between')}>
-              <h3 className={cls('!mt-2 -mb-0', !visible && 'select-none text-gray-400')}>目录</h3>
+              <h3 className={cls('!mt-2 -mb-0 font-normal text-gray-9', !visible && 'select-none text-gray-400')}>
+                目录
+              </h3>
               <Switch checked={visible} onCheckedChange={customVisible} id='toc-visible' />
             </div>
             <MDXRemote {...post.content} components={components} />

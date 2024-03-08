@@ -98,6 +98,9 @@
         & > a {
           @apply py-1.5 inline-block;
         }
+        & a {
+          @apply text-gray-9 font-normal;
+        }
       }
       ol {
         @apply first:px-4 first:border first:border-gray-300 first:border-solid first:rounded first:mb-4;
