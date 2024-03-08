@@ -6,13 +6,15 @@ import { GetStaticProps, NextPage } from 'next';
 import { loadTranslations } from 'ni18n';
 import { ni18nConfig } from '../../../../../ni18n.config';
 import PageHeader from '@/components/pages/header';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { components } from '@/components/markdown';
 import Layout from '@/components/pages/layout';
 import SeoLink from '@/components/link';
 import { Home } from 'lucide-react';
 import useNextLink from '@/hooks/useNextLink';
+import cls from 'classnames';
+import { Switch } from '@/components/ui/switch';
 
 interface Path {
   params: { first_dir: string; second_dir: string; slug: string };
@@ -76,6 +78,8 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
 
 const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
   const { t: global } = useTranslation('common');
+  // 是否显示目录
+  const [tocVisible, setTocVisible] = useState(true);
   // 响应链接
   const { handleLinkWithQueryKey } = useNextLink();
 
@@ -115,8 +119,13 @@ const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
               {post.title}
             </h2>
           </div>
-          <article className='markdown-area'>
-            <h3 className='!mt-2 -mb-0'>目录</h3>
+          <article className={cls('markdown-area', !tocVisible && '[&>.toc]:hidden')}>
+            <div
+              className={cls('flex items-center justify-between', !tocVisible && 'mb-4 border-b border-gray-300 pb-2')}
+            >
+              <h3 className={cls('!mt-2 -mb-0', !tocVisible && 'select-none text-gray-400')}>目录</h3>
+              <Switch checked={tocVisible} onCheckedChange={setTocVisible} id='toc-visible' />
+            </div>
             <MDXRemote {...post.content} components={components} />
           </article>
           <hr className='mb-4 mt-8 text-gray-5' />
