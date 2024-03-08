@@ -119,10 +119,15 @@ const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
               {post.title}
             </h2>
           </div>
-          <article className={cls('markdown-area', !tocVisible && '[&>.toc]:hidden')}>
-            <div
-              className={cls('flex items-center justify-between', !tocVisible && 'mb-4 border-b border-gray-300 pb-2')}
-            >
+          <article
+            className={cls(
+              'markdown-area',
+              !tocVisible
+                ? '[&>.toc]:max-h-0 [&>.toc]:overflow-hidden'
+                : '[&>.toc]:max-h-[800px] [&>.toc]:overflow-scroll'
+            )}
+          >
+            <div className={cls('flex items-center justify-between')}>
               <h3 className={cls('!mt-2 -mb-0', !tocVisible && 'select-none text-gray-400')}>目录</h3>
               <Switch checked={tocVisible} onCheckedChange={setTocVisible} id='toc-visible' />
             </div>

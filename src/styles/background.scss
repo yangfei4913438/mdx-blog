@@ -90,6 +90,7 @@
       @apply my-0;
     }
     .toc {
+      @apply transition-[max-height] duration-500 ease-in-out;
       @apply border-b mb-4 border-gray-300;
       & > ol > li {
         padding-left: 0 !important;
