@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { postReducer, dialogReducer, sheetReducer } from '@/store/slices';
+import { postReducer, dialogReducer, sheetReducer, tocReducer } from '@/store/slices';
 
 export const makeStore = () => {
   return configureStore({
@@ -7,6 +7,7 @@ export const makeStore = () => {
       post: postReducer,
       dialog: dialogReducer,
       sheet: sheetReducer,
+      toc: tocReducer,
     },
   });
 };

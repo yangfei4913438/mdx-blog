@@ -24,6 +24,7 @@ interface IDialog {
   visible: boolean;
 }
 interface ISheet extends IDialog {}
+interface IToc extends IDialog {}
 
 interface IDirOrderConfig {
   [key: string]: {

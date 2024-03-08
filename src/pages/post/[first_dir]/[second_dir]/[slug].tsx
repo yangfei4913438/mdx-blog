@@ -6,7 +6,7 @@ import { GetStaticProps, NextPage } from 'next';
 import { loadTranslations } from 'ni18n';
 import { ni18nConfig } from '../../../../../ni18n.config';
 import PageHeader from '@/components/pages/header';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { components } from '@/components/markdown';
 import Layout from '@/components/pages/layout';
@@ -15,6 +15,7 @@ import { Home } from 'lucide-react';
 import useNextLink from '@/hooks/useNextLink';
 import cls from 'classnames';
 import { Switch } from '@/components/ui/switch';
+import { useTocData } from '@/store';
 
 interface Path {
   params: { first_dir: string; second_dir: string; slug: string };
@@ -79,7 +80,7 @@ export const getStaticProps: GetStaticProps = async ({ locale, params }) => {
 const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
   const { t: global } = useTranslation('common');
   // 是否显示目录
-  const [tocVisible, setTocVisible] = useState(true);
+  const { visible, customVisible } = useTocData();
   // 响应链接
   const { handleLinkWithQueryKey } = useNextLink();
 
@@ -122,14 +123,12 @@ const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
           <article
             className={cls(
               'markdown-area',
-              !tocVisible
-                ? '[&>.toc]:max-h-0 [&>.toc]:overflow-hidden'
-                : '[&>.toc]:max-h-[800px] [&>.toc]:overflow-scroll'
+              !visible ? '[&>.toc]:max-h-0 [&>.toc]:overflow-hidden' : '[&>.toc]:max-h-[800px] [&>.toc]:overflow-scroll'
             )}
           >
             <div className={cls('flex items-center justify-between')}>
-              <h3 className={cls('!mt-2 -mb-0', !tocVisible && 'select-none text-gray-400')}>目录</h3>
-              <Switch checked={tocVisible} onCheckedChange={setTocVisible} id='toc-visible' />
+              <h3 className={cls('!mt-2 -mb-0', !visible && 'select-none text-gray-400')}>目录</h3>
+              <Switch checked={visible} onCheckedChange={customVisible} id='toc-visible' />
             </div>
             <MDXRemote {...post.content} components={components} />
           </article>
