@@ -17,19 +17,42 @@
     background-image: none !important;
   }
 
+  // 目录列表只显示第一个子元素
+  // 因为第一个子元素，默认渲染的就是目录，其他的子元素，可能是漏网之鱼，通过这里的样式，可以完全过滤。
+  .blog-toc {
+    & > :not(:first-child) {
+      @apply hidden;
+    }
+    & > nav.toc {
+      & > ol > li > a {
+        @apply inline-block py-1;
+      }
+      ol {
+        @apply first:px-0;
+        @apply divide-y divide-dashed divide-gray-3 px-0;
+        li {
+          @apply px-[1em];
+          @apply divide-y divide-dashed divide-gray-3;
+          @apply text-left text-normal font-normal leading-tight text-gray-9;
+          a {
+            @apply w-full inline-block mt-1;
+          }
+        }
+      }
+    }
+  }
+
   // markdown 渲染样式优化
   .prose {
     // 行内代码块的语法处理
     code {
-      &::after, &::before {
+      &::after,
+      &::before {
         content: none;
       }
     }
     a {
       @apply font-bold no-underline;
-    }
-    ol {
-      @apply my-0;
     }
     ul {
       list-style-type: decimal;
@@ -61,13 +84,14 @@
       @apply shadow shadow-gray-5;
     }
     blockquote {
-      @apply my-2 mx-0 py-2 px-3 bg-gray-05;
+      @apply mx-0 my-2 bg-gray-05 px-3 py-2;
       @apply rounded rounded-l-none shadow shadow-gray-5;
-      @apply border-l-8 border-solid border-l-gray-8 ;
+      @apply border-l-8 border-solid border-l-gray-8;
       @apply font-normal not-italic;
       p {
         margin: 0;
-        &::before, &::after {
+        &::before,
+        &::after {
           content: none;
         }
       }
@@ -88,27 +112,6 @@
   .markdown-area {
     ul {
       @apply my-0;
-    }
-    .toc {
-      @apply transition-[max-height] duration-500 ease-in-out;
-      @apply border-b mb-4 border-gray-300;
-      & > ol > li {
-        padding-left: 0 !important;
-        @apply divide-y-2 divide-dashed;
-        & > a {
-          @apply py-1.5 inline-block;
-        }
-        & a {
-          @apply text-gray-9 font-normal;
-        }
-      }
-      ol {
-        @apply first:px-4 first:border first:border-gray-300 first:border-solid first:rounded first:mb-4;
-        @apply list-none px-0 divide-y-2 divide-dashed;
-        li {
-          @apply pl-[1em] my-0 py-0.5;
-        }
-      }
     }
   }
 }

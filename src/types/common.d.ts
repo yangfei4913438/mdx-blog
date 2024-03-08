@@ -20,11 +20,14 @@ interface IPost {
   tags: { [key: string]: number };
 }
 
+interface IContent {
+  content: any;
+}
+
 interface IDialog {
   visible: boolean;
 }
 interface ISheet extends IDialog {}
-interface IToc extends IDialog {}
 
 interface IDirOrderConfig {
   [key: string]: {

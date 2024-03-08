@@ -10,6 +10,21 @@ const useNextLink = () => {
   // 控制开关, 窄屏的侧边弹窗
   const { setClose: setSheetClose } = useSheetData();
 
+  // 直接跳转页面锚点
+  const handlePageScroll: (anchorId: string, needClose?: boolean) => MouseEventHandler<HTMLAnchorElement> =
+    (anchorId, needClose = false) =>
+    (event) => {
+      // 阻止默认事件
+      event.preventDefault();
+
+      return push(anchorId).finally(() => {
+        if (needClose) {
+          setClose();
+          setSheetClose();
+        }
+      });
+    };
+
   // 响应 link 点击
   const handleLink: (pathname: string, needClose?: boolean) => MouseEventHandler<HTMLAnchorElement> =
     (pathname, needClose = false) =>
@@ -17,15 +32,13 @@ const useNextLink = () => {
       // 阻止默认事件
       event.preventDefault();
 
-      if (needClose) {
-        return push({ pathname }).finally(() => {
+      return push({ pathname }).finally(() => {
+        if (needClose) {
           // 多设置一个关闭没影响，但是可以减少很多判断逻辑
           setClose();
           setSheetClose();
-        });
-      }
-
-      return push({ pathname });
+        }
+      });
     };
 
   // 响应 link 点击
@@ -39,25 +52,21 @@ const useNextLink = () => {
       // 阻止默认事件
       event.preventDefault();
 
-      if (needClose) {
-        return push({
-          pathname: pathname,
-          query: { key: keyName },
-        }).finally(() => {
-          setClose();
-          setSheetClose();
-        });
-      }
-
       return push({
         pathname: pathname,
         query: { key: keyName },
+      }).finally(() => {
+        if (needClose) {
+          setClose();
+          setSheetClose();
+        }
       });
     };
 
   return {
     handleLink,
     handleLinkWithQueryKey,
+    handlePageScroll,
   };
 };
 

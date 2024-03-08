@@ -10,6 +10,9 @@ import dynamic from 'next/dynamic';
 // 因为使用了 useLayoutEffect 所以需要禁止 ssr 渲染这个组件
 const DirTree = dynamic(() => import('@/components/dirTree'), { ssr: false });
 
+// 文章目录，只能使用客户端渲染
+const BlogToc = dynamic(() => import('@/components/blogToc'), { ssr: false });
+
 interface IProps extends PropsWithChildren {
   width: number;
 }
@@ -24,7 +27,7 @@ const TabbedContent: FC<IProps> = ({ children, width }) => {
 
   useEffect(() => {
     if (query?.second_dir) {
-      setTab('list');
+      setTab('toc');
     } else {
       setTab('tree');
     }
@@ -43,7 +46,12 @@ const TabbedContent: FC<IProps> = ({ children, width }) => {
           </TabsTrigger>
           {query?.second_dir && (
             <TabsTrigger className='text-base' value='list'>
-              文章列表
+              二级目录
+            </TabsTrigger>
+          )}
+          {query?.second_dir && (
+            <TabsTrigger className='text-base' value='toc'>
+              文章目录
             </TabsTrigger>
           )}
           <TabsTrigger className='text-base' value='info'>
@@ -52,6 +60,9 @@ const TabbedContent: FC<IProps> = ({ children, width }) => {
         </TabsList>
         <TabsContent value='tree'>
           <DirTree />
+        </TabsContent>
+        <TabsContent value='toc'>
+          <BlogToc />
         </TabsContent>
         <TabsContent value='list'>
           <PostList />
