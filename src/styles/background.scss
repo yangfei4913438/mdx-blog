@@ -28,6 +28,9 @@
     a {
       @apply font-bold no-underline;
     }
+    ol {
+      @apply my-0;
+    }
     ul {
       list-style-type: decimal;
       list-style-position: outside;
@@ -84,8 +87,24 @@
   }
   .markdown-area {
     ul {
-      margin-top: 0;
-      margin-bottom: 0;
+      @apply my-0;
+    }
+    .toc {
+      @apply border-b mb-4 border-gray-300;
+      & > ol > li {
+        padding-left: 0 !important;
+        @apply divide-y-2 divide-dashed;
+        & > a {
+          @apply py-1.5 inline-block;
+        }
+      }
+      ol {
+        @apply first:px-4 first:border first:border-gray-300 first:border-solid first:rounded first:mb-4;
+        @apply list-none px-0 divide-y-2 divide-dashed;
+        li {
+          @apply pl-[1em] my-0 py-0.5;
+        }
+      }
     }
   }
 }

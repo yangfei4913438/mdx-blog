@@ -116,6 +116,7 @@ const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
             </h2>
           </div>
           <article className='markdown-area'>
+            <h3 className='!mt-2 -mb-0'>目录</h3>
             <MDXRemote {...post.content} components={components} />
           </article>
           <hr className='mb-4 mt-8 text-gray-5' />

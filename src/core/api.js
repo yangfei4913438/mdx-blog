@@ -8,6 +8,9 @@ import remarkGfm from 'remark-gfm';
 import rehypePrism from 'rehype-prism-plus';
 import { ignoreDirs } from '../../project.config';
 import dirOrderConfig from '@/core/config';
+import rehypeSlug from 'rehype-slug';
+
+const toc = require('@jsdevtools/rehype-toc');
 
 const postDirectory = path.join(process.cwd(), 'src', 'markdown', 'post');
 
@@ -111,7 +114,7 @@ export async function getPostBySlug(locale, first_dir, second_dir, slug) {
     content: await serialize(content, {
       mdxOptions: {
         remarkPlugins: [remarkGfm],
-        rehypePlugins: [rehypePrism],
+        rehypePlugins: [rehypePrism, rehypeSlug, toc],
         format: 'mdx',
       },
     }),
