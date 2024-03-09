@@ -3,6 +3,7 @@ import { MDXRemote } from 'next-mdx-remote';
 import { useContentData } from '@/store';
 import SeoLink from '@/components/link';
 import useNextLink from '@/hooks/useNextLink';
+import { components } from '@/components/markdown';
 
 const BlogToc = () => {
   // 更新 mdx 内容
@@ -19,7 +20,8 @@ const BlogToc = () => {
     const obj: any = {};
     // 除了 nav, ol, li, a 这四个标签之外，其他标签都不渲染。
     const list = ['nav', 'ol', 'li', 'a'];
-    tags.forEach((key) => {
+    // 这里必须增加自定义组件的 key, 否则遇到自定义组件，这里又没提供，页面就会直接报错了。
+    [...tags, ...Object.keys(components)].forEach((key) => {
       if (!list.includes(key)) {
         obj[key] = () => null;
       } else {
