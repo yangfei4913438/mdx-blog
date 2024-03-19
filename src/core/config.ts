@@ -15,8 +15,14 @@ const dirOrderConfig: IDirOrderConfig = {
       antd: 6,
     },
   },
-  reactNative: {
+  工作思考: {
     index: 1,
+    children: {
+      前端: 0,
+    },
+  },
+  reactNative: {
+    index: 2,
     children: {
       rn基础: 0,
       rn常用系统组件: 1,
@@ -29,7 +35,7 @@ const dirOrderConfig: IDirOrderConfig = {
     },
   },
   linux: {
-    index: 2,
+    index: 3,
     children: {
       server: 0,
       docker: 1,
@@ -38,13 +44,13 @@ const dirOrderConfig: IDirOrderConfig = {
     },
   },
   算法: {
-    index: 3,
+    index: 4,
     children: {
       快速排序: 0,
     },
   },
   前端基础: {
-    index: 4,
+    index: 5,
     children: {
       js: 0,
       css: 1,
