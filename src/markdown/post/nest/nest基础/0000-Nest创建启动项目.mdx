@@ -1,0 +1,39 @@
+---
+index: 0
+title: Nest创建启动项目
+description: 快速了解nest如何快速创建并启动一个项目
+author: 杨飞
+tags: [nest, nest基础, nest创建启动项目]
+date: 2021-03-21 07:08:53
+---
+
+### 一、安装命令行工具
+
+```shell
+# 如果已经安装过，升级一下
+$ sudo npm update -g @nestjs/cli
+
+# 如果没有安装过，直接安装即可
+$ sudo npm i -g @nestjs/cli
+Password:
+
+added 255 packages in 4s
+
+44 packages are looking for funding
+  run `npm fund` for details
+```
+
+### 二、创建项目
+> 查看创建帮助 nest new -h
+
+```shell
+nest new project-name
+```
+
+### 三、启动项目
+> 项目默认端口是 3000，如果你还有其他项目在使用 3000 端口，那么你需要重新指定一下项目的监听端口 `src/main.ts`
+
+```shell
+npm run start:dev
+```
+

@@ -34,8 +34,14 @@ const dirOrderConfig: IDirOrderConfig = {
       rn热修复: 7,
     },
   },
-  linux: {
+  nest: {
     index: 3,
+    children: {
+      nest基础: 0,
+    },
+  },
+  linux: {
+    index: 4,
     children: {
       server: 0,
       docker: 1,
@@ -44,13 +50,13 @@ const dirOrderConfig: IDirOrderConfig = {
     },
   },
   算法: {
-    index: 4,
+    index: 5,
     children: {
       快速排序: 0,
     },
   },
   前端基础: {
-    index: 5,
+    index: 6,
     children: {
       js: 0,
       css: 1,
