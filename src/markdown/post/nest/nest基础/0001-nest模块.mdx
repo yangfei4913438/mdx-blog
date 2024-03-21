@@ -1,0 +1,107 @@
+---
+index: 1
+title: Nest模块
+description: 快速了解nest的模块
+author: 杨飞
+tags: [nest, nest基础, nest模块]
+date: 2021-03-21 08:50:53
+---
+
+### 一、什么是模块
+
+在 NestJS 中，模块是一个核心概念，它们用于组织和结构化应用程序。模块可以看作是应用程序中不同部分的容器，每个模块都有自己的组件，如控制器、服务（提供者）、中间件、过滤器等。模块的主要目的包括：
+
+- 封装性：
+
+  模块使得功能块可以封装在一起，使应用程序更加模块化。这有助于将应用程序分解成更小、更管理得当的部分，每部分关注于特定的应用程序领域或业务逻辑。
+
+- 组织性：
+
+  通过将应用程序逻辑分配到不同的模块中，NestJS 使得代码更加有组织，易于理解和维护。这种结构化也使得代码的重用变得更简单。
+
+- 重用性：
+
+  模块可以在不同的应用程序之间重用，提高了代码的复用性。通过导出和导入模块，可以轻松地在不同的项目之间共享功能。
+
+- 分离关注点：
+
+  每个模块专注于应用程序的一个特定方面，帮助实现了关注点的分离。这种方式使得开发、测试和维护特定功能变得更加容易。
+
+- 依赖注入：
+
+  模块还提供了一个用于配置依赖注入的框架。在模块中，可以定义提供者（例如服务、工厂、值等），这些提供者可以被同一个模块或导入该模块的其他模块中的控制器和服务所使用。
+
+每个 NestJS 应用程序至少包含一个根模块(app.module.ts)，这是应用程序的主入口点。但随着应用程序的增长，通常会添加更多的功能模块，以保持代码的组织性和可管理性。通过使用模块，NestJS 应用能够以一种清晰和高效的方式扩展，同时保持代码的清洁和模块化。
+
+我们需要注意, `src/main.ts`是入口函数，它并不是一个模块。nest只是在这里调用根模块, 启动服务监听。
+
+### 二、创建模块
+
+> 我们需要使用`nest generate`来创建模块
+
+  ```shell
+  # 创建一个名为 question 的模块,
+  nest generate module question
+  # generate 可以简写为 g
+  nest g module question
+  ```
+  输出
+
+  ```shell
+  $ nest g module question
+  CREATE src/question/question.module.ts (85 bytes)
+  UPDATE src/app.module.ts (324 bytes)
+  ```
+
+  从输出的日志中，我们可以看到，入口模块(app.module.ts)发生了更新，这是脚手架自动帮我们把创建的模块，注册到了入口模块中。
+
+  入口模块更新后的代码:
+  ```typescript
+  import { Module } from '@nestjs/common';
+  import { AppController } from './app.controller';
+  import { AppService } from './app.service';
+  import { QuestionModule } from './question/question.module';
+
+  @Module({
+    imports: [QuestionModule],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+  export class AppModule {}
+  ```
+
+  上面这段代码，最重要的地方是`Module`装饰器, 在这里定义模块的元数据。
+
+### 三、ModuleMetadata
+
+  在 NestJS 中，模块是通过装饰器 @Module() 来声明的，而这个装饰器接受一个 ModuleMetadata 对象作为参数，用来配置模块的不同方面。下面是对 ModuleMetadata 属性的解释：
+
+  - imports
+
+    这是一个可选列表，包含当前模块需要导入的其他模块。这些模块可以是静态的、动态的，或是可以解析为动态模块的 Promise。
+
+    导入模块意味着当前模块可以使用被导入模块所导出的提供者（providers）。
+
+  - controllers
+
+    这是一个可选列表，包含当前模块中定义的控制器类。NestJS 会实例化这些控制器，以便可以处理进入应用的请求。
+
+  - providers
+
+    这是一个可选列表，包含当前模块中定义的提供者。提供者通常是服务类，NestJS 会实例化这些服务，并且可以将它们注入到控制器或其他服务中。
+
+  - exports
+
+    这是一个可选列表，包含当前模块希望导出的提供者或模块。这使得其他导入了此模块的模块可以使用这些导出的提供者。
+
+    列表可以包含的内容包括:
+
+    - DynamicModule：是一个对象，允许模块动态地提供自己的提供者、控制器等。
+    - Promise：是一个 Promise，解析为一个 DynamicModule，允许异步模块加载和配置。
+    - ForwardReference：是一个特殊对象，用于处理模块间的循环依赖问题。
+    - Provider：是一个泛型接口，定义了如何提供一个服务的具体实现。
+    - Abstract：用于定义抽象类的类型。
+    - Function：指一个普通的 JavaScript 函数。
+
+这个接口构成了 NestJS 模块系统的基础，允许开发者以一种组织良好和模块化的方式构建复杂的应用程序。通过适当地使用这些属性，可以创建高度解耦、可维护和可扩展的应用程序架构。
+
