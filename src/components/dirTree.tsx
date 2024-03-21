@@ -16,7 +16,7 @@ const DirTree = () => {
     query: { key, first_dir, second_dir },
   } = useRouter();
   // 展开的一级目录key
-  const [value, setValue] = useState<string>();
+  const [value, setValue] = useState<string>('');
   // 响应链接
   const { handleLinkWithQueryKey } = useNextLink();
 
