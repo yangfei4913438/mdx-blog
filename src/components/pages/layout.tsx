@@ -1,4 +1,4 @@
-import { type FC, type PropsWithChildren, useMemo, useState } from 'react';
+import React, { type FC, type PropsWithChildren, useMemo, useState } from 'react';
 import { ArrowUp, Search, AlignJustify } from 'lucide-react';
 import { useRouter } from 'next/router';
 import throttle from 'lodash-es/throttle';
@@ -19,8 +19,22 @@ import TabbedContent from '@/components/tabbedContent';
 import SearchDialog from '@/components/searchDialog';
 import useNextLink from '@/hooks/useNextLink';
 import { siteInfo } from '@/core/config';
+import Header from '@/components/pages/header';
 
-const Layout: FC<PropsWithChildren> = ({ children }) => {
+interface ILayout extends PropsWithChildren {
+  // 符合 ISO 8601 时间标准的时间戳
+  time?: string;
+  // 页面关键字
+  keywords?: string;
+  // 页面标题
+  pageName: string;
+  // 页面完整url
+  pageUrl?: string;
+  // 页面描述
+  pageDesc?: string;
+}
+
+const Layout: FC<ILayout> = ({ children, time, keywords = '', pageName, pageDesc, pageUrl }) => {
   // 页面滚动百分比
   const percent = usePageScroll();
   // 获取博客数据
@@ -52,6 +66,8 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <div className='min-h-screen w-screen bg-secondary'>
+      <Header time={time} pageName={pageName} pageUrl={pageUrl} pageDesc={pageDesc} keywords={keywords} />
+
       {percent === 0 ? (
         <span className='sticky top-0 z-40 h-1 w-screen bg-gray-800' />
       ) : (

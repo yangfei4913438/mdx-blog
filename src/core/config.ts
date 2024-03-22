@@ -72,6 +72,9 @@ export const siteInfo = {
   tag: '标签',
   about: '关于',
   search: '搜索',
+  url: 'https://www.yangfei.wiki',
+  keywords:
+    '杨飞的笔记,yangfei,笔记,博客,前端,后端,react,nest,native,next,shadcn,tailwind,redux,mdx,markdown,docker,linux,oss,github',
 };
 
 // 目前没有支持三级目录

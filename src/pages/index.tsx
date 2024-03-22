@@ -13,6 +13,7 @@ import { usePostData } from '@/store/hooks';
 import { Badge } from '@/components/ui/badge';
 import Footer from '@/components/pages/footer';
 import useNextLink from '@/hooks/useNextLink';
+import { siteInfo } from '@/core/config';
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
@@ -43,7 +44,7 @@ const Home = () => {
   }, [key, postInfos]);
 
   return (
-    <Layout>
+    <Layout pageName={siteInfo.name}>
       <Virtuoso
         useWindowScroll
         data={list}

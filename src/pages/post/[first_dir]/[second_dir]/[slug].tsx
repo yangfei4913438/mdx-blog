@@ -5,7 +5,6 @@ import { getPostBySlug, getPostSlugList } from '@/core/api';
 import { GetStaticProps, NextPage } from 'next';
 import { loadTranslations } from 'ni18n';
 import { ni18nConfig } from '../../../../../ni18n.config';
-import PageHeader from '@/components/pages/header';
 import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { components } from '@/components/markdown';
@@ -14,6 +13,7 @@ import SeoLink from '@/components/link';
 import { Home } from 'lucide-react';
 import useNextLink from '@/hooks/useNextLink';
 import { useContentData } from '@/store';
+import { siteInfo } from '@/core/config';
 
 interface Path {
   params: { first_dir: string; second_dir: string; slug: string };
@@ -46,6 +46,8 @@ interface IPost {
   title: any;
   description: string;
   date: string;
+  timestamp: string;
+  url: string;
   tags: any;
   slug: any;
   content: any;
@@ -89,13 +91,14 @@ const PostItem: FC<NextPage & IProps> = ({ post, first_dir, second_dir }) => {
   }, [post.content]);
 
   return (
-    <Layout>
+    <Layout
+      time={post.timestamp}
+      pageName={post.title}
+      pageDesc={post.description}
+      keywords={post.tags}
+      pageUrl={siteInfo.url + post.url}
+    >
       <MDXProvider>
-        <PageHeader title={post.title}>
-          <meta name='description' content={post.description} />
-          <meta name='keywords' content={post.tags} />
-        </PageHeader>
-
         <section className='prose max-w-none bg-white px-[5%] py-12 shadow shadow-gray-5'>
           <div className='space-y-0'>
             <div className='flex items-center gap-2 text-base'>

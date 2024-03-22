@@ -63,6 +63,7 @@ export function getPostSummaryBySlug(locale, slug) {
     subDirIndex: dirOrderConfig[dir].children[subDir] ?? 0,
     title: data.title, // 标题
     date: dayjs(data.date).format('YYYY-MM-DD HH:mm:ss'), // 最近更新时间
+    timestamp: dayjs(data.date).toISOString(),
     description: data.description, // 描述
     tags: data.tags, // 关键字
     slug: filename, // 路径名称
@@ -107,8 +108,10 @@ export async function getPostBySlug(locale, first_dir, second_dir, slug) {
     subDir: second_dir, // 二级目录
     title: data.title, // 标题
     date: dayjs(data.date).format('YYYY-MM-DD HH:mm:ss'), // 最近更新时间
+    timestamp: dayjs(data.date).toISOString(),
     description: data.description, // 描述
     tags: data.tags, // 关键字
+    url: `/${locale}/post/${first_dir}/${second_dir}/${slug}`, // 访问url
     // 正文
     content: await serialize(content, {
       mdxOptions: {
