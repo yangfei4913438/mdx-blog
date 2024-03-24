@@ -1,0 +1,147 @@
+---
+index: 2
+title: Nest模块的控制器和服务
+description: 快速了解nest模块的控制器和服务
+author: 杨飞
+tags: [nest, nest基础, nest模块, nest模块的控制器, nest模块的服务]
+date: 2021-03-24 15:32:00
+---
+
+### 一、什么是nest的控制器和服务？
+
+#### 1、控制器（Controllers）
+
+  在NestJS中，控制器负责处理传入的请求和返回响应给客户端。控制器的作用是接收应用程序的特定请求，处理这些请求，并返回客户端相应的响应。在代码层面，控制器是使用装饰器@Controller()标记的类，该装饰器可以指定该控制器负责的路由路径。
+
+  例如，一个简单的控制器可能看起来像这样：
+
+  ```javascript
+  import { Controller, Get } from '@nestjs/common';
+
+  @Controller('users')
+  export class UsersController {
+    @Get()
+    findAll(): string {
+      return 'This action returns all users';
+    }
+  }
+  ```
+
+  上面的`UsersController`通过`@Get()`装饰器表示对HTTP GET请求的响应，当请求`/users`路径时，它会执行并返回一个字符串。
+
+  `/users` 就是二级模块，对外提供的路由的前缀。
+
+  `@Get()` 中也可以写路径，如果写了，访问时就必须带上这个路径。
+
+  比如 `@Get('list')` 对应的路由是 `/users/list`, 如果不带上这个路径，就无法访问。
+
+  当然了，也可以在全局入口的地方，加上系统级的前缀。
+
+  ```javascript
+  import { NestFactory } from '@nestjs/core';
+  import { AppModule } from './app.module';
+
+  async function bootstrap() {
+    const app = await NestFactory.create(AppModule);
+    // 指定全局前缀
+    app.setGlobalPrefix('api');
+    // 指定运行端口
+    await app.listen(3001);
+  }
+  bootstrap();
+  ```
+
+
+#### 2、服务（Services）
+
+  服务在`NestJS`中通常被用来封装业务逻辑或与数据库的交互。服务可以被注入到控制器中，或者其他需要这些功能的服务中。服务的主要责任是执行应用程序的业务逻辑，例如数据库的`CRUD`操作。服务通常使用`@Injectable()`装饰器标注，这使得`NestJS`的依赖注入系统能够管理它们。
+
+  一个简单的服务示例如下：
+
+  ```javascript
+  import { Injectable } from '@nestjs/common';
+
+  @Injectable()
+  export class UsersService {
+    findAll(): string[] {
+      // 假设这里有对数据库的查询操作
+      return ['user1', 'user2'];
+    }
+  }
+  ```
+
+  在这个例子中，`UsersService`提供了一个`findAll`方法，用于获取所有用户的信息。然后，这个服务可以被注入到`UsersController`或者其他需要用户信息的控制器中。
+
+
+### 二、实战
+
+#### 1、创建控制器
+  > 这里我们可以指定，去掉生成测试文件。
+
+  ```shell
+  $ nest g controller question --no-spec
+  CREATE src/question/question.controller.ts (105 bytes)
+  UPDATE src/question/question.module.ts (182 bytes)
+  ```
+
+  注意看：创建了控制器之后，会主动更新同名模块代码，目的是将控制器自动注册到模块中。
+
+#### 2、创建服务
+  > 同上，去掉生成测试文件
+
+  ```shell
+  $ nest g service question --no-spec
+  CREATE src/question/question.service.ts (92 bytes)
+  UPDATE src/question/question.module.ts (269 bytes)
+  ```
+
+  同上，创建了服务之后，会主动更新同名模块代码，目的是将服务自动注册到模块中。
+
+#### 3、编辑服务代码和控制器代码
+
+  - 服务代码
+
+    ```javascript
+    import { Injectable } from '@nestjs/common';
+
+    @Injectable()
+    export class QuestionService {
+      findAll() {
+        return {
+          list: ['a', 'b', 'c'],
+          total: 10,
+        };
+      }
+    }
+    ```
+
+  - 控制器代码
+
+    ```javascript
+    import { Controller, Get } from '@nestjs/common';
+    import { QuestionService } from './question.service';
+
+    @Controller('question')
+    export class QuestionController {
+      // 注册服务
+      constructor(private readonly queryService: QuestionService) {}
+
+      @Get()
+      list() {
+        return this.queryService.findAll();
+      }
+    }
+    ```
+
+  - 访问接口
+
+    ```shell
+    GET http://localhost:3001/question
+    ```
+
+    > 返回结果就是之前在服务中定义的数据
+
+
+### 三、总结
+
+NestJS中的控制器负责处理外部请求并返回响应，而服务则负责执行业务逻辑，两者通常一起工作以处理和响应应用程序的不同需求。通过这种分离关注点的方式，NestJS促进了代码的模块化和重用，使得应用程序更容易维护和扩展。
