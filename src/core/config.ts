@@ -38,6 +38,7 @@ const dirOrderConfig: IDirOrderConfig = {
     index: 3,
     children: {
       nest基础: 0,
+      nest接口: 1,
     },
   },
   linux: {

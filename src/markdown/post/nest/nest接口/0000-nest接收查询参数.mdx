@@ -1,0 +1,148 @@
+---
+index: 0
+title: Nest接收查询参数
+description: 快速了解nest如何接收客户端传递的参数
+author: 杨飞
+tags: [nest, nest接口, nest接收查询参数]
+date: 2021-03-31 18:02:53
+---
+
+> 这里是 `restful` 风格的接口，不是 `graphql` 服务端接收传参。 `graphql` 后续会有专门的文章介绍。
+
+获取到客户端传递的参数，这是返回给用户数据的前提。知道需求，才能正确的提供服务。
+
+### 一、GET 传参
+
+#### 1、路径变量
+
+  > GET http://localhost:3000/boy/tom
+
+  ```javascript
+  // 控制器写法
+  @Get('/boy/:name')
+  getHi(@Param('name') name: string): string {
+    console.log('name:', name);
+    return this.appService.say(name);
+  }
+  ```
+
+#### 2、`url`查询参数
+
+  > GET http://localhost:3000/boy?first=Tom
+
+  ```javascript
+  // 控制器写法
+  @Get('/boy')
+  getHi2(@Query('first') name: string): string {
+    console.log('first:', name);
+    return this.appService.say(name);
+  }
+  ```
+
+### 二、POST 传参
+
+> 当然，也适用于 @Put、@Delete、@Patch、@Options、@Head 装饰器分别接受 put、delete、patch、options、head 请求。
+
+#### 1、创建接收数据的 dto 类
+
+  > 可以理解为`nest`里面对特定作用类的称呼，其他地方可能不叫这个.
+
+  ```javascript
+  export class Student {
+    name: string;
+    age: number;
+  }
+  ```
+
+#### 2、创建控制方法
+
+  ```javascript
+  import { Student } from './app.dto';
+
+  @Post('/student')
+  postName(@Body() stu: Student): string {
+    return `My name is ${stu.name}, I'm ${stu.age} years old.`;
+  }
+  ```
+
+#### 3、发起请求
+
+  - url
+
+    ```shell
+    POST http://localhost:3000/student
+    ```
+
+  - body
+
+    ```json5
+    {
+      "name": "张三",
+      "age": 18
+    }
+    ```
+
+### 三、请求`header`上的数据
+
+```javascript
+import { Get, Headers } from '@nestjs/common';
+
+// 取全部头数据
+@Get()
+getHello(@Headers() headers: Record<string, any>): string {
+  console.log('headers:', headers);
+  // 因为是一个对象，所以可以用对象取值的方式获取到里面具体的某个属性值
+  const name = headers['name'];
+  // 调用具体的方法来使用这个参数
+  return this.appService.say(name);
+}
+
+// 直接取某个属性
+@Get()
+getHello2(@Headers('name') name: string): string {
+  console.log('name:', name);
+  return this.appService.say(name);
+}
+```
+
+### 四、获取客户端 ip
+
+  - 请求地址
+
+    ```shell
+    GET http://localhost:3000/ip
+    ```
+
+  - 响应
+    ```javascript
+    import { Get, Ip } from '@nestjs/common';
+
+    @Get('/ip')
+    getIp(@Ip() ip: string): string {
+      return `Your ip address is ${ip}.`;
+    }
+    ```
+
+### 五、自定义返回
+
+#### 1、自定义状态码
+
+```javascript
+@Get('/re')
+@HttpCode(202)
+getRes() {
+  return {
+    status: 'ok',
+  };
+}
+```
+
+#### 2、请求重定向
+
+```javascript
+@Get('/re')
+@Redirect('http://juejin.cn')
+getRes() {
+  // 请求重定向, 这里的方法体不会生效，留空即可。
+}
+```
