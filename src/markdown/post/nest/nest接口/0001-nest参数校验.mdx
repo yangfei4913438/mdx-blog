@@ -1,0 +1,85 @@
+---
+index: 1
+title: Nest参数校验
+description: 一般来说，数据传递都是通过 post 请求发送过来的。所以，正常都是对 post 的请求数据进行校验。
+author: 杨飞
+tags: [nest, nest接口, nest参数校验]
+date: 2021-03-31 22:56:53
+---
+
+一般来说，数据传递都是通过 post 请求发送过来的。所以，正常都是对 post 的请求数据进行校验。
+
+而数据校验，我们一般使用`class-validator`来进行数据校验。
+
+
+### 一、安装依赖
+
+```shell
+npm install class-validator
+```
+
+### 二、给 dto 类添加校验规则
+
+> 也就是上一遍提到的，接收数据，所定义的类型。在这里增加接收参数的校验规则，也比较符合逻辑。
+
+```javascript
+import {IsEmail,IsNumber,IsOptional,IsString,MinLength} from 'class-validator';
+
+export class Student {
+  @IsString()
+  @MinLength(2, {
+    message() {
+      return 'name 至少需要 2 个字符';
+    },
+  })
+  name: string;
+
+  @IsNumber(
+    { allowNaN: false, allowInfinity: false },
+    {
+      message() {
+        return 'age 必须传递数字类型的参数';
+      },
+    },
+  )
+  age: number;
+
+  @IsEmail()
+  @IsOptional()
+  email: string;
+}
+```
+
+### 三、启用校验规则
+
+#### 1、在全局启用
+> 全局启用，比较省事。
+
+```javascript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  // 在入口这里引入
+  app.useGlobalPipes(new ValidationPipe());
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+#### 2、在局部启用
+
+> 如果不全局启用，那么在参数 body 里面传递内置的校验实例，也是可以的。
+
+```javascript
+import {Body,ValidationPipe} from '@nestjs/common';
+import { Student } from './app.dto';
+
+// body传参
+@Post('/student')
+postName(@Body(new ValidationPipe()) stu: Student): string {
+  return `My name is ${stu.name}, I'm ${stu.age} years old.`;
+}
+```
