@@ -1,0 +1,293 @@
+---
+index: 3
+title: Nest如何读取环境变量
+description: 在Nest项目中，如何读取本地环境变量。
+author: 杨飞
+tags: [nest, nest基础, nest环境变量, nest配置文件, yaml配置文件读取]
+date: 2021-03-31 11:47:00
+---
+
+### 一、介绍
+
+数据库的配置，项目的端口这些，一般都是写在配置文件里面的。
+
+不同的运行环境，这些配置文件也不一样。
+
+所以需要使用环境变量读取。
+
+node 里最常用的是 `.env` 格式的配置文件，它有一个专门的 npm 包 dotenv
+
+nest 里面提供了现成的封装包 `@nestjs/config`
+
+### 二、单个配置文件
+
+#### 1、创建项目
+
+  ```shell
+  nest new nest-config-test -p npm
+  ```
+
+#### 2、安装依赖
+
+  ```shell
+  npm install --save @nestjs/config
+  ```
+
+#### 3、在根目录创建配置文件 `.env`
+
+  ```shell
+  aaa=1
+  bbb=2
+  ```
+
+#### 4、注册模块 `src/app.module.ts`
+
+  ```javascript
+  import { Module } from '@nestjs/common';
+  import { AppController } from './app.controller';
+  import { AppService } from './app.service';
+  import { ConfigModule } from '@nestjs/config';
+
+  @Module({
+    imports: [
+      // 配置文件的默认地址 .env 不需要显示引入。
+      ConfigModule.forRoot({  // 这里引入即可
+        isGlobal: true, // 注册为全局模块
+      })
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+  export class AppModule {}
+  ```
+
+#### 5、使用配置文件`src/app.controller.ts`
+
+  ```javascript
+  import { Controller, Get, Inject } from '@nestjs/common';
+  import { AppService } from './app.service';
+  import { ConfigService } from '@nestjs/config';
+
+  @Controller()
+  export class AppController {
+    constructor(private readonly appService: AppService) {}
+
+    // 注入服务
+    @Inject(ConfigService)
+    private configService: ConfigService;
+
+    @Get()
+    getHello() {
+      return {
+        aaa: this.configService.get('aaa'), // 直接读取变量配置
+        bbb: this.configService.get('bbb'),
+      };
+    }
+  }
+  ```
+
+#### 6、运行查看效果
+
+  <Image src={'https://assets.yangfei.wiki/blog/nest/env1.png'} />
+
+
+### 三、多个配置文件
+
+> 可以在注册的时候，指定多个配置文件。写在前面配置文件中的配置，会覆盖后面的。也就是说先载入的配置文件，优先级更高。
+
+#### 1、创建一个新配置文件 `.dev.env`
+
+  ```shell
+  aaa=333
+  ```
+
+#### 2、注册多个配置文件
+
+  ```javascript
+  import { Module } from '@nestjs/common';
+  import { AppController } from './app.controller';
+  import { AppService } from './app.service';
+  import { ConfigModule } from '@nestjs/config';
+  import * as path from 'path';
+
+  @Module({
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true, // 注册为全局模块
+        envFilePath: [
+          path.join(process.cwd(), '.dev.env'),
+          path.join(process.cwd(), '.env'),
+        ],
+      }),
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+  export class AppModule {}
+  ```
+
+#### 3、运行查看效果
+
+  <Image src={'https://assets.yangfei.wiki/blog/nest/env2.png'} />
+
+
+### 四、动态配置
+
+> 通过 ts 代码来生成配置文件
+
+#### 1、创建一个 ts 配置文件 `config.ts`
+
+  ```javascript
+  export default async () => {
+    const dbPort = await 3306;
+
+    return {
+      port: parseInt(process.env.PORT, 10) || 3000,
+      db: {
+        host: 'localhost',
+        port: dbPort,
+      },
+    };
+  };
+  ```
+
+#### 2、注册的时候加载`src/app.module.ts`
+
+  ```javascript
+  import { Module } from '@nestjs/common';
+  import { AppController } from './app.controller';
+  import { AppService } from './app.service';
+  import { ConfigModule } from '@nestjs/config';
+
+  // 本地动态配置文件
+  import config from '../config';
+
+  @Module({
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true, // 注册为全局模块
+        load: [config], // 加载方法名称，不是方法的执行结果
+      }),
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+  export class AppModule {}
+  ```
+
+#### 3、提取配置`src/app.controller.ts`
+
+  ```javascript
+  import { Controller, Get, Inject } from '@nestjs/common';
+  import { AppService } from './app.service';
+  import { ConfigService } from '@nestjs/config';
+
+  @Controller()
+  export class AppController {
+    constructor(private readonly appService: AppService) {}
+
+    @Inject(ConfigService)
+    private configService: ConfigService;
+
+    @Get()
+    getHello() {
+      return {
+        db: this.configService.get('db'),
+      };
+    }
+  }
+  ```
+
+#### 4、运行查看效果
+
+  <Image src="https://assets.yangfei.wiki/blog/nest/env3.png" />
+
+### 五、yaml配置加载
+
+#### 1、安装依赖
+
+  ```shell
+  npm install js-yaml
+  ```
+
+#### 2、创建配置文件 `aaa.yaml`
+
+  ```yaml
+  application:
+    host: 'localhost'
+    port: 8080
+
+  aaa:
+     bbb:
+      ccc: 'ccc'
+      port: 3306
+  ```
+
+#### 3、创建动态读取方法 `config2.ts`
+
+  ```javascript
+  import { readFile } from 'fs/promises';
+  import * as yaml from 'js-yaml';
+  import { join } from 'path';
+
+  export default async () => {
+    const configFilePath = join(process.cwd(), 'aaa.yaml');
+
+    const config = await readFile(configFilePath, {
+      encoding: 'utf-8',
+    });
+
+    return yaml.load(config);
+  };
+  ```
+
+#### 4、引入配置`src/app.module.ts`
+
+  ```javascript
+  import { Module } from '@nestjs/common';
+  import { AppController } from './app.controller';
+  import { AppService } from './app.service';
+  import { ConfigModule } from '@nestjs/config';
+
+  // 本地动态配置文件
+  import config2 from '../config2';
+
+  @Module({
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true, // 注册为全局模块
+        load: [config2], // 加载方法名称，不是方法的执行结果
+      }),
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+  export class AppModule {}
+  ```
+
+#### 5、提取配置`src/app.controller.ts`
+
+  ```javascript
+  import { Controller, Get, Inject } from '@nestjs/common';
+  import { AppService } from './app.service';
+  import { ConfigService } from '@nestjs/config';
+
+  @Controller()
+  export class AppController {
+    constructor(private readonly appService: AppService) {}
+
+    @Inject(ConfigService)
+    private configService: ConfigService;
+
+    @Get()
+    getHello() {
+      return {
+        db: this.configService.get('aaa.bbb.ccc'),
+      };
+    }
+  }
+  ```
+
+#### 6、运行查看
+
+  <Image src="https://assets.yangfei.wiki/blog/nest/env4.png" />
