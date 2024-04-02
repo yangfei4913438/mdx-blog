@@ -18,7 +18,8 @@ const dirOrderConfig: IDirOrderConfig = {
   工作思考: {
     index: 1,
     children: {
-      前端: 0,
+      职场: 0,
+      前端: 1,
     },
   },
   reactNative: {
