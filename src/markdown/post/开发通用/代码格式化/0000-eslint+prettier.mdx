@@ -1,0 +1,33 @@
+---
+index: 0
+title: 如何配置 eslint 和 prettier 不会出现冲突
+description: 不少ide都支持分别配置`eslint`和`prettier`的快捷操作。但是这两个联动在一起的时候，很容易出现问题。
+author: 杨飞
+tags: [开发通用, 代码格式化, eslint, prettier]
+date: 2022-04-02 17:35:00
+---
+
+### 问题
+
+不少ide都支持分别配置`eslint`和`prettier`的快捷操作。但是这两个联动在一起的时候，很容易出现问题。
+
+比如我用的`webstorm`，如果你设置了保存的时候，自动调用`prettier`。而且，你的代码里，`eslint`和`prettier`是联动的。
+
+那么你很可能遇到过，`eslint`提示`prettier`异常的情况。
+
+这大概率是因为，2 个操作冲突，导致了`eslint`识别出错。
+
+正常的流程，应该是`eslint`先执行优化操作，在这个操作过程中，`eslint`自动去调用`prettier`来格式化。
+
+但是，你的`IDE`, 先调用了`prettier`来格式化，然后`eslint`那边流程也在跑，两边冲突了。
+
+### 解决方案
+
+- 禁止`IDE`里面处理 `prettier`；
+- 设置`IDE`保存的时候，调用`eslint`处理；
+
+以上两步设置完成就可以了。(`eslint`和`prettier`的关联，按正常的配置去设置即可)
+
+至于`prettier`什么时候调用，这个我们不用管，让`eslint`自己决定就行了。因为这两个库已经配置了关联。
+
+这是一个很小的问题，但是我相信，一定困扰过很多同学。

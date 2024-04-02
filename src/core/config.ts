@@ -15,15 +15,21 @@ const dirOrderConfig: IDirOrderConfig = {
       antd: 6,
     },
   },
-  工作思考: {
+  开发通用: {
     index: 1,
+    children: {
+      代码格式化: 0,
+    },
+  },
+  工作思考: {
+    index: 2,
     children: {
       职场: 0,
       前端: 1,
     },
   },
   reactNative: {
-    index: 2,
+    index: 3,
     children: {
       rn基础: 0,
       rn常用系统组件: 1,
@@ -36,14 +42,14 @@ const dirOrderConfig: IDirOrderConfig = {
     },
   },
   nest: {
-    index: 3,
+    index: 4,
     children: {
       nest基础: 0,
       nest接口: 1,
     },
   },
   linux: {
-    index: 4,
+    index: 5,
     children: {
       server: 0,
       docker: 1,
@@ -52,13 +58,13 @@ const dirOrderConfig: IDirOrderConfig = {
     },
   },
   算法: {
-    index: 5,
+    index: 6,
     children: {
       快速排序: 0,
     },
   },
   前端基础: {
-    index: 6,
+    index: 7,
     children: {
       js: 0,
       css: 1,
