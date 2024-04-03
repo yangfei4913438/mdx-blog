@@ -1,0 +1,145 @@
+---
+index: 2
+title: 使用interceptor和filter统一路由返回格式
+description: 正常 api 接口返回的数据类型，都是相同的数据格式，对于相同的部分，我们一般使用拦截器和过滤器来实现。
+author: 杨飞
+tags: [nest, nest接口, nest拦截器, nest过滤器]
+date: 2021-04-03 11:40:53
+---
+
+### 一、介绍
+
+正常 api 接口返回的数据类型，都是相同的数据格式，对于相同的部分，我们一般使用拦截器和过滤器来实现。
+
+比如下面的返回格式:
+
+- 返回异常
+  ```json5
+  {
+    errno: -1,
+    message: '请求参数无效'
+  }
+  ```
+
+- 返回正确数据
+  ```json5
+  {
+    errno: 0,
+    data: {
+      list: ['a', 'b', 'c']
+    }
+  }
+  ```
+
+上面这种两种数据格式，我们不需要在返回的时候，特意去包裹。只需要用拦截器和过滤器来实现就行。
+
+### 二、用拦截器来实现正常数据的返回
+
+#### 1、创建一个拦截器
+
+```shell
+nest g interceptor transform --no-spec
+```
+
+#### 2、编写拦截器代码
+
+```javascript
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { Observable, map } from 'rxjs';
+
+@Injectable()
+export class TransformInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    return next.handle().pipe(
+      map((data) => {
+        // 就是把返回数据的外面，包裹一层数据，不需要每个返回都加上相同的数据。
+        return {
+          errno: 0, // 增加一个错误码
+          data, // 返回数据变成 data 的 value
+        };
+      }),
+    );
+  }
+}
+```
+
+#### 3、注册到全局
+
+```javascript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { TransformInterceptor } from './transform/transform.interceptor';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.setGlobalPrefix('api'); // 全局路由前缀
+
+  app.useGlobalInterceptors(new TransformInterceptor()); // 全局拦截器
+
+  await app.listen(3005); // 启动监听端口
+}
+bootstrap();
+```
+
+### 三、用过滤器来实现异常数据的返回
+
+#### 1、创建一个过滤器
+
+```shell
+nest g filter http-exception --no-spec
+```
+
+#### 2、编写过滤器代码
+
+```javascript
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
+import { Response, Request } from 'express';
+
+// 捕获异常
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    // 上下文
+    const ctx = host.switchToHttp();
+    // 获取返回对象
+    const response = ctx.getResponse<Response>();
+    // 获取请求对象
+    const request = ctx.getRequest<Request>();
+    // 异常的状态码
+    const status = exception.getStatus();
+    // 异常信息
+    const message = exception.message ? exception.message : '服务器错误';
+
+    // 返回数据
+    response.status(status).json({
+      errno: -1, // 错误码
+      message, // 消息
+      path: request.url, // 请求 url 地址
+      timestamp: new Date().toISOString(), // 时间戳
+    });
+  }
+}
+```
+
+#### 3、注册到全局
+
+```javascript
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { TransformInterceptor } from './transform/transform.interceptor';
+import { HttpExceptionFilter } from './http-exception/http-exception.filter';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.setGlobalPrefix('api'); // 全局路由前缀
+
+  app.useGlobalInterceptors(new TransformInterceptor()); // 全局拦截器
+
+  app.useGlobalFilters(new HttpExceptionFilter()); // 全局过滤器
+
+  await app.listen(3005); // 启动监听端口
+}
+bootstrap();
+```
