@@ -1,0 +1,154 @@
+---
+index: 1
+title: 实时获取react外部状态
+description: 我们偶尔会遇到一些场景，需要实时获取到外部的数据，不是 react 内部的数据管理的，比如网络是否在线，window 内部高度等等。react 提供了一个内部 hook 来帮我们处理这个问题。
+author: 杨飞
+tags: [react, 状态管理, useSyncExternalStore]
+date: 2024-04-03 14:01:00
+---
+
+`react`提供了一个内部的`hook`来帮我解决这种外部数据同步的场景，它就是`useSyncExternalStore`.
+
+### 一、特点
+
+- 优化性能：`useSyncExternalStore` 钩子是专为与外部数据源同步设计的，它可以帮助避免不必要的重渲染，并提供了更细粒度的控制。
+- 数据源同步：`useSyncExternalStore` 用于数据订阅，可以保证状态与外部数据源同步，即使在并发渲染模式下。
+- 未来兼容性：它是`React 18`中引入的新钩子，为未来`React`的并发特性做好了准备。
+
+注意：
+
+- 它只在React 18及以后的版本中可用，所以不能在旧项目中使用。
+- 对于某些简单的场景，使用 `useSyncExternalStore` 可能是过度设计，增加了不必要的复杂性.
+
+
+### 二、适用场景举例
+> 这里只是举三个例子
+
+#### 1、订阅网络离线状态
+
+  ```javascript
+  // 读取外部数据
+  const getSnapshot = () => {
+    return typeof window === 'undefined' || window.navigator.onLine;
+  }
+
+  // 订阅外部数据
+  const subscribe = (listener: () => void) => {
+    window.addEventListener('online', listener);
+    window.addEventListener('offline', listener);
+
+    return () => {
+      window.removeEventListener('online', listener);
+      window.removeEventListener('offline', listener);
+    };
+  };
+
+  // 封装一下
+  const useConnectivity = () => {
+    // 第三个参数是服务端渲染的时候，获取数据的方法, 用不到可以不写
+    return React.useSyncExternalStore(subscribe, getSnapshot)
+  }
+
+  // 渲染组件
+  const Renderer = () => {
+    const onLine = useConnectivity();
+
+    return (
+      <div>{onLine ? '在线' : '离线'}</div>
+    )
+  }
+  export default Renderer;
+  ```
+
+#### 2、订阅当前的窗口状态，比如: 视窗高度，滚动距离等等
+
+  ```javascript
+  import { useSyncExternalStore } from 'react';
+
+  // 创建一个订阅函数，当窗口尺寸变化时通知外部数据源
+  function subscribe(callback: () => void) {
+    const handleResize = () => callback();
+    window.addEventListener('resize', handleResize);
+
+    // 返回取消订阅的函数
+    return () => window.removeEventListener('resize', handleResize);
+  }
+
+  // 获取当前的 window.innerHeight 值
+  function getSnapshot() {
+    return window.innerHeight;
+  }
+
+  // 监听窗口大小，并返回实时的值
+  const useWindowInnerHeight = () => {
+    // 使用 useSyncExternalStore 订阅窗口大小变化
+    // 第一个参数表示，需要监听什么事件。
+    // 第二个参数，需要返回一个计算好的值。
+    // 第三个参数，和第二个一样，只不过只在服务端渲染时生效。这里用不到，所以直接省略了。
+    return useSyncExternalStore(subscribe, getSnapshot);
+  };
+
+  export default useWindowInnerHeight;
+  ```
+
+#### 3、订阅 websocket
+> 这个例子没有经过测试，使用之前请测试一下。
+
+  ```javascript
+  import { useSyncExternalStore } from 'react';
+  import { useState } from 'react';
+
+  // 创建WebSocket连接并处理消息
+  function createWebSocketSubscription(url, onStoreChange) {
+    const ws = new WebSocket(url);
+
+    ws.onmessage = (event) => {
+      // 解析接收到的消息
+      const newData = JSON.parse(event.data);
+      // 更新外部数据源的状态
+      onStoreChange(newData);
+    };
+
+    // 返回取消订阅的函数
+    const unsubscribe = () => {
+      ws.close();
+    };
+
+    return unsubscribe;
+  }
+
+  // useWebSocketData钩子，用于监听WebSocket数据流
+  function useWebSocketData(url) {
+    const [data, setData] = useState(null);
+
+    // 获取数据的快照函数
+    const getSnapshot = () => data;
+
+    // useSyncExternalStore中的subscribe参数
+    const subscribe = (onStoreChange) => {
+      return createWebSocketSubscription(url, (newData) => {
+        // 使用 setState 更新组件的内部状态
+        setData(newData);
+        // 通知 useSyncExternalStore 重新获取快照
+        onStoreChange();
+      });
+    };
+
+    // 使用useSyncExternalStore来订阅外部状态变化
+    useSyncExternalStore(subscribe, getSnapshot);
+
+    // 返回WebSocket流中的数据
+    return data;
+  }
+
+  // React组件中使用自定义钩子
+  function MyComponent() {
+    const websocketUrl = 'wss://your-websocket-server.com/data';
+    const data = useWebSocketData(websocketUrl);
+
+    // 渲染WebSocket中的数据
+    return <div>{data ? JSON.stringify(data) : 'Loading...'}</div>;
+  }
+
+  export default MyComponent;
+  ```
