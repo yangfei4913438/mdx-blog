@@ -4,10 +4,10 @@ title: 实时获取react外部状态
 description: 我们偶尔会遇到一些场景，需要实时获取到外部的数据，不是 react 内部的数据管理的，比如网络是否在线，window 内部高度等等。react 提供了一个内部 hook 来帮我们处理这个问题。
 author: 杨飞
 tags: [react, 状态管理, useSyncExternalStore]
-date: 2024-04-03 14:01:00
+date: 2024-04-03 14:50:00
 ---
 
-`react`提供了一个内部的`hook`来帮我解决这种外部数据同步的场景，它就是`useSyncExternalStore`.
+`react`提供了一个内部的`hook`来帮我们解决这种外部数据同步的场景，它就是`useSyncExternalStore`.
 
 ### 一、特点
 
@@ -19,6 +19,7 @@ date: 2024-04-03 14:01:00
 
 - 它只在React 18及以后的版本中可用，所以不能在旧项目中使用。
 - 对于某些简单的场景，使用 `useSyncExternalStore` 可能是过度设计，增加了不必要的复杂性.
+- 你可以简单理解为，那些需要通过`订阅`或者`监听`，才能获取的数据，都可以使用`useSyncExternalStore`来管理。
 
 ### 二、参数介绍
 
