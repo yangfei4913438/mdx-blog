@@ -4,7 +4,7 @@ title: 使用interceptor和filter统一路由返回格式
 description: 正常 api 接口返回的数据类型，都是相同的数据格式，对于相同的部分，我们一般使用拦截器和过滤器来实现。
 author: 杨飞
 tags: [nest, nest接口, nest拦截器, nest过滤器]
-date: 2021-04-03 11:40:53
+date: 2021-04-03 14:56:53
 ---
 
 ### 一、介绍
@@ -96,7 +96,7 @@ nest g filter http-exception --no-spec
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { Response, Request } from 'express';
 
-// 捕获异常
+// 捕获http异常
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
@@ -142,4 +142,28 @@ async function bootstrap() {
   await app.listen(3005); // 启动监听端口
 }
 bootstrap();
+```
+
+### 四、具体场景例子
+
+```javascript
+import { Controller, Get, HttpStatus, HttpException } from '@nestjs/common';
+import { QuestionService } from './question.service';
+
+@Controller('question')
+export class QuestionController {
+  constructor(private readonly queryService: QuestionService) {}
+
+  @Get('list')
+  list() {
+    // 正常返回数据，会被拦截器拦截到
+    return this.queryService.findAll();
+  }
+
+  @Get('test')
+  getMessage(): string {
+    // 触发 http 异常，会被http异常过滤器拦截到
+    throw new HttpException('获取数据失败', HttpStatus.BAD_REQUEST);
+  }
+}
 ```
