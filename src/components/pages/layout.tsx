@@ -15,11 +15,14 @@ import usePageScroll from '@/hooks/usePageScroll';
 import Nav from '@/components/nav';
 import Footer from '@/components/pages/footer';
 import SeoLink from '@/components/link';
-import TabbedContent from '@/components/tabbedContent';
+
 import SearchDialog from '@/components/searchDialog';
 import useNextLink from '@/hooks/useNextLink';
 import { siteInfo } from '@/core/config';
 import Header from '@/components/pages/header';
+import dynamic from 'next/dynamic';
+
+const TabbedContent = dynamic(() => import('@/components/tabbedContent'), { ssr: false });
 
 interface ILayout extends PropsWithChildren {
   // 符合 ISO 8601 时间标准的时间戳

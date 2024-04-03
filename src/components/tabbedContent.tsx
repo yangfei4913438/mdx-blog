@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useEffect, useState } from 'react';
+import { FC, PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import usePageScroll from '@/hooks/usePageScroll';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -6,6 +6,7 @@ import PostList from '@/components/postList';
 import Info from '@/components/info';
 import ScrollComponent from '@/components/ScrollComponent';
 import dynamic from 'next/dynamic';
+import useWindowInnerHeight from '@/hooks/useWindowInnerHeight';
 
 // 因为使用了 useLayoutEffect 所以需要禁止 ssr 渲染这个组件
 const DirTree = dynamic(() => import('@/components/dirTree'), { ssr: false });
@@ -24,6 +25,8 @@ const TabbedContent: FC<IProps> = ({ children, width }) => {
   const percent = usePageScroll();
   // 当前选择哪个标签页
   const [tab, setTab] = useState('tree');
+  // 实时获取内部高度
+  const innerHeight = useWindowInnerHeight();
 
   useEffect(() => {
     if (query?.second_dir) {
@@ -32,6 +35,11 @@ const TabbedContent: FC<IProps> = ({ children, width }) => {
       setTab('tree');
     }
   }, [query?.second_dir]);
+
+  const containerStyle = useMemo(() => {
+    const maxHeight = `${innerHeight - 120}px`;
+    return { maxHeight, overflow: 'scroll' };
+  }, [innerHeight]);
 
   return (
     <ScrollComponent width={width}>
@@ -59,16 +67,24 @@ const TabbedContent: FC<IProps> = ({ children, width }) => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value='tree'>
-          <DirTree />
+          <div style={containerStyle}>
+            <DirTree />
+          </div>
         </TabsContent>
         <TabsContent value='toc'>
-          <BlogToc />
+          <div style={containerStyle}>
+            <BlogToc />
+          </div>
         </TabsContent>
         <TabsContent value='list'>
-          <PostList />
+          <div style={containerStyle}>
+            <PostList />
+          </div>
         </TabsContent>
         <TabsContent value='info'>
-          <Info percent={percent} />
+          <div style={containerStyle}>
+            <Info percent={percent} />
+          </div>
         </TabsContent>
         {children}
       </Tabs>
