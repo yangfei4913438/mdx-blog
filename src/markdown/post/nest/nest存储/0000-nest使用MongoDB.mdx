@@ -3,8 +3,8 @@ index: 0
 title: nest使用MongoDB
 description: 本文介绍，如何在 nestjs 中使用 MongoDB
 author: 杨飞
-tags: [nest, nest存储, MongoDB]
-date: 2021-04-04 17:33:11
+tags: [nest, nest存储, MongoDB, curd, 增删查改]
+date: 2021-04-04 19:50:11
 ---
 
 使用`MongoDB`的前提是，你得先准备一个`MongoDB`, 准备好之后，再来看如何具体操作。
@@ -57,27 +57,27 @@ export class AppModule {}
 ### 三、例子
 
 #### 1、创建一个Schema
-    > src/question/schemas/question.schema.ts
+> src/question/schemas/question.schema.ts
 
-    ```javascript
-    import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-    import { HydratedDocument } from 'mongoose';
+```javascript
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
-    @Schema()
-    export class Question {
-      @Prop({ required: true, minlength: 2 })
-      title: string;
+@Schema()
+export class Question {
+  @Prop({ required: true, minlength: 2 })
+  title: string;
 
-      @Prop()
-      desc: string;
-    }
+  @Prop()
+  desc: string;
+}
 
-    // 类型定义
-    export type QuestionDocument = HydratedDocument<Question>;
+// 类型定义
+export type QuestionDocument = HydratedDocument<Question>;
 
-    // 导出一个可操作的实例对象
-    export const QuestionSchema = SchemaFactory.createForClass(Question);
-    ```
+// 导出一个可操作的实例对象
+export const QuestionSchema = SchemaFactory.createForClass(Question);
+```
 
 #### 2、注册到模块
 > src/question/question.module.ts
@@ -104,6 +104,16 @@ import { Question, QuestionSchema } from './schemas/question.schema';
 export class QuestionModule {}
 ```
 
+#### 3、创建 DTO 文件
+> src/question/dto/question.dto.ts
+
+```javascript
+export class QuestionDto {
+  title: string;
+  desc: string;
+}
+```
+
 #### 3、改造服务
 > src/question/question.service.ts
 
@@ -112,6 +122,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Question, QuestionDocument } from './schemas/question.schema';
 import { Model } from 'mongoose';
+import { QuestionDto } from './dto/question.dto';
 
 @Injectable()
 export class QuestionService {
@@ -120,6 +131,7 @@ export class QuestionService {
     @InjectModel(Question.name) private readonly questionModel: Model<QuestionDocument>,
   ) {}
 
+  // 新增数据
   async create(): Promise<Question> {
     const question = new this.questionModel({
       title: '默认标题 ' + new Date().toLocaleString(),
@@ -128,8 +140,45 @@ export class QuestionService {
     return question.save();
   }
 
+  // 删除数据
+  async delete(id: string): Promise<Question> {
+    return this.questionModel.findByIdAndDelete(id);
+  }
+
+  // 修改数据
+  async update(id: string, updateData: QuestionDto) {
+    return this.questionModel.updateOne({ _id: id }, updateData);
+  }
+
+  // 查询数据
   async findOne(id: string): Promise<Question> {
     return this.questionModel.findById(id);
+  }
+
+  // 批量查询
+  async findAllList({ keyword = '', page = 1, pageSize = 10 }): Promise<Question[]> {
+    const whereOpt: any = {};
+    if (keyword) {
+      const reg = new RegExp(keyword, 'i'); // 不区分大小写
+      whereOpt.title = { $regex: reg }; // 模糊搜索
+    }
+
+    return this.questionModel
+      .find(whereOpt)
+      .sort({ _id: -1 }) // 倒序排序
+      .skip((page - 1) * pageSize) // 分页，跳过前多少条
+      .limit(pageSize);
+  }
+
+  // 统计数据
+  async countAll(keyword: string = '') {
+    const whereOpt: any = {};
+    if (keyword) {
+      const reg = new RegExp(keyword, 'i'); // 不区分大小写
+      whereOpt.title = { $regex: reg }; // 模糊搜索
+    }
+    // 统计数量
+    return this.questionModel.countDocuments(whereOpt);
   }
 }
 ```
@@ -138,23 +187,54 @@ export class QuestionService {
 > src/question/question.controller.ts
 
 ```javascript
-import { Controller, Get, HttpStatus, HttpException, Param, Post } from '@nestjs/common';
+import { Controller, Get, HttpStatus, HttpException, Param, Post, Delete, Patch, Body, Query } from '@nestjs/common';
 import { QuestionService } from './question.service';
+import { QuestionDto } from './dto/question.dto';
 
 @Controller('question')
 export class QuestionController {
   constructor(private readonly queryService: QuestionService) {}
 
+  // 新增
   @Post()
   create() {
     return this.queryService.create();
   }
 
+  // 删除
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.queryService.delete(id);
+  }
+
+  // 更新
+  @Patch(':id')
+  updateOne(@Param('id') id: string, @Body() questionDto: QuestionDto) {
+    return this.queryService.update(id, questionDto);
+  }
+
+  // 查询 1 条
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.queryService.findOne(id);
   }
 
+  // 批量查询
+  @Get()
+  async findAllList(
+    @Query('keyword') keyword: string,
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    const list = await this.queryService.findAllList({ keyword, page, pageSize });
+    const count = await this.queryService.countAll(keyword);
+    return {
+      list,
+      count,
+    };
+  }
+
+  // 异常测试
   @Get('test')
   getMessage(): string {
     throw new HttpException('获取数据失败', HttpStatus.BAD_REQUEST);
@@ -172,10 +252,39 @@ export class QuestionController {
       POST http://localhost:3005/api/question
       ```
 
+    - 删除数据
+
+      这是删除 id 为 660e4267677f654fecf90f13 的数据
+
+      ```shell
+      DELETE http://localhost:3005/api/question/660e4267677f654fecf90f13
+      ```
+
+    - 修改数据
+
+      这是修改 id 为 660e47750c747f2419e020f3 的数据
+
+      ```shell
+      PATCH http://localhost:3005/api/question/660e47750c747f2419e020f3
+      Body
+      {
+        "title": "测试标题更新",
+        "desc": "测试更新"
+      }
+      ```
+
     - 查询数据
 
       这是查询 id 为 660e47750c747f2419e020f3 的数据。
 
       ```shell
       GET http://localhost:3005/api/question/660e47750c747f2419e020f3
+      ```
+
+    - 批量查询
+
+      查询所有的数据，这里使用了分页参数去查询列表
+
+      ```shell
+      GET http://localhost:3005/api/question?page=1&pageSize=2
       ```
