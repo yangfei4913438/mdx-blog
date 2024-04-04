@@ -1,0 +1,181 @@
+---
+index: 0
+title: nest使用MongoDB
+description: 本文介绍，如何在 nestjs 中使用 MongoDB
+author: 杨飞
+tags: [nest, nest存储, MongoDB]
+date: 2021-04-04 17:33:11
+---
+
+使用`MongoDB`的前提是，你得先准备一个`MongoDB`, 准备好之后，再来看如何具体操作。
+
+### 一、安装依赖
+
+```shell
+yarn add @nestjs/mongoose mongoose
+```
+
+### 二、配置
+
+#### 1、创建环境变量文件`.env`
+
+```shell
+MONGO_HOST=127.0.0.1
+MONGO_PORT=27017
+MONGO_DATABASE=survey
+```
+
+#### 2、注册到入口app模块
+
+```javascript
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import * as process from 'process';
+
+// 定义 uri
+const mongoURI = () => {
+  // 因为配置文件功能，还没注册，所以要写成函数，等配置文件模块注册之后，再读取配置，才不会出问题。
+  return `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`;
+};
+
+@Module({
+  imports: [
+    // 配置文件的默认地址 .env 不需要显示引入。
+    ConfigModule.forRoot({isGlobal: true}),
+    // 注册到入口模块
+    MongooseModule.forRoot(mongoURI())
+  ],
+  controllers: [AppController],
+  providers: [AppService]
+})
+export class AppModule {}
+```
+
+### 三、例子
+
+#### 1、创建一个Schema
+    > src/question/schemas/question.schema.ts
+
+    ```javascript
+    import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+    import { HydratedDocument } from 'mongoose';
+
+    @Schema()
+    export class Question {
+      @Prop({ required: true, minlength: 2 })
+      title: string;
+
+      @Prop()
+      desc: string;
+    }
+
+    // 类型定义
+    export type QuestionDocument = HydratedDocument<Question>;
+
+    // 导出一个可操作的实例对象
+    export const QuestionSchema = SchemaFactory.createForClass(Question);
+    ```
+
+#### 2、注册到模块
+> src/question/question.module.ts
+
+```javascript
+import { Module } from '@nestjs/common';
+import { QuestionController } from './question.controller';
+import { QuestionService } from './question.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Question, QuestionSchema } from './schemas/question.schema';
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      {
+        name: Question.name,
+        schema: QuestionSchema,
+      },
+    ]),
+  ],
+  controllers: [QuestionController],
+  providers: [QuestionService],
+})
+export class QuestionModule {}
+```
+
+#### 3、改造服务
+> src/question/question.service.ts
+
+```javascript
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Question, QuestionDocument } from './schemas/question.schema';
+import { Model } from 'mongoose';
+
+@Injectable()
+export class QuestionService {
+  constructor(
+    // 依赖注入
+    @InjectModel(Question.name) private readonly questionModel: Model<QuestionDocument>,
+  ) {}
+
+  async create(): Promise<Question> {
+    const question = new this.questionModel({
+      title: '默认标题 ' + new Date().toLocaleString(),
+      desc: '默认描述',
+    });
+    return question.save();
+  }
+
+  async findOne(id: string): Promise<Question> {
+    return this.questionModel.findById(id);
+  }
+}
+```
+
+#### 4、改造控制器
+> src/question/question.controller.ts
+
+```javascript
+import { Controller, Get, HttpStatus, HttpException, Param, Post } from '@nestjs/common';
+import { QuestionService } from './question.service';
+
+@Controller('question')
+export class QuestionController {
+  constructor(private readonly queryService: QuestionService) {}
+
+  @Post()
+  create() {
+    return this.queryService.create();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.queryService.findOne(id);
+  }
+
+  @Get('test')
+  getMessage(): string {
+    throw new HttpException('获取数据失败', HttpStatus.BAD_REQUEST);
+  }
+}
+```
+
+#### 5、访问接口
+
+    - 创建数据
+
+      调用之后，去客户端查看，就能看到新的数据了。
+
+      ```shell
+      POST http://localhost:3005/api/question
+      ```
+
+    - 查询数据
+
+      这是查询 id 为 660e47750c747f2419e020f3 的数据。
+
+      ```shell
+      GET http://localhost:3005/api/question/660e47750c747f2419e020f3
+      ```

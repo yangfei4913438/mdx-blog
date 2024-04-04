@@ -114,4 +114,10 @@
       @apply my-0;
     }
   }
+  // shell 代码样式
+  .language-shell {
+    .token.variable {
+      color: #e6d06c;
+    }
+  }
 }

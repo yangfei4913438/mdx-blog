@@ -41,19 +41,27 @@ nest 里面提供了现成的封装包 `@nestjs/config`
   ```
 
 #### 4、注册模块 `src/app.module.ts`
+> 如果需要在这个注册模块中使用，那么可以使用process.env的方式来引入变量。
 
   ```javascript
   import { Module } from '@nestjs/common';
   import { AppController } from './app.controller';
   import { AppService } from './app.service';
   import { ConfigModule } from '@nestjs/config';
+  import { MongooseModule } from '@nestjs/mongoose';
+  import * as process from 'process';
 
   @Module({
     imports: [
       // 配置文件的默认地址 .env 不需要显示引入。
       ConfigModule.forRoot({  // 这里引入即可
         isGlobal: true, // 注册为全局模块
-      })
+      }),
+      // 同一个文件中引入系统变量
+      MongooseModule.forRoot(
+        // 这里的变量，只是举个例子，不是上面配置的。
+        `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`,
+      ),
     ],
     controllers: [AppController],
     providers: [AppService],

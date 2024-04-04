@@ -10,70 +10,33 @@ date: 2021-03-08 10:01:40
 > 如何使用docker快速创建一个可以使用的mongodb数据库
 
 
-#### 说明
+### 说明
 > 我们的目的是如何快速使用，而不是部署一个生产项目。所以这里使用的都是默认配置。
 
-##### 拉取最新的数据库
+### 创建数据库
+
 ```shell
+# 拉取最新的数据库
 docker pull mongo:latest
-```
 
-##### 查看拉取到的镜像
-```shell
+# 查看拉取到的镜像
 docker images
-```
 
-##### 在后台运行起来
-```shell
-docker run -d -p 27017:27017 --name graphql mongo:latest
-```
+# 在后台运行起来
+docker run -d -p 27017:27017 --name survey mongo:latest
 
-##### 查看容器的起动情况
-```shell
+# 查看容器的起动情况
 docker ps
 ```
 
-##### 以 admin 用户身份进入mongo
-```shell
-docker exec -it graphql mongo admin
-```
+因为新版本，容器中默认没有mongo客户端了，所以需要用 GUI 客户端连接。
 
-##### 创建一个 admin 管理员账号
-```sql
-db.createUser({user: 'admin', pwd: 'admin123', roles:[{role: "userAdminAnyDatabase", db: "admin"}]});
-```
+官方 GUI 下载地址: https://www.mongodb.com/try/download/compass
 
-##### 对 admin 用户 进行身份认证
-```sql
-db.auth('admin','admin123');
-```
+运行起来之后，默认连接 mongodb://localhost:27017
 
-##### 切换到一个你要创建的数据库
-```sql
-use graphql
-```
+这一步，不用输入账号密码。
 
-##### 新增一条数据
-```sql
-db.graphql.save({name: "第一条记录"})
-```
+进去之后，创建一个数据库(survey)和数据集合(users)，以备使用。这是我自己的业务需要的名字，你可以创建你需要的名字。
 
-##### 查看数据
-```sql
-db.graphql.find()
-```
-
-##### 查看数据库
-```sql
-show dbs
-```
-
-##### 创建用户、密码
-```sql
-db.createUser({user: 'test', pwd:'test123', roles:[{role:"readWrite", db:"graphql"}]});
-```
-
-##### 身份认证
-```sql
-db.auth('test', 'test123')
-```
+到这里，就可以了。直接使用默认链接就能连到数据库了。

@@ -46,6 +46,7 @@ const dirOrderConfig: IDirOrderConfig = {
     children: {
       nest基础: 0,
       nest接口: 1,
+      nest存储: 2,
     },
   },
   linux: {
@@ -82,7 +83,7 @@ export const siteInfo = {
   search: '搜索',
   url: 'https://www.yangfei.wiki',
   keywords:
-    '杨飞的笔记,yangfei,笔记,博客,前端,后端,react,nest,native,next,shadcn,tailwind,redux,mdx,markdown,docker,linux,oss,github',
+    '杨飞的笔记,杨飞的博客,杨飞,yangfei,笔记,博客,前端,后端,react,nest,native,next,shadcn,tailwind,redux,mdx,markdown,docker,linux,oss,github',
 };
 
 // 目前没有支持三级目录
