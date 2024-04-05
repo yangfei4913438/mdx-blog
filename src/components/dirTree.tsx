@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import cls from 'classnames';
 import { BookMarked } from 'lucide-react';
@@ -15,26 +15,30 @@ const DirTree = () => {
   const {
     query: { key, first_dir, second_dir },
   } = useRouter();
-  // 展开的一级目录key
-  const [value, setValue] = useState<string>('');
+  // 展开的一级目录key, 默认展开 react
+  const [value, setValue] = useState<string>('react');
   // 响应链接
   const { handleLinkWithQueryKey } = useNextLink();
+  // 当然是否渲染过
+  const render = useRef(false);
 
   // 在页面渲染之前完成逻辑处理
   useLayoutEffect(() => {
     // 有值表示当前是切换渲染，不需要重新设置。
-    if (value) return;
+    if (render.current) return;
     // 如果是文章列表的情况
     if (key) {
       const target = valueKeyMap[String(key).toLowerCase()];
       if (target) {
         setValue(target);
+        render.current = true;
         return;
       }
     }
     // 如果是正文的情况
     if (first_dir) {
       setValue(first_dir as string);
+      render.current = true;
       return;
     }
   }, [first_dir, key, value, valueKeyMap]);
@@ -69,6 +73,15 @@ const DirTree = () => {
     return source === target;
   };
 
+  // 响应一级目录点击
+  const handleClick = (dirname: string) => () => {
+    if (dirname === value) {
+      setValue('');
+    } else {
+      setValue(dirname);
+    }
+  };
+
   return (
     <Accordion type={'single'} className='border-t' collapsible value={value}>
       {Object.entries(dirs).map(([dir, subDirs], idx) => {
@@ -76,7 +89,7 @@ const DirTree = () => {
           <AccordionItem value={dir} key={idx}>
             <AccordionTrigger
               className='flex items-center bg-gray-3 py-2 pl-8 pr-8 font-bold hover:cursor-pointer lg:py-1'
-              onClick={() => setValue(dir)}
+              onClick={handleClick(dir)}
             >
               <div className='flex flex-1 items-center justify-between'>
                 <div className='truncate capitalize'>{dir}</div>
