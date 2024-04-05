@@ -15,8 +15,8 @@ const DirTree = () => {
   const {
     query: { key, first_dir, second_dir },
   } = useRouter();
-  // 展开的一级目录key, 默认展开 react
-  const [value, setValue] = useState<string>('react');
+  // 展开的一级目录key
+  const [value, setValue] = useState<string>('');
   // 响应链接
   const { handleLinkWithQueryKey } = useNextLink();
   // 当然是否渲染过
