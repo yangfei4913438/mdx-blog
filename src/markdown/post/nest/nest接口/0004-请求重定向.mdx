@@ -54,7 +54,7 @@ export class UserController {
 
 第一个是获取用户信息接口。用户访问 `api/user/info`, 实际访问的是 `/api/auth/profile`, 这里使用的是 GET 临时重定向。
 
-第二个是用户注册接口。这个交接被标记为公开接口，不会被鉴权逻辑处理。
+第二个是用户注册接口。这个接口被标记为公开接口，不会被鉴权逻辑处理。
 
 用户访问的是 `api/user/login`, 实际访问的是 `/api/auth/login`,  这里使用的是 POST 临时重定向。
 
