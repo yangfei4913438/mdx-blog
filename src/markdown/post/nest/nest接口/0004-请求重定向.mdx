@@ -1,0 +1,61 @@
+---
+index: 4
+title: 请求重定向
+description: 因为业务设计，可能导致一些接口需要放在不同的模块中，但是又不想修改客户端的接口，这时候，请求重定向就有用了。
+author: 杨飞
+tags: [nest, nest接口, 请求重定向]
+date: 2021-04-06 16:21:53
+---
+
+因为业务设计，可能导致一些接口需要放在不同的模块中，但是又不想修改客户端的接口，这时候，请求重定向就有用了。
+
+这个非常简单，直接看代码就能明白了。
+
+
+```javascript
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Redirect } from '@nestjs/common';
+import { UserService } from './user.service';
+import { UserDto } from './dto/user.dto';
+import { Public } from '../auth/decorators/public.decorator';
+
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
+
+  // 注册
+  @Public()
+  @Post('register')
+  async register(@Body() userDto: UserDto) {
+    try {
+      return this.userService.create(userDto);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  // 获取用户信息
+  @Get('info')
+  @Redirect('/api/auth/profile', 302) // GET 请求 - 302 临时重定向，301 永久重定向
+  async info() {
+    return;
+  }
+
+  // 注册
+  @Public()
+  @Post('login')
+  @Redirect('/api/auth/login', 307) // POST 请求 - 308 永久，307 临时
+  async login() {
+    return;
+  }
+}
+```
+
+上面的例子中，有 2 个接口使用了重定向。
+
+第一个是获取用户信息接口。用户访问 `api/user/info`, 实际访问的是 `/api/auth/profile`, 这里使用的是 GET 临时重定向。
+
+第二个是用户注册接口。这个交接被标记为公开接口，不会被鉴权逻辑处理。
+
+用户访问的是 `api/user/login`, 实际访问的是 `/api/auth/login`,  这里使用的是 POST 临时重定向。
+
+这两个方法体，都不需要写任何内容，因为代码逻辑不会进入这两个方法的内部。
