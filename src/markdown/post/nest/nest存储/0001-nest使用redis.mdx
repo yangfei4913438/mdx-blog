@@ -1,0 +1,199 @@
+---
+index: 1
+title: nest使用Redis
+description: 本文介绍，如何在 nestjs 中使用 Redis
+author: 杨飞
+tags: [nest, nest存储, redis, 缓存]
+date: 2021-04-21 00:01:00
+---
+
+使用`Redis`的前提是，你得先准备一个`Redis`, 准备好之后，再来看如何具体操作。
+
+### 一、安装依赖
+
+```shell
+# yarn
+yarn add @nestjs-modules/ioredis ioredis
+
+# npm
+npm install --save @nestjs-modules/ioredis ioredis
+```
+
+### 二、创建 redis 模块和服务
+
+#### 1、Redis模块 `src/redis/redis.module.ts`
+
+```javascript
+import { Module } from '@nestjs/common';
+import { RedisModule as IORedisModule } from '@nestjs-modules/ioredis';
+import { RedisService } from './redis.service';
+
+@Module({
+  imports: [
+    IORedisModule.forRoot({
+      type: 'single', // 单机模式，集群模式请查阅文档
+      url: 'redis://127.0.0.1:6379',
+      // 一般单机都是局域网部署，很少需要密码认证的
+      // options: {
+      //   password: '123',
+      // },
+    }),
+  ],
+  providers: [RedisService],
+  exports: [RedisService],
+})
+export class RedisModule {}
+```
+
+#### 2、Redis服务 `src/redis/redis.service.ts`
+
+```javascript
+import { Injectable } from '@nestjs/common';
+import Redis from 'ioredis';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+
+@Injectable()
+export class RedisService {
+  constructor(@InjectRedis() private readonly redis: Redis) {}
+
+  // 设置键值对
+  async set(
+    key: string,
+    value: string | number,
+    seconds?: number,
+    callback?: () => void,
+  ) {
+    if (seconds) {
+      // 按秒设置，毫秒使用 PX
+      return this.redis.set(key, value, 'EX', seconds, callback);
+    }
+    return this.redis.set(key, value, callback);
+  }
+
+  // 对已经存在的 key 设置有效期
+  async setExpire(key: string, seconds: number, callback?: () => void) {
+    return this.redis.expire(key, seconds, callback);
+  }
+
+  // 获取值
+  async get(key: string, callback?: () => void): Promise<string> {
+    return this.redis.get(key, callback);
+  }
+
+  // 批量删除
+  async delete(keys: string[], callback?: () => void): Promise<number> {
+    return this.redis.del(...keys, callback);
+  }
+
+  // 获取所有的 key
+  async keys(): Promise<string[]> {
+    return this.redis.keys('*');
+  }
+}
+```
+
+### 三、使用 Redis 服务
+> 创建一个新的接口调用设置好的 redis 服务。
+
+#### 1、模块 `src/names/names.module.ts`
+
+```javascript
+import { Module } from '@nestjs/common';
+import { NamesService } from './names.service';
+import { NamesController } from './names.controller';
+import { RedisModule } from '../redis/redis.module';
+
+@Module({
+  imports: [RedisModule], // 使用 Redis 服务之前，需要导入封装好的 Redis 模块
+  controllers: [NamesController],
+  providers: [NamesService],
+})
+export class NamesModule {}
+```
+
+#### 2、服务 `src/names/names.service.ts`
+
+```javascript
+import { Injectable } from '@nestjs/common';
+import { RedisService } from '../redis/redis.service';
+
+@Injectable()
+export class NamesService {
+  constructor(private readonly redisService: RedisService) {}
+
+  async setName(key: string, name: string, seconds?: number) {
+    return this.redisService.set(key, name, seconds, () => {
+      console.log('设置成功:', key, name);
+    });
+  }
+
+  async getName(key: string) {
+    return this.redisService.get(key, () => {
+      console.log('获取成功:', key);
+    });
+  }
+
+  async getKeys() {
+    return this.redisService.keys();
+  }
+
+  async delName(keys: string[]) {
+    return this.redisService.delete(keys, () => {
+      console.log('删除key:', keys.join(','));
+    });
+  }
+}
+```
+
+#### 3、控制器 `src/names/names.controller.ts`
+
+```javascript
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { NamesService } from './names.service';
+
+@Controller('names')
+export class NamesController {
+  constructor(private readonly namesService: NamesService) {}
+
+  @Get(':key')
+  async getName(@Param('key') key: string) {
+    return this.namesService.getName(key);
+  }
+
+  @Get()
+  async getKeys() {
+    return this.namesService.getKeys();
+  }
+
+  @Post()
+  async createName(@Body() body: { key: string; name: string }) {
+    console.log('body:', body);
+    return this.namesService.setName(body.key, body.name, 60);
+  }
+
+  @Delete(':key')
+  async deleteName(@Param('key') key: string) {
+    return this.namesService.delName([key]);
+  }
+}
+```
+
+### 四、注册模块
+
+> nest 项目里面，只要不是全局模块，都需要在入口模块在导入，才能生效。
+
+```javascript
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { RedisModule } from './redis/redis.module';
+import { NamesModule } from './names/names.module';
+
+@Module({
+  imports: [RedisModule, NamesModule], // redis模块 和 示例模块，都需要导入。
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+```
+
