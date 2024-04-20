@@ -2,6 +2,13 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import SeoLink from '@/components/link';
 import useNextLink from '@/hooks/useNextLink';
+import type { GetStaticProps } from 'next';
+
+export const getStaticProps: GetStaticProps = async (props) => {
+  return {
+    props,
+  };
+};
 
 const Custom404 = () => {
   const router = useRouter();
