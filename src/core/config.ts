@@ -75,7 +75,7 @@ const dirOrderConfig: IDirOrderConfig = {
 };
 
 export const siteInfo = {
-  name: '杨飞的笔记',
+  name: '前端探索',
   desc: '全是干货的技术笔记',
   home: '首页',
   tag: '标签',
